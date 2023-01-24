@@ -10,12 +10,13 @@ endif
 ## ECC_P192R1 backend
 ifneq (,$(filter psa_asymmetric_ecc_p192r1,$(USEMODULE)))
   ifeq (,$(filter psa_asymmetric_ecc_p192r1_custom_backend,$(USEMODULE)))
-    DEFAULT_MODULE += psa_asymmetric_ecc_p192r1_backend_microecc
+    FEATURES_OPTIONAL += periph_ecc_p192r1
+    include $(RIOTMAKE)/features_check.inc.mk
+    # HACK: Due to kconfig migration, may cause problems
     ifneq (,$(filter periph_ecc_p192r1,$(FEATURES_USED)))
       USEMODULE += psa_asymmetric_ecc_p192r1_backend_periph
-      DISABLE_MODULE += psa_asymmetric_ecc_p192r1_backend_microecc
     else
-      FEATURES_OPTIONAL += periph_ecc_p192r1
+      USEMODULE += psa_asymmetric_ecc_p192r1_backend_microecc
     endif
   endif
 endif
@@ -33,12 +34,13 @@ endif
 ## ECC_P256R1 backend
 ifneq (,$(filter psa_asymmetric_ecc_p256r1,$(USEMODULE)))
   ifeq (,$(filter psa_asymmetric_ecc_p256r1_custom_backend,$(USEMODULE)))
-    DEFAULT_MODULE += psa_asymmetric_ecc_p256r1_backend_microecc
+    FEATURES_OPTIONAL += periph_ecc_p256r1
+    include $(RIOTMAKE)/features_check.inc.mk
+    # HACK: Due to kconfig migration, may cause problems
     ifneq (,$(filter periph_ecc_p256r1,$(FEATURES_USED)))
       USEMODULE += psa_asymmetric_ecc_p256r1_backend_periph
-      DISABLE_MODULE += psa_asymmetric_ecc_p256r1_backend_microecc
     else
-      FEATURES_OPTIONAL += periph_ecc_p256r1
+      USEMODULE += psa_asymmetric_ecc_p256r1_backend_microecc
     endif
   endif
 endif
@@ -73,12 +75,13 @@ endif
 ## AES-128-CBC
 ifneq (,$(filter psa_cipher_aes_128_cbc,$(USEMODULE)))
   ifeq (,$(filter psa_cipher_aes_128_cbc_custom_backend,$(USEMODULE)))
-    DEFAULT_MODULE += psa_cipher_aes_128_cbc_backend_riot
+    FEATURES_OPTIONAL += periph_cipher_aes_128_cbc
+    include $(RIOTMAKE)/features_check.inc.mk
+    # HACK: Due to kconfig migration, may cause problems
     ifneq (,$(filter periph_cipher_aes_128_cbc,$(FEATURES_USED)))
       USEMODULE += psa_cipher_aes_128_cbc_backend_periph
-      DISABLE_MODULE += psa_cipher_aes_128_cbc_backend_riot
     else
-      FEATURES_OPTIONAL += periph_cipher_aes_128_cbc
+      USEMODULE += psa_cipher_aes_128_cbc_backend_riot
     endif
   endif
 endif
@@ -127,12 +130,13 @@ endif
 ## SHA-1
 ifneq (,$(filter psa_hash_sha_1,$(USEMODULE)))
   ifeq (,$(filter psa_hash_sha_1_custom_backend,$(USEMODULE)))
-    DEFAULT_MODULE += psa_hash_sha_1_backend_riot
+    FEATURES_OPTIONAL += periph_hash_sha_1
+    include $(RIOTMAKE)/features_check.inc.mk
+    # HACK: Due to kconfig migration, may cause problems
     ifneq (,$(filter periph_hash_sha_1,$(FEATURES_USED)))
       USEMODULE += psa_hash_sha_1_backend_periph
-      DISABLE_MODULE += psa_hash_sha_1_backend_riot
     else
-      FEATURES_OPTIONAL += periph_hash_sha_1
+      USEMODULE += psa_hash_sha_1_backend_riot
     endif
   endif
 endif
@@ -150,12 +154,13 @@ endif
 ## SHA-224
 ifneq (,$(filter psa_hash_sha_224,$(USEMODULE)))
   ifeq (,$(filter psa_hash_sha_224_custom_backend,$(USEMODULE)))
-    DEFAULT_MODULE += psa_hash_sha_224_backend_riot
+    FEATURES_OPTIONAL += periph_hash_sha_224
+    include $(RIOTMAKE)/features_check.inc.mk
+    # HACK: Due to kconfig migration, may cause problems
     ifneq (,$(filter periph_hash_sha_224,$(FEATURES_USED)))
       USEMODULE += psa_hash_sha_224_backend_periph
-      DISABLE_MODULE += psa_hash_sha_224_backend_riot
     else
-      FEATURES_OPTIONAL += periph_hash_sha_224
+      USEMODULE += psa_hash_sha_224_backend_riot
     endif
   endif
 endif
@@ -173,12 +178,13 @@ endif
 ## SHA-256
 ifneq (,$(filter psa_hash_sha_256,$(USEMODULE)))
   ifeq (,$(filter psa_hash_sha_256_custom_backend,$(USEMODULE)))
-    DEFAULT_MODULE += psa_hash_sha_256_backend_riot
+    FEATURES_OPTIONAL += periph_hash_sha_256
+    include $(RIOTMAKE)/features_check.inc.mk
+    # HACK: Due to kconfig migration, may cause problems
     ifneq (,$(filter periph_hash_sha_256,$(FEATURES_USED)))
       USEMODULE += psa_hash_sha_256_backend_periph
-      DISABLE_MODULE += psa_hash_sha_256_backend_riot
     else
-      FEATURES_OPTIONAL += periph_hash_sha_256
+      USEMODULE += psa_hash_sha_256_backend_riot
     endif
   endif
 endif
@@ -206,12 +212,13 @@ endif
 ## HMAC SHA-256
 ifneq (,$(filter psa_mac_hmac_sha_256,$(USEMODULE)))
   ifeq (,$(filter psa_mac_hmac_sha_256_custom_backend,$(USEMODULE)))
-    DEFAULT_MODULE += psa_mac_hmac_sha_256_backend_riot
+    FEATURES_OPTIONAL += periph_hmac_sha_256
+    include $(RIOTMAKE)/features_check.inc.mk
+    # HACK: Due to kconfig migration, may cause problems
     ifneq (,$(filter periph_hmac_sha_256,$(FEATURES_USED)))
       USEMODULE += psa_mac_hmac_sha_256_backend_periph
-      DISABLE_MODULE += psa_mac_hmac_sha_256_backend_riot
     else
-      FEATURES_OPTIONAL += periph_hmac_sha_256
+      USEMODULE += psa_mac_hmac_sha_256_backend_riot
     endif
   endif
 endif
