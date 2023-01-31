@@ -12,7 +12,7 @@ endif
 
 # crypto features
 ifneq (,$(filter nrf52840xxaa,$(CPU_MODEL)))
-  FEATURES_PROVIDED += periph_hash_sha1
+  FEATURES_PROVIDED += periph_hash_sha_1
   FEATURES_PROVIDED += periph_hash_sha_224
   FEATURES_PROVIDED += periph_hash_sha_256
   FEATURES_PROVIDED += periph_hash_sha_512
