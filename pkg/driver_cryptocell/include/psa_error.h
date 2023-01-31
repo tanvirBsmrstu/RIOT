@@ -31,7 +31,7 @@ extern "C" {
 /**
  * @brief   Convert CryptoCell CRYS errors to PSA status values
  *
- * @param   error CRYSErrot_t
+ * @param   error CRYSError_t
  * @return  @ref psa_status_t
  */
 psa_status_t CRYS_to_psa_error(CRYSError_t error);
