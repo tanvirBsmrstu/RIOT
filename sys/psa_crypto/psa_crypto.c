@@ -1390,7 +1390,7 @@ psa_status_t psa_import_key(const psa_key_attributes_t *attributes,
         return PSA_ERROR_INVALID_ARGUMENT;
     }
 
-    if (attributes->bits != 0 && attributes->bits > data_length) {
+    if (attributes->bits != 0 && attributes->bits > PSA_BYTES_TO_BITS(data_length)) {
         return PSA_ERROR_INVALID_ARGUMENT;
     }
 
