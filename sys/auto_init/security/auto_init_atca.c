@@ -55,8 +55,7 @@ void auto_init_atca(void)
         if (status != PSA_SUCCESS) {
             LOG_ERROR(
                 "[auto_init_atca] PSA Crypto – error registering cryptoauth PSA driver \
-                for device #%u, status: %d\n", i,
-                status);
+                for device #%u, status: %d\n", i, status);
             continue;
         }
 #endif
