@@ -5,10 +5,6 @@ APPLICATION = example_psa_crypto
 
 BOARD ?= native
 
-ifneq (,$(filter native,$(BOARD)))
-export SOFTWARE=1
-endif
-
 USEMODULE += psa_crypto
 USEMODULE += psa_hash
 USEMODULE += psa_hash_sha_256
