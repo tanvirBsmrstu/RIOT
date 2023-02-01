@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef PSA_CRYPTO_H
-#define PSA_CRYPTO_H
+#ifndef PSA_CRYPTO_PSA_CRYPTO_H
+#define PSA_CRYPTO_PSA_CRYPTO_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -4043,5 +4043,5 @@ psa_status_t psa_verify_message(psa_key_id_t key,
 }
 #endif
 
-#endif /* PSA_CRYPTO_H */
+#endif /* PSA_CRYPTO_PSA_CRYPTO_H */
 /** @} */

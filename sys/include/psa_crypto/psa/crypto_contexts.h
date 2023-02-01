@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef PSA_CRYPTO_CONTEXTS_H
-#define PSA_CRYPTO_CONTEXTS_H
+#ifndef PSA_CRYPTO_PSA_CRYPTO_CONTEXTS_H
+#define PSA_CRYPTO_PSA_CRYPTO_CONTEXTS_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -55,7 +55,9 @@ typedef union {
  */
 typedef union {
     unsigned dummy; /**< Make the union non-empty even with no supported algorithms. */
-#if IS_USED(MODULE_PSA_CIPHER_AES_128_ECB) || IS_USED(MODULE_PSA_CIPHER_AES_128_CBC) || defined(DOXYGEN)
+#if IS_USED(MODULE_PSA_CIPHER_AES_128_ECB) ||\
+    IS_USED(MODULE_PSA_CIPHER_AES_128_CBC) ||\
+    defined(DOXYGEN)
     psa_cipher_aes_128_ctx_t aes_128;   /**< AES 128 context*/
 #endif
 #if IS_USED(MODULE_PSA_CIPHER_AES_192_CBC) || defined(DOXYGEN)
@@ -85,5 +87,5 @@ typedef struct {
 }
 #endif
 
-#endif /* PSA_CRYPTO_CONTEXTS_H */
+#endif /* PSA_CRYPTO_PSA_CRYPTO_CONTEXTS_H */
 /** @} */

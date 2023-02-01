@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef PSA_CRYPTO_STRUCT_H
-#define PSA_CRYPTO_STRUCT_H
+#ifndef PSA_CRYPTO_PSA_CRYPTO_STRUCT_H
+#define PSA_CRYPTO_PSA_CRYPTO_STRUCT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -216,5 +216,5 @@ static inline struct psa_mac_operation_s psa_mac_operation_init(void)
 }
 #endif
 
-#endif /* PSA_CRYPTO_STRUCT_H */
+#endif /* PSA_CRYPTO_PSA_CRYPTO_STRUCT_H */
 /** @} */

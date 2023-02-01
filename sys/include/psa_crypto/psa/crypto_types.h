@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef PSA_CRYPTO_TYPES_H
-#define PSA_CRYPTO_TYPES_H
+#ifndef PSA_CRYPTO_PSA_CRYPTO_TYPES_H
+#define PSA_CRYPTO_PSA_CRYPTO_TYPES_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -507,5 +507,5 @@ typedef struct psa_cipher_operation_s psa_cipher_operation_t;
 }
 #endif
 
-#endif /* PSA_CRYPTO_TYPES_H */
+#endif /* PSA_CRYPTO_PSA_CRYPTO_TYPES_H */
 /** @} */

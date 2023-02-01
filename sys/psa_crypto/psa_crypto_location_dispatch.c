@@ -206,7 +206,8 @@ static psa_status_t psa_se_cipher_encrypt_decrypt(  const psa_drv_se_t *drv,
         operation.default_iv_length = PSA_CIPHER_IV_LENGTH(psa_get_key_type(attributes), alg);
 
         if (direction == PSA_CRYPTO_DRIVER_ENCRYPT) {
-            /* In case of encryption, we need to generate and set an IV. The IV will be written into the first 16 bytes of the output buffer. */
+            /* In case of encryption, we need to generate and set an IV. The IV will be written
+            into the first 16 bytes of the output buffer. */
             size_t iv_length = 0;
             status = psa_cipher_generate_iv(&operation, output, operation.default_iv_length,
                                             &iv_length);
@@ -220,7 +221,8 @@ static psa_status_t psa_se_cipher_encrypt_decrypt(  const psa_drv_se_t *drv,
             *output_length += iv_length;
         }
         else {
-            /* In case of decryption the IV to be used must be provided by the caller and is contained in the first 16 Bytes of the input buffer.  */
+            /* In case of decryption the IV to be used must be provided by the caller and is
+            contained in the first 16 Bytes of the input buffer.  */
             status = drv->cipher->p_set_iv(se_ctx, input, operation.default_iv_length);
 
             /* Increase input buffer offset to IV length to start decryption
@@ -320,9 +322,9 @@ psa_status_t psa_location_dispatch_cipher_decrypt(  const psa_key_attributes_t *
 
         return status;
     }
-
 #endif /* CONFIG_PSA_SECURE_ELEMENT */
-    return psa_algorithm_dispatch_cipher_decrypt(attributes, alg, slot, input, input_length, output, output_size, output_length);
+    return psa_algorithm_dispatch_cipher_decrypt(attributes, alg, slot, input, input_length,
+                                                 output, output_size, output_length);
 }
 
 psa_status_t psa_location_dispatch_sign_hash(  const psa_key_attributes_t *attributes,
