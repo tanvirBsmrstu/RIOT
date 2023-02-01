@@ -1,5 +1,6 @@
 # include the PSA headers
 INCLUDES += -I$(RIOTBASE)/sys/psa_crypto/include
+INCLUDES += -I$(RIOTBASE)/sys/include/psa_crypto
 
 backends = $(words $(filter $1_backend_%,$(USEMODULE)))
 
