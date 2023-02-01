@@ -55,11 +55,9 @@ psa_status_t psa_cipher_cbc_aes_128_encrypt(const psa_key_attributes_t *attribut
         return status;
     }
 
-    status = cbc_aes_common_encrypt_decrypt(&operation.backend_ctx.cipher_ctx.aes_128, key_buffer,
+    return cbc_aes_common_encrypt_decrypt(&operation.backend_ctx.cipher_ctx.aes_128, key_buffer,
                                     key_buffer_size, output, input, input_length,
                                     output + iv_length, output_length, PSA_CRYPTO_DRIVER_ENCRYPT);
-
-    return status;
 }
 
 psa_status_t psa_cipher_cbc_aes_128_decrypt(const psa_key_attributes_t *attributes,
@@ -80,9 +78,8 @@ psa_status_t psa_cipher_cbc_aes_128_decrypt(const psa_key_attributes_t *attribut
     operation.default_iv_length = PSA_CIPHER_IV_LENGTH(attributes->type, alg);
     *output_length = 0;
 
-    status = cbc_aes_common_encrypt_decrypt(&operation.backend_ctx.cipher_ctx.aes_128, key_buffer,
+    return cbc_aes_common_encrypt_decrypt(&operation.backend_ctx.cipher_ctx.aes_128, key_buffer,
                                     key_buffer_size, input, input + operation.default_iv_length,
-                                    input_length - operation.default_iv_length, output, output_length, PSA_CRYPTO_DRIVER_DECRYPT);
-
-    return status;
+                                    input_length - operation.default_iv_length, output,
+                                    output_length, PSA_CRYPTO_DRIVER_DECRYPT);
 }
