@@ -19,29 +19,66 @@
 
 #include <stdio.h>
 #include "psa/crypto.h"
+#include "ztimer.h"
 
-extern void cipher_aes_128(void);
-extern void psa_hmac_sha256(void);
-extern void ecdsa(void);
+extern psa_status_t example_cipher_aes_128(void);
+extern psa_status_t example_hmac_sha256(void);
+extern psa_status_t example_ecdsa_p256(void);
 
 #ifdef MULTIPLE_SE
-extern void cipher_aes_128_sec_se(void);
-extern void hmac_sha256_sec_se(void);
-extern void ecdsa_sec_se(void);
+extern psa_status_t example_cipher_aes_128_sec_se(void);
+extern psa_status_t example_hmac_sha256_sec_se(void);
+extern psa_status_t example_ecdsa_p256_sec_se(void);
 #endif /* MULTIPLE_SE */
 
 int main(void)
 {
+    psa_status_t status;
+
     psa_crypto_init();
 
-    psa_hmac_sha256();
-    cipher_aes_128();
-    ecdsa();
+    ztimer_now_t start = ztimer_now(ZTIMER_USEC);
+    status = example_hmac_sha256();
+    printf("HMAC SHA256 took %d us\n", (int)(ztimer_now(ZTIMER_USEC) - start));
+    if (status != PSA_SUCCESS) {
+        printf("HMAC SHA256 failed: %d\n", (int)status);
+    }
+
+    start = ztimer_now(ZTIMER_USEC);
+    status = example_cipher_aes_128();
+    printf("Cipher AES 128 took %d us\n", (int)(ztimer_now(ZTIMER_USEC) - start));
+    if (status != PSA_SUCCESS) {
+        printf("Cipher AES 128 failed: %d\n", (int)status);
+    }
+
+    start = ztimer_now(ZTIMER_USEC);
+    status = example_ecdsa_p256();
+    printf("ECDSA took %d us\n", (int)(ztimer_now(ZTIMER_USEC) - start));
+    if (status != PSA_SUCCESS) {
+        printf("ECDSA failed: %d\n", (int)status);
+    }
 
 #ifdef MULTIPLE_SE
-    cipher_aes_128_sec_se();
-    hmac_sha256_sec_se();
-    ecdsa_sec_se();
+    start = ztimer_now(ZTIMER_USEC);
+    status = example_hmac_sha256_sec_se();
+    printf("HMAC SHA256 with secondary SE took %d us\n", (int)(ztimer_now(ZTIMER_USEC) - start));
+    if (status != PSA_SUCCESS) {
+        printf("HMAC SHA256 with secondary SE failed: %d\n", (int)status);
+    }
+
+    start = ztimer_now(ZTIMER_USEC);
+    status = example_cipher_aes_128_sec_se();
+    printf("Cipher AES 128 with secondary SE took %d us\n", (int)(ztimer_now(ZTIMER_USEC) - start));
+    if (status != PSA_SUCCESS) {
+        printf("Cipher AES 128 with secondary SE failed: %d\n", (int)status);
+    }
+
+    start = ztimer_now(ZTIMER_USEC);
+    status = example_ecdsa_p256_sec_se();
+    printf("ECDSA with secondary SE took %d us\n", (int)(ztimer_now(ZTIMER_USEC) - start));
+    if (status != PSA_SUCCESS) {
+        printf("ECDSA with secondary SE failed: %d\n", (int)status);
+    }
 #endif /* MULTIPLE_SE */
 
     puts("All Done");

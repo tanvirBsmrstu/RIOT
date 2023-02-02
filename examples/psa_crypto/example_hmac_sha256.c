@@ -38,7 +38,7 @@ static const uint8_t HMAC_MSG[] = {
 };
 static size_t HMAC_MSG_LEN = 32;
 
-void psa_hmac_sha256(void)
+psa_status_t example_hmac_sha256(void)
 {
     psa_key_attributes_t attr = psa_key_attributes_init();
     psa_key_id_t key_id = 0;
@@ -63,22 +63,16 @@ void psa_hmac_sha256(void)
     psa_status_t status = PSA_ERROR_DOES_NOT_EXIST;
     status = psa_import_key(&attr, HMAC_KEY, HMAC_KEY_LEN, &key_id);
     if (status != PSA_SUCCESS) {
-        printf("MAC Key Import failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
-    status = psa_mac_compute(key_id, PSA_ALG_HMAC(
-                                 PSA_ALG_SHA_256), HMAC_MSG, HMAC_MSG_LEN, digest, digest_size,
+    return psa_mac_compute(key_id, PSA_ALG_HMAC(PSA_ALG_SHA_256),
+                             HMAC_MSG, HMAC_MSG_LEN, digest, digest_size,
                              &output_len);
-    if (status != PSA_SUCCESS) {
-        printf("MAC Compute failed: %d\n", (int)status);
-        return;
-    }
-    puts("HMAC done");
 }
 
 #if MULTIPLE_SE
-void hmac_sha256_sec_se(void)
+psa_status_t example_hmac_sha256_sec_se(void)
 {
     psa_key_attributes_t attr = psa_key_attributes_init();
     psa_key_id_t key_id = 0;
@@ -101,17 +95,11 @@ void hmac_sha256_sec_se(void)
 
     status = psa_import_key(&attr, HMAC_KEY, HMAC_KEY_LEN, &key_id);
     if (status != PSA_SUCCESS) {
-        printf("MAC Key Import failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
-    status = psa_mac_compute(key_id, PSA_ALG_HMAC(
-                                 PSA_ALG_SHA_256), HMAC_MSG, HMAC_MSG_LEN, digest, digest_size,
+    return psa_mac_compute(key_id, PSA_ALG_HMAC(PSA_ALG_SHA_256),
+                             HMAC_MSG, HMAC_MSG_LEN, digest, digest_size,
                              &output_len);
-    if (status != PSA_SUCCESS) {
-        printf("MAC Compute failed: %d\n", (int)status);
-        return;
-    }
-    puts("HMAC SHA256 on secondary SE done");
 }
 #endif

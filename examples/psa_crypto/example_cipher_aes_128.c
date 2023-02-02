@@ -38,7 +38,7 @@ static uint8_t PLAINTEXT[] = {
 };
 static uint8_t PLAINTEXT_LEN = 32;
 
-void cipher_aes_128(void)
+psa_status_t example_cipher_aes_128(void)
 {
     psa_status_t status = PSA_ERROR_DOES_NOT_EXIST;
     psa_key_id_t key_id = 0;
@@ -65,28 +65,25 @@ void cipher_aes_128(void)
 
     status = psa_import_key(&attr, KEY_128, AES_128_KEY_SIZE, &key_id);
     if (status != PSA_SUCCESS) {
-        printf("AES 128 Key Import failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
     status = psa_cipher_encrypt(key_id, PSA_ALG_CBC_NO_PADDING, PLAINTEXT,
                                 PLAINTEXT_LEN, cipher_out, encr_output_size, &output_len);
     if (status != PSA_SUCCESS) {
-        printf("AES 128 CBC Encrypt failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
     status = psa_cipher_decrypt(key_id, PSA_ALG_CBC_NO_PADDING, cipher_out,
                                 sizeof(cipher_out), plain_out, sizeof(plain_out), &output_len);
-    if ((status != PSA_SUCCESS) || (memcmp(PLAINTEXT, plain_out, sizeof(plain_out))!= 0)) {
-        printf("AES 128 CBC Decrypt failed: %d\n", (int)status);
-        return;
+    if (status == PSA_SUCCESS) {
+        return (memcmp(PLAINTEXT, plain_out, sizeof(plain_out)) ? -1 : 0);
     }
-    puts("AES CBC done");
+    return status;
 }
 
 #ifdef MULTIPLE_SE
-void cipher_aes_128_sec_se(void)
+psa_status_t example_cipher_aes_128_sec_se(void)
 {
     psa_status_t status = PSA_ERROR_DOES_NOT_EXIST;
     psa_key_id_t key_id = 0;
@@ -97,8 +94,9 @@ void cipher_aes_128_sec_se(void)
 
     size_t encr_output_size = PSA_CIPHER_ENCRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES,
                                                              PSA_ALG_CBC_NO_PADDING, PLAINTEXT_LEN);
-    uint8_t ciphertext[encr_output_size];
-    size_t cipher_len = 0;
+    uint8_t cipher_out[encr_output_size];
+    uint8_t plain_out[sizeof(PLAINTEXT)];
+    size_t output_len = 0;
 
     psa_set_key_lifetime(&attr, lifetime);
     psa_set_key_algorithm(&attr, PSA_ALG_CBC_NO_PADDING);
@@ -108,16 +106,20 @@ void cipher_aes_128_sec_se(void)
 
     status = psa_import_key(&attr, KEY_128, AES_128_KEY_SIZE, &key_id);
     if (status != PSA_SUCCESS) {
-        printf("AES 128 Key Import failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
     status = psa_cipher_encrypt(key_id, PSA_ALG_CBC_NO_PADDING, PLAINTEXT,
-                                PLAINTEXT_LEN, ciphertext, encr_output_size, &cipher_len);
+                                PLAINTEXT_LEN, cipher_out, encr_output_size, &output_len);
     if (status != PSA_SUCCESS) {
-        printf("AES 128 CBC Encrypt failed: %d\n", (int)status);
-        return;
+        return status;
     }
-    puts("AES 128 CBC on secondary SE done.");
+
+    status = psa_cipher_decrypt(key_id, PSA_ALG_CBC_NO_PADDING, cipher_out,
+                                sizeof(cipher_out), plain_out, sizeof(plain_out), &output_len);
+    if (status == PSA_SUCCESS) {
+        return (memcmp(PLAINTEXT, plain_out, sizeof(plain_out)) ? -1 : 0);
+    }
+    return status;
 }
 #endif

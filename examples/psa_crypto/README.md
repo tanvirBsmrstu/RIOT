@@ -24,10 +24,7 @@ On platforms with an accelerator, the use of software backends can be enforced b
 
 ### Secure Elements
 When a secure element is available and correctly configured, this application can be built with the `SECURE_ELEMENT=1` option to perform all operations on an SE.
-The option `MULTIPLE_SE=1` can be chosen, if there are two SEs present.
-
-Currently a maximum of two ATECC608A devices with the configuration found in `examples/atecc608a_configure_and_lock` is supported by PSA Crypto and this application.
+Up to two SEs are supported. Two can be chosen by passing `SECURE_ELEMENT=2`
 
 ## Constraints
-This application will not compile for boards with very small memory (e.g. the arduino-mega2560 with only 8kB RAM).
-It may still compile with secure elements as backends.
+Boards with very small memory may be able to run the application when using a secure element.

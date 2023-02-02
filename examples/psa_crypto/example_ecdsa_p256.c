@@ -25,7 +25,7 @@
 #define ECDSA_MESSAGE_SIZE  (127)
 #define ECC_KEY_SIZE    (256)
 
-void ecdsa(void)
+psa_status_t example_ecdsa_p256(void)
 {
     psa_key_id_t privkey_id;
     psa_key_attributes_t privkey_attr = psa_key_attributes_init();
@@ -64,20 +64,17 @@ void ecdsa(void)
 
     status = psa_generate_key(&privkey_attr, &privkey_id);
     if (status != PSA_SUCCESS) {
-        printf("Local Generate Key failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
     status = psa_export_public_key(privkey_id, public_key, sizeof(public_key), &pubkey_length);
     if (status != PSA_SUCCESS) {
-        printf("Export Public Key failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
     status = psa_hash_compute(PSA_ALG_SHA_256, msg, sizeof(msg), hash, sizeof(hash), &hash_length);
     if (status != PSA_SUCCESS) {
-        printf("Hash Generation failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
 #ifdef SECURE_ELEMENT
@@ -90,27 +87,20 @@ void ecdsa(void)
 
     status = psa_import_key(&pubkey_attr, public_key, pubkey_length, &pubkey_id);
     if (status != PSA_SUCCESS) {
-        printf("PSA Import Public Key failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
     status = psa_sign_hash(privkey_id, alg, hash, sizeof(hash), signature, sizeof(signature),
                            &sig_length);
     if (status != PSA_SUCCESS) {
-        printf("Sign hash failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
-    status = psa_verify_hash(pubkey_id, alg, hash, sizeof(hash), signature, sig_length);
-    if (status != PSA_SUCCESS) {
-        printf("Verify hash failed: %d\n", (int)status);
-        return;
-    }
-    puts("ECDSA done");
+    return psa_verify_hash(pubkey_id, alg, hash, sizeof(hash), signature, sig_length);
 }
 
 #ifdef MULTIPLE_SE
-void ecdsa_sec_se(void)
+psa_status_t example_ecdsa_p256_sec_se(void)
 {
     psa_key_id_t privkey_id;
     psa_key_attributes_t privkey_attr = psa_key_attributes_init();
@@ -146,20 +136,17 @@ void ecdsa_sec_se(void)
 
     status = psa_generate_key(&privkey_attr, &privkey_id);
     if (status != PSA_SUCCESS) {
-        printf("Secondary SE Generate Key failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
     status = psa_export_public_key(privkey_id, public_key, sizeof(public_key), &pubkey_length);
     if (status != PSA_SUCCESS) {
-        printf("Secondary SE Export Public Key failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
     status = psa_hash_compute(PSA_ALG_SHA_256, msg, sizeof(msg), hash, sizeof(hash), &hash_length);
     if (status != PSA_SUCCESS) {
-        printf("Hash Generation failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
     psa_set_key_lifetime(&pubkey_attr, lifetime);
@@ -170,22 +157,15 @@ void ecdsa_sec_se(void)
 
     status = psa_import_key(&pubkey_attr, public_key, pubkey_length, &pubkey_id);
     if (status != PSA_SUCCESS) {
-        printf("PSA Import Public Key failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
     status = psa_sign_hash(privkey_id, alg, hash, sizeof(hash), signature, sizeof(signature),
                            &sig_length);
     if (status != PSA_SUCCESS) {
-        printf("Secondary SE Sign hash failed: %d\n", (int)status);
-        return;
+        return status;
     }
 
-    status = psa_verify_hash(pubkey_id, alg, hash, sizeof(hash), signature, sig_length);
-    if (status != PSA_SUCCESS) {
-        printf("Secondary SE Verify hash failed: %d\n", (int)status);
-        return;
-    }
-    puts("ECDSA with secondary SE done");
+    return psa_verify_hash(pubkey_id, alg, hash, sizeof(hash), signature, sig_length);
 }
 #endif
