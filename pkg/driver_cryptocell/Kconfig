@@ -6,11 +6,11 @@
 #
 
 config PACKAGE_DRIVER_CRYPTOCELL
-    bool "CryptoCell Library Package"
+    bool
     depends on CPU_MODEL_NRF52840XXAA
     depends on TEST_KCONFIG
     depends on HAS_PERIPH_CRYPTOCELL
-    select MODULE_PERIPH_CRYPTOCELL
+    depends on MODULE_PERIPH_CRYPTOCELL
     select MODULE_DRIVER_CRYPTOCELL_CONTRIB
 
 config MODULE_DRIVER_CRYPTOCELL_CONTRIB
