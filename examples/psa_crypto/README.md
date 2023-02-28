@@ -12,6 +12,22 @@ There are three example operations:
 
 Each comes in its own sourcefile called `example_<operation>.c`. To see which functions to call to perform each operations, please read the code.
 
+The application measures the processing times of the example operations. The table below shows the expected runtime values
+for software and hardware backends as well as secure elements, measured on the nRF52840dk (this is only to show the expected differenced, values will differ on other platforms).
+
+| Operations  | Backends       | Runtime [$\mu s$]|
+|-------------|----------------|---------|
+| HMAC SHA256 | CryptoCell 310 | 282     |
+|             | RIOT Hashes    | 468     |
+|             | ATECC608A      | 56376   |
+| AES 128 CBC | CryptoCell 310 | 140     |
+|             | RIOT Cipher    | 295     |
+|             | ATECC608A      | 68819   |
+| ECDSA P256  | CryptoCell 310 | 60931   |
+|             | Micro-ECC      | 522424  |
+|             | ATECC608A      | 285542  |
+
+
 ## Configuration of the API
 There are two ways to configure the API: module selection via Kconfig and module selection
 via Makefiles.
@@ -33,7 +49,7 @@ If you want to force a custom backend, you can specify that in the Kconfig file.
 Instead of or in addition to the default and custom implementations you can use a secure element as a backend. The configuration can be found in `app.config.test.se` and the application can be built with `SECURE_ELEMENT=1`.
 
 Note that in this application all the configurations are in separate app.config files for demonstration purposes. You can also write all configs into one file or choose them via `menuconfig`.
-Also the build options `CUSTOM_BACKENDS` and `SECURE_ELEMENT` only apply to this specific application.
+Also the build options `CUSTOM_BACKEND` and `SECURE_ELEMENT` only apply to this specific application.
 
 ### Make
 All the configurations in the Kconfig files can also be applied using Make dependency resolution. The Makefile contains all the modules that must be selected when building the different configurations.
