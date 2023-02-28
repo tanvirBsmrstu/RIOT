@@ -38,7 +38,7 @@ unsigned psa_se_count = 0;
 psa_status_t psa_register_secure_element(psa_key_location_t location,
                                          const psa_drv_se_t *methods,
                                          void *psa_se_configuration,
-                                         const void *drv_data)
+                                         const void *drv_transient_data)
 {
     size_t i;
     psa_se_drv_data_t *temp;

@@ -97,11 +97,6 @@ ifneq (,$(filter psa_cipher_aes_128_cbc_backend_riot,$(USEMODULE)))
   USEMODULE += psa_riot_cipher_aes_128_cbc
 endif
 
-ifneq (,$(filter psa_cipher_aes_128_cbc_backend_tinycrypt,$(USEMODULE)))
-  USEPKG += tinycrypt
-  USEMODULE += psa_tinycrypt_cipher_aes_cbc
-endif
-
 ## AES-192-CBC
 ifneq (,$(filter psa_cipher_aes_192_cbc,$(USEMODULE)))
     USEMODULE += psa_cipher_aes_192_cbc_backend_riot

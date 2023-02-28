@@ -29,6 +29,9 @@
 #include "random.h"
 #include "kernel_defines.h"
 
+#define ENABLE_DEBUG    0
+#include "debug.h"
+
 static uint8_t lib_initialized = 0;
 
 /**
@@ -1199,6 +1202,11 @@ static psa_status_t psa_builtin_export_public_key( const uint8_t *key_buffer,
 {
     if (key_buffer_size == 0 || data_size == 0) {
         return PSA_ERROR_INVALID_ARGUMENT;
+    }
+
+    if (data_size < key_buffer_size) {
+        DEBUG("PSA Crypto Builtin Export Key: Output buffer too small\n");
+        return PSA_ERROR_BUFFER_TOO_SMALL;
     }
     /** Some implementations and drivers can generate a public key from existing private key
      * material. This implementation does not support the recalculation of a public key, yet.

@@ -1,5 +1,9 @@
-#ifndef PSA_CRYPTO_SE_CONFIG_H
-#define PSA_CRYPTO_SE_CONFIG_H
+#ifndef PSA_CRYPTO_PSA_CRYPTO_SE_CONFIG_H
+#define PSA_CRYPTO_PSA_CRYPTO_SE_CONFIG_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "psa/crypto_types.h"
 
@@ -35,4 +39,9 @@ typedef union {
 } psa_se_config_t;
 #endif
 
-#endif /* PSA_CRYPTO_SE_CONFIG_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* PSA_CRYPTO_PSA_CRYPTO_SE_CONFIG_H */
+/** @} */

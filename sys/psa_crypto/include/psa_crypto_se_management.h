@@ -95,7 +95,7 @@ typedef struct psa_se_drv_data_s psa_se_drv_data_t;
 psa_status_t psa_register_secure_element(psa_key_location_t location,
                                          const psa_drv_se_t *methods,
                                          void *psa_se_configuration,
-                                         const void *drv_data);
+                                         const void *drv_transient_data);
 
 /**
  * @brief   Get the driver data of a specified driver
