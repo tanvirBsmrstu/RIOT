@@ -134,7 +134,7 @@ config HAS_CPU_CHECK_ADDRESS
     help
         Indicates that address validity check is supported.
 
-config HAS_PERIPH_CRYPTOCELL
+config HAS_PERIPH_CRYPTOCELL_310
     bool
     help
         Indicates that a cryptocell peripheral is present.

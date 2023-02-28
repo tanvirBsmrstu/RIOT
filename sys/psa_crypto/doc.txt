@@ -239,5 +239,5 @@
  * `psa_cipher_cbc_aes_128_encrypt` or `psa_ecc_p192r1_verify_hash`).
  * This specific API must be implemented by the backend, that should perform the operation
  * (for an example see `sys/crypto/psa_riot_cipher/` or for third party packages
- * `pkg/driver_cryptocell`).
+ * `pkg/driver_cryptocell_310`).
  */

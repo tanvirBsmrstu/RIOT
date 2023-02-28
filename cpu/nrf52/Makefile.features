@@ -46,7 +46,7 @@ ifneq (,$(filter nrf52811% nrf52820% nrf52833% nrf52840%,$(CPU_MODEL)))
 endif
 
 ifneq (,$(filter nrf52840%,$(CPU_MODEL)))
-  FEATURES_PROVIDED += periph_cryptocell
+  FEATURES_PROVIDED += periph_cryptocell_310
 endif
 
 FEATURES_PROVIDED += ble_adv_ext

@@ -15,7 +15,7 @@ PERIPH_IGNORE_MODULES := \
   periph_clic \
   periph_common \
   periph_coretimer \
-  periph_cryptocell \
+  periph_cryptocell_310 \
   periph_ecc_p192r1 \
   periph_ecc_p256r1 \
   periph_eth \

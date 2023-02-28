@@ -284,10 +284,10 @@ AUTO_INIT(auto_init_atca,
           AUTO_INIT_PRIO_MOD_CRYPTOAUTHLIB);
 #endif
 #endif
-#if IS_USED(MODULE_DRIVER_CRYPTOCELL)
-extern void cryptocell_setup(void);
-AUTO_INIT(cryptocell_setup,
-          AUTO_INIT_PRIO_MOD_DRIVER_CRYPTOCELL);
+#if IS_USED(MODULE_DRIVER_CRYPTOCELL_310)
+extern void driver_cryptocell_310_setup(void);
+AUTO_INIT(driver_cryptocell_310_setup,
+          AUTO_INIT_PRIO_MOD_DRIVER_CRYPTOCELL_310);
 #endif
 #if IS_USED(MODULE_TEST_UTILS_INTERACTIVE_SYNC) && !IS_USED(MODULE_SHELL)
 extern void test_utils_interactive_sync(void);
