@@ -46,6 +46,11 @@
 #define ATCA_MAX_IV_LEN         (16)
 
 /**
+ * @brief   Size of ATCA TempKey Register
+ */
+#define ATCA_TEMPKEY_REGISTER_SIZE    (32)
+
+/**
  * @brief   Check whether a specified algorithm is supported by this driver
  *
  * @param   alg Algorithm of type @ref psa_algorithm_t
@@ -116,6 +121,54 @@ static psa_status_t atca_to_psa_error(ATCA_STATUS error)
     }
 }
 
+static const char *atca_status_to_humanly_readable(ATCA_STATUS status)
+{
+    switch (status) {
+        case ATCA_NOT_LOCKED:
+            return "ATCA_NOT_LOCKED";
+        case ATCA_EXECUTION_ERROR:
+            return "ATCA_EXECUTION_ERROR";
+        case ATCA_FUNC_FAIL:
+            return "ATCA_FUNC_FAIL";
+        case ATCA_WAKE_FAILED:
+            return "ATCA_WAKE_FAILED";
+        case ATCA_RX_FAIL:
+            return "ATCA_RX_FAIL";
+        case ATCA_RX_NO_RESPONSE:
+            return "ATCA_RX_NO_RESPONSE";
+        case ATCA_TX_TIMEOUT:
+            return "ATCA_TX_TIMEOUT";
+        case ATCA_RX_TIMEOUT:
+            return "ATCA_RX_TIMEOUT";
+        case ATCA_TOO_MANY_COMM_RETRIES:
+            return "ATCA_TOO_MANY_COMM_RETRIES";
+        case ATCA_COMM_FAIL:
+            return "ATCA_COMM_FAIL";
+        case ATCA_TIMEOUT:
+            return "ATCA_TIMEOUT";
+        case ATCA_TX_FAIL:
+            return "ATCA_TX_FAIL";
+        case ATCA_RX_CRC_ERROR:
+            return "ATCA_RX_CRC_ERROR";
+        case ATCA_STATUS_CRC:
+            return "ATCA_STATUS_CRC";
+        case ATCA_SMALL_BUFFER:
+            return "ATCA_SMALL_BUFFER";
+        case ATCA_BAD_OPCODE:
+            return "ATCA_BAD_OPCODE";
+        case ATCA_BAD_PARAM:
+            return "ATCA_BAD_PARAM";
+        case ATCA_INVALID_SIZE:
+            return "ATCA_INVALID_SIZE";
+        case ATCA_INVALID_ID:
+            return "ATCA_INVALID_ID";
+        case ATCA_UNIMPLEMENTED:
+            return "ATCA_UNIMPLEMENTED";
+        default:
+            return "Error value not recognized";
+    }
+}
+
 /* Secure Element Cipher Functions */
 /**
  * @brief   Set up a driver specific AES CBC mode operation
@@ -144,11 +197,7 @@ psa_status_t atca_cipher_setup(psa_drv_se_context_t *drv_context,
 
     /* Only device type ATECC608 supports AES operations */
     if (dev->mIface.mIfaceCFG->devtype != ATECC608) {
-        return PSA_ERROR_NOT_SUPPORTED;
-    }
-
-    /* This implementation is for demonstration and currently only supports AES ECB encryption */
-    if (!ALG_IS_SUPPORTED(algorithm)) {
+        DEBUG("ATCA Cipher Setup: Only ATECC608 devices support AES operations.\n");
         return PSA_ERROR_NOT_SUPPORTED;
     }
 
@@ -157,6 +206,7 @@ psa_status_t atca_cipher_setup(psa_drv_se_context_t *drv_context,
         atca_cbc_setup(&ctx->drv_ctx.atca_aes_cbc, dev, key_slot);
         break;
     default:
+        DEBUG("ATCA Cipher Setup: Algorithm not supported by implementation.\n");
         return PSA_ERROR_NOT_SUPPORTED;
     }
     ctx->direction = direction;
@@ -172,6 +222,8 @@ psa_status_t atca_cipher_set_iv(void *op_context,
     atca_aes_cbc_ctx_t *ctx = &((psa_se_cipher_context_t *)op_context)->drv_ctx.atca_aes_cbc;
 
     if (iv_length != ATCA_MAX_IV_LEN) {
+        DEBUG("ATCA Cipher Set IV: Invalid IV length: Expected %d, was %d\n", \
+                ATCA_MAX_IV_LEN, iv_length);
         return PSA_ERROR_INVALID_ARGUMENT;
     }
 
@@ -189,25 +241,24 @@ psa_status_t atca_cipher_update(void *op_context,
 {
     psa_se_cipher_context_t *ctx = (psa_se_cipher_context_t *)op_context;
     ATCA_STATUS status = ATCA_EXECUTION_ERROR;
-    size_t input_offset = 0;
-    size_t output_offset = 0;
+    size_t offset = 0;
 
     for (size_t data_block = 0; data_block < (input_size / AES_128_BLOCK_SIZE); data_block++) {
-        output_offset = data_block * AES_128_BLOCK_SIZE;
-        input_offset = data_block * AES_128_BLOCK_SIZE;
+        offset = data_block * AES_128_BLOCK_SIZE;
         if (ctx->direction == PSA_CRYPTO_DRIVER_ENCRYPT) {
-            status = atcab_aes_cbc_encrypt_block(&ctx->drv_ctx.atca_aes_cbc, p_input + input_offset,
-                                                 p_output + output_offset);
+            status = atcab_aes_cbc_encrypt_block(&ctx->drv_ctx.atca_aes_cbc, p_input + offset,
+                                                 p_output + offset);
         }
         else {
-            status = atcab_aes_cbc_decrypt_block(&ctx->drv_ctx.atca_aes_cbc, p_input + input_offset,
-                                                 p_output + output_offset);
+            status = atcab_aes_cbc_decrypt_block(&ctx->drv_ctx.atca_aes_cbc, p_input + offset,
+                                                 p_output + offset);
         }
-    }
 
-    if (status != ATCA_SUCCESS) {
-        DEBUG("ATCA Error: %d\n", status);
-        return atca_to_psa_error(status);
+        if (status != ATCA_SUCCESS) {
+            DEBUG("ATCA Cipher Update failed. ATCA Error: %s\n",
+                atca_status_to_humanly_readable(status));
+            return atca_to_psa_error(status);
+        }
     }
 
     *p_output_length += input_size;
@@ -242,14 +293,17 @@ psa_status_t atca_cipher_ecb(psa_drv_se_context_t *drv_context,
     size_t offset;
 
     if (dev->mIface.mIfaceCFG->devtype != ATECC608) {
+        DEBUG("ATCA Cipher ECB: Only ATECC608 devices support AES operations.\n");
         return PSA_ERROR_NOT_SUPPORTED;
     }
 
     if (algorithm != PSA_ALG_ECB_NO_PADDING || direction != PSA_CRYPTO_DRIVER_ENCRYPT) {
+        DEBUG("ATCA Cipher ECB: Only AES ECB encryption without padding is supported.\n");
         return PSA_ERROR_NOT_SUPPORTED;
     }
 
     if (input_size % AES_128_BLOCK_SIZE != 0) {
+        DEBUG("ATCA Cipher ECB: Input must be multiple of 16, was %d.\n", input_size);
         return PSA_ERROR_INVALID_ARGUMENT;
     }
 
@@ -257,7 +311,8 @@ psa_status_t atca_cipher_ecb(psa_drv_se_context_t *drv_context,
     do {
         status = calib_aes_encrypt(dev, key_slot, 0, p_input + offset, p_output + offset);
         if (status != ATCA_SUCCESS) {
-            DEBUG("ATCA Error: %d\n", status);
+            DEBUG("ATCA Cipher ECB encrypt failed. ATCA Error: %s\n",
+                atca_status_to_humanly_readable(status));
             return atca_to_psa_error(status);
         }
 
@@ -277,32 +332,61 @@ psa_status_t atca_allocate(psa_drv_se_context_t *drv_context,
                            psa_key_slot_number_t *key_slot)
 {
     if (!ALG_IS_SUPPORTED(attributes->policy.alg)) {
+        DEBUG("ATCA allocate: Algorithm is not supported by device.\n");
         return PSA_ERROR_NOT_SUPPORTED;
     }
 
-    /* TODO: This function needs to be implemented correctly:
-                - Read device config zone during registration, store info in persistent data
-                - Read persistent data to find a free, correctly configured key slot
-                - Return slot number and mark key slot as used
-     */
+    psa_key_type_t type = attributes->type;
+    psa_atca_slot_config_t *slot_config = (psa_atca_slot_config_t *)persistent_data;
+    *key_slot = 0xFF;
 
-    if (attributes->type == PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_SECP_R1)) {
-        /* At the time of the implementation we are using an SE in which key slot 1
-           is configured for ECC private keys, so we return key slot nr. 1 */
-        *key_slot = (psa_key_slot_number_t)1;
+    for (int i = 0; i < 16; i++) {
+        if (slot_config[i].key_type_allowed == type) {
+            if (slot_config[i].slot_occupied && slot_config[i].key_persistent) {
+                continue;
+            }
+
+            *key_slot = i;
+
+            DEBUG("Setting Slot %d to occupied\n", (int)*key_slot);
+            (&slot_config[i])->slot_occupied = 1;
+
+            if (PSA_KEY_LIFETIME_GET_PERSISTENCE(attributes->lifetime) != \
+                PSA_KEY_PERSISTENCE_VOLATILE) {
+                (&slot_config[i])->key_persistent = 1;
+            }
+            break;
+        }
     }
-    else if (attributes->type == PSA_KEY_TYPE_ECC_PUBLIC_KEY(PSA_ECC_FAMILY_SECP_R1)) {
-        /* Slots 9-14 on device are configured to hold public keys */
-        *key_slot = (psa_key_slot_number_t)9;
-    }
-    else {
-        /* Returns the device's TEMPKEY-Register ID for AES and HMAC key import.  */
-        *key_slot = (psa_key_slot_number_t)ATCA_TEMPKEY_KEYID;
+
+    if (*key_slot == 0xFF) {
+        DEBUG("ATCA allocate: No free slot available.\n");
+        return PSA_ERROR_INSUFFICIENT_STORAGE;
     }
 
     (void)drv_context;
-    (void)persistent_data;
     (void)method;
+
+    return PSA_SUCCESS;
+}
+
+psa_status_t atca_destroy(psa_drv_se_context_t *drv_context,
+                          void *persistent_data,
+                          psa_key_slot_number_t key_slot)
+{
+    /**
+     * The ATECCX08A driver does not provide a key destruction function.
+     *
+     * This function just sets the `slot_occupied` flag in the driver's persistent
+     * data to 0, in case the key generation or import goes wrong, so the slot can
+     * be reused.
+     */
+    psa_atca_slot_config_t *slot_config = (psa_atca_slot_config_t *)persistent_data;
+
+    DEBUG("Setting Key Slot %d to not occupied.\n", (int)key_slot);
+    (&slot_config[key_slot])->slot_occupied = 0;
+
+    (void)drv_context;
 
     return PSA_SUCCESS;
 }
@@ -318,15 +402,22 @@ psa_status_t atca_import(psa_drv_se_context_t *drv_context,
     ATCADevice dev = (ATCADevice)drv_context->transient_data;
 
     if (!ALG_IS_SUPPORTED(attributes->policy.alg)) {
+        DEBUG("ATCA import: Algorithm is not supported by device.\n");
         return PSA_ERROR_NOT_SUPPORTED;
     }
 
     if (!KEY_SIZE_IS_SUPPORTED(data_length, attributes->type)) {
+        DEBUG("ATCA import: Key size is not supported by device.\n");
         return PSA_ERROR_NOT_SUPPORTED;
     }
 
     if (key_slot == ATCA_TEMPKEY_KEYID) {
-        uint8_t buf_in[32] = { 0 };
+        if (data_length > ATCA_TEMPKEY_REGISTER_SIZE) {
+            DEBUG("ATCA import: Key size too large.\n");
+            return PSA_ERROR_INVALID_ARGUMENT;
+        }
+
+        uint8_t buf_in[ATCA_TEMPKEY_REGISTER_SIZE] = { 0 };
         /* This implementation only uses the device's TEMPKEY Register for key import,
         which only accepts input sizes of 32 or 64 Bytes, so we copy a smaller key into
         a 32 Byte buffer that is padded with zeros */
@@ -334,7 +425,8 @@ psa_status_t atca_import(psa_drv_se_context_t *drv_context,
 
         status = calib_nonce_load(dev, NONCE_MODE_TARGET_TEMPKEY, buf_in, sizeof(buf_in));
         if (status != ATCA_SUCCESS) {
-            DEBUG("ATCA Error: %d\n", status);
+            DEBUG("ATCA Nonce load failed. ATCA Error: %s\n",
+                atca_status_to_humanly_readable(status));
             return atca_to_psa_error(status);
         }
         *bits = PSA_BYTES_TO_BITS(data_length);
@@ -342,17 +434,39 @@ psa_status_t atca_import(psa_drv_se_context_t *drv_context,
         return PSA_SUCCESS;
     }
     else if (PSA_KEY_TYPE_IS_ECC_PUBLIC_KEY(attributes->type)) {
-
         status = calib_write_pubkey(dev, key_slot, data + 1);
         if (status != ATCA_SUCCESS) {
-            DEBUG("ATCA Error: %d\n", status);
+            DEBUG("ATCA Write Pubkey failed. ATCA Error: %s\n",
+                atca_status_to_humanly_readable(status));
             return atca_to_psa_error(status);
         }
         *bits = PSA_BYTES_TO_BITS(data_length);
 
         return PSA_SUCCESS;
     }
+    else {
+        if (data_length > ATCA_TEMPKEY_REGISTER_SIZE) {
+            DEBUG("ATCA import: Key size too large.\n");
+            return PSA_ERROR_INVALID_ARGUMENT;
+        }
 
+        uint8_t buf_in[ATCA_TEMPKEY_REGISTER_SIZE] = { 0 };
+        /* AES keys can be written to slots in 32 or 64 byte chunks. For this we
+        copy them into a 32 byte buffer first and pad the empty bits with 0 */
+        memcpy(buf_in, data, data_length);
+        status = calib_write_bytes_zone(dev, ATCA_ZONE_DATA, key_slot, 0, buf_in, sizeof(buf_in));
+        if (status != ATCA_SUCCESS) {
+            DEBUG("ATCA Write AES key failed. ATCA Error: %s\n",
+                atca_status_to_humanly_readable(status));
+            return atca_to_psa_error(status);
+        }
+
+        *bits = PSA_BYTES_TO_BITS(data_length);
+
+        return PSA_SUCCESS;
+    }
+
+    DEBUG("ATCA import: Operation is not supported.\n");
     return PSA_ERROR_NOT_SUPPORTED;
 }
 
@@ -365,17 +479,28 @@ psa_status_t atca_generate_key(psa_drv_se_context_t *drv_context,
     ATCADevice dev = (ATCADevice)drv_context->transient_data;
 
     if (!PSA_KEY_TYPE_IS_ECC(attributes->type)) {
+        DEBUG("ATCA Generate Key: Only ECC key generation is supported.\n");
         return PSA_ERROR_NOT_SUPPORTED;
     }
 
-    if (pubkey_size > PSA_EXPORT_PUBLIC_KEY_MAX_SIZE) {
+    if (pubkey_size > PSA_EXPORT_PUBLIC_KEY_OUTPUT_SIZE(attributes->type, attributes->bits)) {
+        DEBUG("ATCA Generate Key: Pubkey size not supported. Expected %d, was %d.\n", \
+                PSA_EXPORT_PUBLIC_KEY_OUTPUT_SIZE(attributes->type, attributes->bits), pubkey_size);
         return PSA_ERROR_NOT_SUPPORTED;
     }
 
     if (pubkey != NULL) {
-        /* The driver already exports the public key, in the correct format
-        (uncompressed binary). We can just write the key into the pubkey buffer.
-        First byte is reserved for format encoding (set below) */
+        /**
+         * PSA supports the uncompressed binary format to encode ECC public keys.
+         * This means, that both the x and y coordinate are stored.
+         * This format is encoded by adding an extra byte containing the value 0x04
+         * (see also "Technical Guideline BSI TR-03111").
+         *
+         * The ATECCX08A stores and exports the x and y coordinate, so all we need to do is
+         * add the byte before the coordinates.
+         */
+        pubkey[0] = 0x04;
+        *pubkey_length = PSA_EXPORT_PUBLIC_KEY_OUTPUT_SIZE(attributes->type, attributes->bits);
         status = calib_genkey(dev, key_slot, &pubkey[1]);
     }
     else {
@@ -383,13 +508,11 @@ psa_status_t atca_generate_key(psa_drv_se_context_t *drv_context,
     }
 
     if (status != ATCA_SUCCESS) {
-        DEBUG("ATCA Error: %d\n", status);
+        DEBUG("ATCA Genkey failed. ATCA Error: %s\n",
+                atca_status_to_humanly_readable(status));
         return atca_to_psa_error(status);
     }
-    /* Set first byte of pubkey buffer to 0x04 to encode public key uncompressed binary format */
-    pubkey[0] = 0x04;
-    *pubkey_length = PSA_EXPORT_PUBLIC_KEY_OUTPUT_SIZE(attributes->type, attributes->bits);
-    DEBUG("ATCA Pubkey Length: %d\n", *pubkey_length);
+
     return PSA_SUCCESS;
 }
 
@@ -403,16 +526,30 @@ psa_status_t atca_export_public_key(psa_drv_se_context_t *drv_context,
     ATCADevice dev = (ATCADevice)drv_context->transient_data;
 
     if (data_size < ECC_P256_PUB_KEY_SIZE) {
+        DEBUG("ATCA Export public key: Buffer too small, expected %d, was %d\n", \
+                ECC_P256_PUB_KEY_SIZE, data_size);
         return PSA_ERROR_BUFFER_TOO_SMALL;
     }
 
     status = calib_get_pubkey(dev, key_slot, &p_data[1]);
     if (status != ATCA_SUCCESS) {
-        DEBUG("ATCA Error: %d\n", status);
+        DEBUG("ATCA Get Pubkey failed. ATCA Error: %s\n",
+                atca_status_to_humanly_readable(status));
         return atca_to_psa_error(status);
     }
 
+    /**
+     * PSA supports the uncompressed binary format to encode ECC public keys.
+     * This means, that both the x and y coordinate are stored.
+     * This format is encoded by adding an extra byte containing the value 0x04
+     * (see also "Technical Guideline BSI TR-03111").
+     *
+     * The ATECCX08A stored and exports the x and y coordinate, so all we need to do is
+     * add the byte before the coordinates.
+     */
     p_data[0] = 0x04;
+
+    /* Since we added the encoding byte, the stored public key is now 65 bytes long instead of 64 */
     *p_data_length = ECC_P256_PUB_KEY_SIZE + 1;
 
     return PSA_SUCCESS;
@@ -431,16 +568,23 @@ psa_status_t atca_sign(psa_drv_se_context_t *drv_context,
     ATCADevice dev = (ATCADevice)drv_context->transient_data;
 
     if (alg != PSA_ALG_ECDSA(PSA_ALG_SHA_256)) {
+        DEBUG("ATCA Sign: Only ECDSA with SHA256 Messages is supported.\n");
         return PSA_ERROR_NOT_SUPPORTED;
     }
 
-    if ((signature_size != ECC_P256_PUB_KEY_SIZE) || (hash_length != 32)) {
+    if ((signature_size != ECC_P256_PUB_KEY_SIZE) || \
+        (hash_length != PSA_HASH_LENGTH(PSA_ALG_SHA_256))) {
+        DEBUG("ATCA Sign: Invalid signature or hash size. Expected Sig: %d |\
+        Hash %d, were Sig: %d | Hash: %d\n", \
+        ECC_P256_PUB_KEY_SIZE, PSA_HASH_LENGTH(PSA_ALG_SHA_256),\
+        signature_size, hash_length);
         return PSA_ERROR_INVALID_ARGUMENT;
     }
 
     status = calib_sign(dev, key_slot, p_hash, p_signature);
     if (status != ATCA_SUCCESS) {
-        DEBUG("ATCA Error: %d\n", status);
+        DEBUG("ATCA Sign failed. ATCA Error: %s\n",
+                atca_status_to_humanly_readable(status));
         return atca_to_psa_error(status);
     }
 
@@ -461,18 +605,25 @@ psa_status_t atca_verify(psa_drv_se_context_t *drv_context,
 
     bool is_verified;
 
-    /* We only support the operation on public key, if they're stored on a device. */
+    /* We only support the operation on public keys, if they're stored on a device. */
     if (alg != PSA_ALG_ECDSA(PSA_ALG_SHA_256)) {
+        DEBUG("ATCA Verify: Only ECDSA with SHA256 Messages is supported.\n");
         return PSA_ERROR_NOT_SUPPORTED;
     }
 
-    if ((signature_length != ECC_P256_PUB_KEY_SIZE) || (hash_length != 32)) {
+    if ((signature_length != ECC_P256_PUB_KEY_SIZE) || \
+        (hash_length != PSA_HASH_LENGTH(PSA_ALG_SHA_256))) {
+        DEBUG("ATCA Sign: Invalid signature or hash size. Expected Sig: %d |\
+        Hash %d, were Sig: %d | Hash: %d\n", \
+        ECC_P256_PUB_KEY_SIZE, PSA_HASH_LENGTH(PSA_ALG_SHA_256),\
+        signature_length, hash_length);
         return PSA_ERROR_INVALID_ARGUMENT;
     }
 
     status = calib_verify_stored(dev, p_hash, p_signature, key_slot, &is_verified);
     if (status != ATCA_SUCCESS) {
-        DEBUG("ATCA Error: %d\n", status);
+        DEBUG("ATCA Verify failed. ATCA Error: %s\n",
+                atca_status_to_humanly_readable(status));
         return atca_to_psa_error(status);
     }
 
@@ -491,21 +642,24 @@ psa_status_t atca_generate_mac(psa_drv_se_context_t *drv_context,
     ATCA_STATUS status;
     ATCADevice dev = (ATCADevice)drv_context->transient_data;
 
-    DEBUG("ATCA_SE_DRIVER\n");
     if (!PSA_ALG_IS_HMAC(alg)) {
+        DEBUG("ATCA Generate MAC: Only HMAC SHA256 is supported.\n");
         return PSA_ERROR_NOT_SUPPORTED;
     }
 
-    if (mac_size < 32) {
+    if (mac_size < PSA_HASH_LENGTH(PSA_ALG_SHA_256)) {
+        DEBUG("ATCA Generate Mac: Buffer too small, expected %d, was %d\n", \
+        PSA_HASH_LENGTH(PSA_ALG_SHA_256), mac_size);
         return PSA_ERROR_BUFFER_TOO_SMALL;
     }
 
     status = calib_sha_hmac(dev, p_input, input_length, key_slot, p_mac, SHA_MODE_TARGET_OUT_ONLY);
     if (status != ATCA_SUCCESS) {
-        DEBUG("ATCA Error: %d\n", status);
+        DEBUG("ATCA SHA HMAC failed. ATCA Error: %s\n",
+                atca_status_to_humanly_readable(status));
         return atca_to_psa_error(status);
     }
-    *p_mac_length = 32;
+    *p_mac_length = PSA_HASH_LENGTH(PSA_ALG_SHA_256);
 
     return PSA_SUCCESS;
 }
@@ -536,7 +690,7 @@ static psa_drv_se_key_management_t atca_key_management = {
     .p_validate_slot_number = NULL,
     .p_import = atca_import,
     .p_generate = atca_generate_key,
-    .p_destroy = NULL,
+    .p_destroy = atca_destroy,
     .p_export = NULL,
     .p_export_public = atca_export_public_key
 };

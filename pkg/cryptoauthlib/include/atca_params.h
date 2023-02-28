@@ -51,17 +51,15 @@ extern "C" {
  * @{
  */
 
-#ifndef ATCA_PARAM_I2C_DEV0
+#ifndef ATCA_PARAM_I2C
+#define ATCA_PARAM_I2C  (I2C_DEV(0))
+#endif
+
+#if defined(ATCA_PARAM_I2C) && !defined(ATCA_PARAM_I2C_DEV0)
 /**
  * @brief   ATCA device connected to I2C bus 0
  */
-#define ATCA_PARAM_I2C_DEV0      I2C_DEV(0)
-#endif
-
-#if IS_USED(MODULE_PSA_SECURE_ELEMENT_MULTIPLE)
-#ifndef ATCA_PARAM_I2C_DEV1
-#define ATCA_PARAM_I2C_DEV1      I2C_DEV(1)
-#endif
+#define ATCA_PARAM_I2C_DEV0      (ATCA_PARAM_I2C)
 #endif
 
 #ifndef ATCA_PARAM_ADDR
@@ -76,7 +74,6 @@ extern "C" {
 
 #if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
 #define PSA_ATCA_LOCATION_DEV0  (PSA_KEY_LOCATION_SE_MIN + 1)
-#define PSA_ATCA_LOCATION_DEV1  (PSA_KEY_LOCATION_SE_MIN + 2)
 #endif
 
 #ifndef ATCA_PARAMS_DEV0
@@ -90,18 +87,6 @@ extern "C" {
                                             .atcai2c.baud = -1, /**< Not used in RIOT */ \
                                             .wake_delay = 1500, \
                                             .rx_retries = ATCA_RX_RETRIES }
-#endif
-
-#if IS_USED(MODULE_PSA_SECURE_ELEMENT_MULTIPLE)
-#ifndef ATCA_PARAMS_DEV1
-#define ATCA_PARAMS_DEV1                {   .iface_type = ATCA_I2C_IFACE, \
-                                            .devtype = ATCA_DEVTYPE, \
-                                            .atcai2c.address = ATCA_PARAM_ADDR, \
-                                            .atcai2c.bus = ATCA_PARAM_I2C_DEV1, \
-                                            .atcai2c.baud = -1, /**< Not used in RIOT */ \
-                                            .wake_delay = 1500, \
-                                            .rx_retries = ATCA_RX_RETRIES }
-#endif
 #endif
 
 /**@}*/
@@ -121,12 +106,6 @@ typedef struct {
  */
 static const atca_params_t atca_params[] =
 {
-#if IS_USED(MODULE_PSA_SECURE_ELEMENT_MULTIPLE)
-    {
-        .atca_loc = PSA_ATCA_LOCATION_DEV1,
-        .cfg = ATCA_PARAMS_DEV1
-    },
-#endif
     {
 #if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
         .atca_loc = PSA_ATCA_LOCATION_DEV0,
