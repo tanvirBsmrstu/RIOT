@@ -116,7 +116,7 @@ typedef struct {
      *   occurs.
      * - @ref psa_destroy_key() causes a call to @ref psa_drv_se_key_management_t::p_destroy.
      */
-    const uint8_t persistent_data[PSA_MAX_PERSISTENT_DATA_SIZE];
+    const void * persistent_data;
 
     /**
      * The size of @c persistent_data in bytes.

@@ -26,13 +26,11 @@
 #include "psa_crypto_se_management.h"
 #include "psa_crypto_se_driver.h"
 
-#define ENABLE_DEBUG    0
-#include "debug.h"
-
 psa_status_t psa_location_dispatch_generate_key(const psa_key_attributes_t *attributes,
                                                 psa_key_slot_t *slot)
 {
 #if IS_USED(MODULE_PSA_SECURE_ELEMENT)
+    psa_status_t status;
     const psa_drv_se_t *drv;
     psa_drv_se_context_t *drv_context;
     psa_key_slot_number_t *slot_number = psa_key_slot_get_slot_number(slot);
@@ -47,8 +45,15 @@ psa_status_t psa_location_dispatch_generate_key(const psa_key_attributes_t *attr
             return PSA_ERROR_NOT_SUPPORTED;
         }
 
-        return drv->key_management->p_generate(drv_context, *slot_number, attributes, pubkey_data,
+        status = drv->key_management->p_generate(drv_context, *slot_number, attributes, pubkey_data,
                                                *pubkey_data_len, pubkey_data_len);
+        if (status != PSA_SUCCESS) {
+            /* In case anything goes wrong, free the key slot for reuse. */
+            psa_se_drv_data_t *driver = psa_get_se_driver_data(attributes->lifetime);
+            psa_status_t abort_status = drv->key_management->p_destroy(drv_context, driver->ctx.internal.persistent_data, *slot_number);
+            return abort_status == PSA_SUCCESS ? status : abort_status;
+        }
+        return PSA_SUCCESS;
     }
 #endif /* MODULE_PSA_SECURE_ELEMENT */
 
@@ -77,13 +82,14 @@ psa_status_t psa_location_dispatch_import_key( const psa_key_attributes_t *attri
         }
         *bits = 0;
 
-        status = drv->key_management->p_import(drv_context, *slot_number, attributes, data,
+        status = drv->key_management->p_import(drv_context, *slot_number,
+                                               attributes, data,
                                                data_length, bits);
         if (status != PSA_SUCCESS) {
-            return status;
-        }
-        if (*bits > PSA_MAX_KEY_BITS) {
-            return PSA_ERROR_NOT_SUPPORTED;
+            /* In case anything goes wrong, free the key slot for reuse. */
+            psa_se_drv_data_t *driver = psa_get_se_driver_data(attributes->lifetime);
+            psa_status_t abort_status = drv->key_management->p_destroy(drv_context, driver->ctx.internal.persistent_data, *slot_number);
+            return abort_status == PSA_SUCCESS ? status : abort_status;
         }
         return PSA_SUCCESS;
     }
@@ -235,6 +241,7 @@ static psa_status_t psa_se_cipher_encrypt_decrypt(  const psa_drv_se_t *drv,
                                    output + output_offset, output_size - output_offset,
                                    output_length);
     if (status != PSA_SUCCESS) {
+        psa_cipher_abort(&operation);
         return status;
     }
 
@@ -414,7 +421,7 @@ psa_status_t psa_location_dispatch_mac_compute(const psa_key_attributes_t *attri
         if (drv->mac == NULL || drv->mac->p_mac == NULL) {
             return PSA_ERROR_NOT_SUPPORTED;
         }
-        DEBUG("Mac Compute SE\n");
+
         return drv->mac->p_mac(drv_context, input, input_length, *slot_number, alg, mac, mac_size,
                                mac_length);
     }

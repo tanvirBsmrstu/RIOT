@@ -53,7 +53,7 @@ extern "C" {
  *          This structure is not to be used by applications, only by the PSA Crypto implementation.
  */
 typedef struct {
-    uint8_t persistent_data[PSA_MAX_PERSISTENT_DATA_SIZE];  /**< Driver specific persistent data */
+    void * persistent_data;  /**< Driver specific persistent data */
     size_t persistent_data_size;    /**< Size of persistent data in bytes */
     uintptr_t transient_data;       /**< Driver specific transient data */
 } psa_drv_se_internal_context_t;
@@ -67,7 +67,7 @@ struct psa_se_drv_data_s {
     union {
         psa_drv_se_internal_context_t internal; /**< Internally writable SE driver context */
         psa_drv_se_context_t context;           /**< SE driver context, read only */
-    } u;                                        /**< SE driver context */
+    } ctx;                                        /**< SE driver context */
 };
 
 /**
@@ -80,10 +80,11 @@ typedef struct psa_se_drv_data_s psa_se_drv_data_t;
  *
  * @details This function is called by the @c auto_init module during boot.
  *
- * @param   location            Location the driver should be registered with,
- *                              of type @ref psa_key_location_t
- * @param   methods             Structure of available driver entry points of the driver
- * @param   drv_transient_data  Transient driver data to be used by the driver
+ * @param   location                Location the driver should be registered with,
+ *                                  of type @ref psa_key_location_t
+ * @param   methods                 Structure of available driver entry points of the driver
+ * @param   psa_se_configuration    Pointer to a secure element configuration structure
+ * @param   drv_transient_data      Transient driver data to be used by the driver
  *
  * @return  @ref PSA_SUCCESS
  *          @ref PSA_ERROR_INVALID_ARGUMENT The location value is invalid
@@ -93,7 +94,8 @@ typedef struct psa_se_drv_data_s psa_se_drv_data_t;
  */
 psa_status_t psa_register_secure_element(psa_key_location_t location,
                                          const psa_drv_se_t *methods,
-                                         void *drv_transient_data);
+                                         void *psa_se_configuration,
+                                         const void *drv_data);
 
 /**
  * @brief   Get the driver data of a specified driver

@@ -29,9 +29,6 @@
 #include "random.h"
 #include "kernel_defines.h"
 
-#define ENABLE_DEBUG    0
-#include "debug.h"
-
 static uint8_t lib_initialized = 0;
 
 /**
@@ -46,7 +43,7 @@ static uint8_t lib_initialized = 0;
  *          0 if buffer contents are the same
  *          1 if buffer contents differ
  */
-static inline int safer_memcmp(const uint8_t *a, const uint8_t *b, size_t n)
+static inline int constant_memcmp(const uint8_t *a, const uint8_t *b, size_t n)
 {
     uint8_t diff = 0;
 
@@ -55,6 +52,56 @@ static inline int safer_memcmp(const uint8_t *a, const uint8_t *b, size_t n)
     }
 
     return diff;
+}
+
+const char *psa_status_to_humanly_readable(psa_status_t status)
+{
+    switch(status) {
+        case PSA_ERROR_GENERIC_ERROR:
+            return "PSA_ERROR_GENERIC_ERROR";
+        case PSA_ERROR_NOT_SUPPORTED:
+            return "PSA_ERROR_NOT_SUPPORTED";
+        case PSA_ERROR_NOT_PERMITTED:
+            return "PSA_ERROR_NOT_PERMITTED";
+        case PSA_ERROR_BUFFER_TOO_SMALL:
+            return "PSA_ERROR_BUFFER_TOO_SMALL";
+        case PSA_ERROR_ALREADY_EXISTS:
+            return "PSA_ERROR_ALREADY_EXISTS";
+        case PSA_ERROR_DOES_NOT_EXIST:
+            return "PSA_ERROR_DOES_NOT_EXIST";
+        case PSA_ERROR_BAD_STATE:
+            return "PSA_ERROR_BAD_STATE";
+        case PSA_ERROR_INVALID_ARGUMENT:
+            return "PSA_ERROR_INVALID_ARGUMENT";
+        case PSA_ERROR_INSUFFICIENT_MEMORY:
+            return "PSA_ERROR_INSUFFICIENT_MEMORY";
+        case PSA_ERROR_INSUFFICIENT_STORAGE:
+            return "PSA_ERROR_INSUFFICIENT_STORAGE";
+        case PSA_ERROR_COMMUNICATION_FAILURE:
+            return "PSA_ERROR_COMMUNICATION_FAILURE";
+        case PSA_ERROR_STORAGE_FAILURE:
+            return "PSA_ERROR_STORAGE_FAILURE";
+        case PSA_ERROR_DATA_CORRUPT:
+            return "PSA_ERROR_DATA_CORRUPT";
+        case PSA_ERROR_DATA_INVALID:
+            return "PSA_ERROR_DATA_INVALID";
+        case PSA_ERROR_HARDWARE_FAILURE:
+            return "PSA_ERROR_HARDWARE_FAILURE";
+        case PSA_ERROR_CORRUPTION_DETECTED:
+            return "PSA_ERROR_CORRUPTION_DETECTED";
+        case PSA_ERROR_INSUFFICIENT_ENTROPY:
+            return "PSA_ERROR_INSUFFICIENT_ENTROPY";
+        case PSA_ERROR_INVALID_SIGNATURE:
+            return "PSA_ERROR_INVALID_SIGNATURE";
+        case PSA_ERROR_INVALID_PADDING:
+            return "PSA_ERROR_INVALID_PADDING";
+        case PSA_ERROR_INSUFFICIENT_DATA:
+            return "PSA_ERROR_INSUFFICIENT_DATA";
+        case PSA_ERROR_INVALID_HANDLE:
+            return "PSA_ERROR_INVALID_HANDLE";
+        default:
+            return "Error value not recognized";
+    }
 }
 
 psa_status_t psa_crypto_init(void)
@@ -363,8 +410,12 @@ static psa_status_t psa_get_and_lock_key_slot_with_policy(  psa_key_id_t id,
 
 psa_status_t psa_cipher_abort(psa_cipher_operation_t *operation)
 {
-    (void)operation;
-    return PSA_ERROR_NOT_SUPPORTED;
+    if (!lib_initialized) {
+        return PSA_ERROR_BAD_STATE;
+    }
+
+    *operation = psa_cipher_operation_init();
+    return PSA_SUCCESS;
 }
 
 /**
@@ -741,7 +792,7 @@ psa_status_t psa_hash_verify(psa_hash_operation_t *operation,
         return PSA_ERROR_INVALID_SIGNATURE;
     }
 
-    if (safer_memcmp(hash, digest, hash_length) != 0) {
+    if (constant_memcmp(hash, digest, hash_length) != 0) {
         return PSA_ERROR_INVALID_SIGNATURE;
     }
 
@@ -772,6 +823,10 @@ psa_status_t psa_hash_resume(psa_hash_operation_t *operation,
 
 psa_status_t psa_hash_abort(psa_hash_operation_t *operation)
 {
+    if (!lib_initialized) {
+        return PSA_ERROR_BAD_STATE;
+    }
+
     *operation = psa_hash_operation_init();
     return PSA_SUCCESS;
 }
@@ -979,10 +1034,6 @@ static psa_status_t psa_validate_key_attributes(const psa_key_attributes_t *attr
     status = psa_validate_key_policy(&attributes->policy);
     if (status != PSA_SUCCESS) {
         return status;
-    }
-
-    if (psa_get_key_bits(attributes) > PSA_MAX_KEY_BITS) {
-        return PSA_ERROR_NOT_SUPPORTED;
     }
     return PSA_SUCCESS;
 }
@@ -1288,6 +1339,7 @@ psa_status_t psa_builtin_generate_random(   uint8_t *output,
         return PSA_ERROR_INVALID_ARGUMENT;
     }
 
+    /* TODO: Should point to a CSPRNG API in the future */
     random_bytes(output, output_size);
     return PSA_SUCCESS;
 }
@@ -1348,9 +1400,6 @@ psa_status_t psa_builtin_import_key(const psa_key_attributes_t *attributes,
     if (PSA_KEY_TYPE_IS_UNSTRUCTURED(type)) {
         *bits = PSA_BYTES_TO_BITS(data_length);
 
-        if (*bits > PSA_MAX_KEY_BITS) {
-            return PSA_ERROR_NOT_SUPPORTED;
-        }
         status = psa_validate_unstructured_key_size(type, *bits);
         if (status != PSA_SUCCESS) {
             return status;
@@ -1397,7 +1446,6 @@ psa_status_t psa_import_key(const psa_key_attributes_t *attributes,
     *key = PSA_KEY_ID_NULL;
 
     /* Find empty slot */
-    DEBUG("Starting Key Creation\n");
     status = psa_start_key_creation(PSA_KEY_CREATION_IMPORT, attributes, &slot, &driver);
     if (status != PSA_SUCCESS) {
         psa_fail_key_creation(slot, driver);
@@ -1517,7 +1565,12 @@ psa_status_t psa_key_derivation_setup(psa_key_derivation_operation_t *operation,
 
 psa_status_t psa_mac_abort(psa_mac_operation_t *operation)
 {
-    (void)operation;
+    if (!lib_initialized) {
+        return PSA_ERROR_BAD_STATE;
+    }
+
+    *operation = psa_mac_operation_init();
+
     return PSA_ERROR_NOT_SUPPORTED;
 }
 

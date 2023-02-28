@@ -36,6 +36,10 @@ extern "C" {
 #include "crypto_values.h"
 #include "crypto_types.h"
 
+#if (IS_USED(MODULE_PSA_SECURE_ELEMENT))
+#include "psa/crypto_se_config.h"
+#endif
+
 /**
  * @brief   The major version of this implementation of the PSA Crypto API
  */
@@ -45,6 +49,14 @@ extern "C" {
  * @brief   The minor version of this implementation of the PSA Crypto API
  */
 #define PSA_CRYPTO_API_VERSION_MINOR 1
+
+/**
+ * @brief   Helper function to print PSA status values humanly readable.
+ *
+ * @param   status PSA status value
+ * @return  Pointer to string
+ */
+const char *psa_status_to_humanly_readable(psa_status_t status);
 
 /**
  * @brief   Library initialization.

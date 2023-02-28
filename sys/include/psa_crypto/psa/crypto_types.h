@@ -255,14 +255,6 @@ typedef uint32_t psa_key_usage_t;
  */
 typedef uint16_t psa_key_bits_t;
 
-/**
- * @brief   The maximum size of a key in bits.
- *
- * @details Currently defined as the maximum that can be represented, rounded down
- *          to a whole number of bytes.
- */
-#define PSA_MAX_KEY_BITS 0xfff8 /*TODO: Can we remove that? */
-
 /* These are all temporarily defined as some numeric type to prevent errors at compile time.*/
 /**
  * @brief   The type of the state object for multi-part AEAD operations.
