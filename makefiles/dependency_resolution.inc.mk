@@ -99,6 +99,6 @@ else
     $(shell $(COLOR_ECHO) "$(COLOR_YELLOW) You are going to use the PSA Crypto module,"\
                           "which is only partly implemented and not yet thouroughly tested.\n"\
                           "Please do not use this module in production, as it may introduce"\
-                          "security issues!" 1>&2)
+                          "security issues!$(COLOR_RESET)" 1>&2)
   endif
 endif
