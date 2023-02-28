@@ -21,13 +21,15 @@
 #include "atca_params.h"
 #include "kernel_defines.h"
 
-#define ENABLE_DEBUG 0
+#define ENABLE_DEBUG 1
 #include "debug.h"
 
 #if (IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A))
+#include "psa/crypto.h"
 #include "psa_crypto_se_management.h"
 
 extern psa_drv_se_t atca_methods;
+extern psa_se_config_t *atca_config_list;
 #endif
 
 #define ATCA_NUMOF (ARRAY_SIZE(atca_params))
@@ -45,13 +47,11 @@ void auto_init_atca(void)
             continue;
         }
 #if (IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A))
-        if (i >= PSA_MAX_SE_COUNT) {
-            LOG_ERROR("[auto_init_atca] PSA Crypto – too many secure elements #%u\n", i + 1);
-            continue;
-        }
-
-        DEBUG("Registering Driver with location: %lx\n", atca_params[i].atca_loc);
-        status = psa_register_secure_element(atca_params[i].atca_loc, &atca_methods, atca_devs[i]);
+        DEBUG("[auto_init_atca] Registering Driver with location: %lx\n", atca_params[i].atca_loc);
+        status = psa_register_secure_element(atca_params[i].atca_loc,
+                                            &atca_methods,
+                                            &atca_config_list[i],
+                                            atca_devs[i]);
         if (status != PSA_SUCCESS) {
             LOG_ERROR(
                 "[auto_init_atca] PSA Crypto – error registering cryptoauth PSA driver \
