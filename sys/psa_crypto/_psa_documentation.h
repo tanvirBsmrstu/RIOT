@@ -1,4 +1,5 @@
 /**
+ * @cond
  * @defgroup    sys_psa_crypto    PSA Cryptographic API
  * @ingroup     sys
  * @brief       Implements the PSA Crypto API specification.
@@ -241,4 +242,5 @@
  * This specific API must be implemented by the backend, that should perform the operation
  * (for an example see `sys/crypto/psa_riot_cipher/` or for third party packages
  * `pkg/driver_cryptocell_310`).
+ * @endcond
  */

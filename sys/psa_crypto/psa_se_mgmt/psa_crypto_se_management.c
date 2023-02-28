@@ -83,7 +83,7 @@ psa_status_t psa_register_secure_element(psa_key_location_t location,
     temp = &driver_table[i];
     temp->location = location;
     temp->methods = methods;
-    temp->ctx.internal.transient_data = (uintptr_t)drv_data;
+    temp->ctx.internal.transient_data = (uintptr_t)drv_transient_data;
     temp->ctx.internal.persistent_data = psa_se_configuration;
     temp->ctx.internal.persistent_data_size = methods->persistent_data_size;
 

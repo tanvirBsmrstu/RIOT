@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2023 HAW Hamburg
+ *
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
+ */
+
+/**
+ * @ingroup     sys_psa_crypto
+ * @{
+ *
+ * @brief       Define structures für SE slot configurations
+ *
+ * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
+ *
+ */
+
 #ifndef PSA_CRYPTO_PSA_CRYPTO_SE_CONFIG_H
 #define PSA_CRYPTO_PSA_CRYPTO_SE_CONFIG_H
 
