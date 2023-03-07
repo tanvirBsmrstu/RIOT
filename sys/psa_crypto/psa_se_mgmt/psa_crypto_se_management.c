@@ -20,7 +20,7 @@
 #include "psa_crypto_se_management.h"
 #include "psa_crypto_se_driver.h"
 
-#define ENABLE_DEBUG 1
+#define ENABLE_DEBUG 0
 #include "debug.h"
 
 /**
@@ -30,8 +30,7 @@ static psa_se_drv_data_t driver_table[PSA_MAX_SE_COUNT];
 
 /**
  * @brief   Global counter for registered SE devices.
- *          Initialized with PSA_MAX_SE_COUNT and will be decreased with each
- *          registered device.
+
  */
 unsigned psa_se_count = 0;
 

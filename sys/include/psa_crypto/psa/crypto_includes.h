@@ -46,7 +46,6 @@ extern "C" {
 
 #if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
 #include "atca_params.h"
-#include "atca.h"
 #endif
 
 #ifdef __cplusplus

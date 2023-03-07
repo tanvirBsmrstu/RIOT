@@ -27,16 +27,6 @@ extern "C" {
 #include "crypto_types.h"
 
 /**
- * @brief   Vendor-defined algorithm flag.
- *
- * @details Algorithms defined by this standard will never have the @ref PSA_ALG_VENDOR_FLAG
- *          bit set. Vendors who define additional algorithms must use an encoding with
- *          the @ref PSA_ALG_VENDOR_FLAG bit set and should respect the bitwise structure
- *          used by standard encodings whenever practical.
- */
-#define PSA_ALG_VENDOR_FLAG                     ((psa_algorithm_t)0x80000000)
-
-/**
  * @brief   PSA algorithm category mask
  */
 #define PSA_ALG_CATEGORY_MASK                   ((psa_algorithm_t)0x7f000000)

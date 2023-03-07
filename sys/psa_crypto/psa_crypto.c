@@ -46,7 +46,7 @@ static uint8_t lib_initialized = 0;
  *          0 if buffer contents are the same
  *          1 if buffer contents differ
  */
-static inline int constant_memcmp(const uint8_t *a, const uint8_t *b, size_t n)
+static inline int constant_time_memcmp(const uint8_t *a, const uint8_t *b, size_t n)
 {
     uint8_t diff = 0;
 
@@ -59,7 +59,7 @@ static inline int constant_memcmp(const uint8_t *a, const uint8_t *b, size_t n)
 
 const char *psa_status_to_humanly_readable(psa_status_t status)
 {
-    switch(status) {
+    switch (status) {
         case PSA_ERROR_GENERIC_ERROR:
             return "PSA_ERROR_GENERIC_ERROR";
         case PSA_ERROR_NOT_SUPPORTED:
@@ -795,7 +795,7 @@ psa_status_t psa_hash_verify(psa_hash_operation_t *operation,
         return PSA_ERROR_INVALID_SIGNATURE;
     }
 
-    if (constant_memcmp(hash, digest, hash_length) != 0) {
+    if (constant_time_memcmp(hash, digest, hash_length) != 0) {
         return PSA_ERROR_INVALID_SIGNATURE;
     }
 

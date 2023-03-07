@@ -336,6 +336,7 @@ static psa_status_t psa_allocate_key_slot_in_list(psa_key_slot_t **p_slot,
 
     /* Check if any empty elements of this key slot type are left */
     if (clist_is_empty(empty_list)) {
+        DEBUG("Key Slot MGMT: No PSA Key Slot available\n");
         return PSA_ERROR_INSUFFICIENT_STORAGE;
     }
 
@@ -362,6 +363,7 @@ psa_status_t psa_allocate_empty_key_slot(   psa_key_id_t *id,
 
     /* Change later, when we also have persistent keys */
     if (key_id_count == PSA_KEY_ID_VOLATILE_MAX) {
+        DEBUG("Key Slot MGMT: Maximum key ID reached\n");
         return PSA_ERROR_INSUFFICIENT_STORAGE;
     }
 

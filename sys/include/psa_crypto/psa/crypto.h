@@ -31,14 +31,14 @@ extern "C" {
 
 #include "kernel_defines.h"
 
+#if IS_USED(MODULE_PSA_SECURE_ELEMENT)
+#include "psa/crypto_se_config.h"
+#endif
+
 #include "crypto_sizes.h"
 #include "crypto_struct.h"
 #include "crypto_values.h"
 #include "crypto_types.h"
-
-#if (IS_USED(MODULE_PSA_SECURE_ELEMENT))
-#include "psa/crypto_se_config.h"
-#endif
 
 /**
  * @brief   The major version of this implementation of the PSA Crypto API
