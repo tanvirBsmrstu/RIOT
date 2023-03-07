@@ -48,7 +48,7 @@
 /**
  * @brief   Size of ATCA TempKey Register
  */
-#define ATCA_TEMPKEY_REGISTER_SIZE    (32)
+#define ATCA_WRITE_BUFFER_SIZE    (32)
 
 /**
  * @brief   Check whether a specified algorithm is supported by this driver
@@ -121,7 +121,7 @@ static psa_status_t atca_to_psa_error(ATCA_STATUS error)
     }
 }
 
-static const char *atca_status_to_humanly_readable(ATCA_STATUS status)
+const char *atca_status_to_humanly_readable(ATCA_STATUS status)
 {
     switch (status) {
         case ATCA_NOT_LOCKED:
@@ -337,7 +337,8 @@ psa_status_t atca_allocate(psa_drv_se_context_t *drv_context,
     }
 
     psa_key_type_t type = attributes->type;
-    psa_atca_slot_config_t *slot_config = (psa_atca_slot_config_t *)persistent_data;
+    psa_se_config_t *device_config = (psa_se_config_t *)persistent_data;
+    psa_atca_slot_config_t *slot_config = device_config->slots;
     *key_slot = 0xFF;
 
     for (int i = 0; i < 16; i++) {
@@ -348,8 +349,9 @@ psa_status_t atca_allocate(psa_drv_se_context_t *drv_context,
 
             *key_slot = i;
 
-            DEBUG("Setting Slot %d to occupied\n", (int)*key_slot);
             (&slot_config[i])->slot_occupied = 1;
+
+            DEBUG("Allocating slot %d for key type %x\n", (int)*key_slot, attributes->type);
 
             if (PSA_KEY_LIFETIME_GET_PERSISTENCE(attributes->lifetime) != \
                 PSA_KEY_PERSISTENCE_VOLATILE) {
@@ -411,29 +413,7 @@ psa_status_t atca_import(psa_drv_se_context_t *drv_context,
         return PSA_ERROR_NOT_SUPPORTED;
     }
 
-    if (key_slot == ATCA_TEMPKEY_KEYID) {
-        if (data_length > ATCA_TEMPKEY_REGISTER_SIZE) {
-            DEBUG("ATCA import: Key size too large.\n");
-            return PSA_ERROR_INVALID_ARGUMENT;
-        }
-
-        uint8_t buf_in[ATCA_TEMPKEY_REGISTER_SIZE] = { 0 };
-        /* This implementation only uses the device's TEMPKEY Register for key import,
-        which only accepts input sizes of 32 or 64 Bytes, so we copy a smaller key into
-        a 32 Byte buffer that is padded with zeros */
-        memcpy(buf_in, data, data_length);
-
-        status = calib_nonce_load(dev, NONCE_MODE_TARGET_TEMPKEY, buf_in, sizeof(buf_in));
-        if (status != ATCA_SUCCESS) {
-            DEBUG("ATCA Nonce load failed. ATCA Error: %s\n",
-                atca_status_to_humanly_readable(status));
-            return atca_to_psa_error(status);
-        }
-        *bits = PSA_BYTES_TO_BITS(data_length);
-
-        return PSA_SUCCESS;
-    }
-    else if (PSA_KEY_TYPE_IS_ECC_PUBLIC_KEY(attributes->type)) {
+    if (PSA_KEY_TYPE_IS_ECC_PUBLIC_KEY(attributes->type)) {
         status = calib_write_pubkey(dev, key_slot, data + 1);
         if (status != ATCA_SUCCESS) {
             DEBUG("ATCA Write Pubkey failed. ATCA Error: %s\n",
@@ -445,12 +425,12 @@ psa_status_t atca_import(psa_drv_se_context_t *drv_context,
         return PSA_SUCCESS;
     }
     else {
-        if (data_length > ATCA_TEMPKEY_REGISTER_SIZE) {
+        if (data_length > ATCA_WRITE_BUFFER_SIZE) {
             DEBUG("ATCA import: Key size too large.\n");
             return PSA_ERROR_INVALID_ARGUMENT;
         }
 
-        uint8_t buf_in[ATCA_TEMPKEY_REGISTER_SIZE] = { 0 };
+        uint8_t buf_in[ATCA_WRITE_BUFFER_SIZE] = { 0 };
         /* AES keys can be written to slots in 32 or 64 byte chunks. For this we
         copy them into a 32 byte buffer first and pad the empty bits with 0 */
         memcpy(buf_in, data, data_length);
@@ -575,7 +555,7 @@ psa_status_t atca_sign(psa_drv_se_context_t *drv_context,
     if ((signature_size != ECC_P256_PUB_KEY_SIZE) || \
         (hash_length != PSA_HASH_LENGTH(PSA_ALG_SHA_256))) {
         DEBUG("ATCA Sign: Invalid signature or hash size. Expected Sig: %d |\
-        Hash %d, were Sig: %d | Hash: %d\n", \
+        Hash %d, were Sig: %d | Hash: %d\n",\
         ECC_P256_PUB_KEY_SIZE, PSA_HASH_LENGTH(PSA_ALG_SHA_256),\
         signature_size, hash_length);
         return PSA_ERROR_INVALID_ARGUMENT;
@@ -614,7 +594,7 @@ psa_status_t atca_verify(psa_drv_se_context_t *drv_context,
     if ((signature_length != ECC_P256_PUB_KEY_SIZE) || \
         (hash_length != PSA_HASH_LENGTH(PSA_ALG_SHA_256))) {
         DEBUG("ATCA Sign: Invalid signature or hash size. Expected Sig: %d |\
-        Hash %d, were Sig: %d | Hash: %d\n", \
+        Hash %d, were Sig: %d | Hash: %d\n",\
         ECC_P256_PUB_KEY_SIZE, PSA_HASH_LENGTH(PSA_ALG_SHA_256),\
         signature_length, hash_length);
         return PSA_ERROR_INVALID_ARGUMENT;

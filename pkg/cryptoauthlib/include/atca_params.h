@@ -27,8 +27,12 @@
 
 #include "kernel_defines.h"
 
+#ifdef CUSTOM_ATCA_PARAMS
+#include "custom_atca_params.h"
+#endif
+
 #if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
-#include "psa/crypto_values.h"
+#include "psa/crypto_types.h"
 #endif
 
 #ifdef __cplusplus
@@ -55,13 +59,6 @@ extern "C" {
 #define ATCA_PARAM_I2C  (I2C_DEV(0))
 #endif
 
-#if defined(ATCA_PARAM_I2C) && !defined(ATCA_PARAM_I2C_DEV0)
-/**
- * @brief   ATCA device connected to I2C bus 0
- */
-#define ATCA_PARAM_I2C_DEV0      (ATCA_PARAM_I2C)
-#endif
-
 #ifndef ATCA_PARAM_ADDR
 #define ATCA_PARAM_ADDR          (ATCA_I2C_ADDR)
 #endif
@@ -72,18 +69,14 @@ extern "C" {
 #define ATCA_DEVTYPE            (ATECC608A)
 #endif
 
-#if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
-#define PSA_ATCA_LOCATION_DEV0  (PSA_KEY_LOCATION_SE_MIN + 1)
-#endif
-
-#ifndef ATCA_PARAMS_DEV0
+#ifndef ATCA_PARAMS
 /**
  * @brief   Configuration parameters for the primary ATCA device
  */
-#define ATCA_PARAMS_DEV0                {   .iface_type = ATCA_I2C_IFACE, \
+#define ATCA_PARAMS                     {   .iface_type = ATCA_I2C_IFACE, \
                                             .devtype = ATCA_DEVTYPE, \
                                             .atcai2c.address = ATCA_PARAM_ADDR, \
-                                            .atcai2c.bus = ATCA_PARAM_I2C_DEV0, \
+                                            .atcai2c.bus = ATCA_PARAM_I2C, \
                                             .atcai2c.baud = -1, /**< Not used in RIOT */ \
                                             .wake_delay = 1500, \
                                             .rx_retries = ATCA_RX_RETRIES }
@@ -106,12 +99,7 @@ typedef struct {
  */
 static const atca_params_t atca_params[] =
 {
-    {
-#if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
-        .atca_loc = PSA_ATCA_LOCATION_DEV0,
-#endif
-        .cfg = ATCA_PARAMS_DEV0
-    }
+    ATCA_PARAMS
 };
 
 #ifdef __cplusplus
