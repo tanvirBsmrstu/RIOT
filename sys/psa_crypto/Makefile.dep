@@ -231,6 +231,7 @@ endif
 # Secure Elements
 ifneq (,$(filter psa_secure_element,$(USEMODULE)))
   USEMODULE += psa_se_mgmt
+  USEMODULE += psa_key_slot_mgmt
 endif
 
 ifneq (,$(filter psa_secure_element_ateccx08a, $(USEMODULE)))

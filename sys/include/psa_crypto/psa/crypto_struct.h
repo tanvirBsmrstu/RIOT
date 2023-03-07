@@ -33,7 +33,9 @@ extern "C" {
  */
 struct psa_hash_operation_s {
     psa_algorithm_t alg;        /**< Operation algorithm */
+#if IS_USED(MODULE_PSA_HASH)
     psa_hash_context_t ctx;     /**< Operation hash context */
+#endif
 };
 
 /**
@@ -133,7 +135,9 @@ struct psa_cipher_operation_s {
     psa_algorithm_t alg;            /**< Operation algorithm*/
     /** Union containing cipher contexts for the executing backend */
     union cipher_context {
+#if IS_USED(MODULE_PSA_CIPHER)
         psa_cipher_context_t cipher_ctx;    /**< Cipher context */
+#endif
 #if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A) || defined(DOXYGEN)
         psa_se_cipher_context_t se_ctx;     /**< SE Cipher context */
 #endif

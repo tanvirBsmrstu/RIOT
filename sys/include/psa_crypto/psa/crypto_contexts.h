@@ -28,11 +28,12 @@ extern "C" {
 
 #include "psa/crypto_includes.h"
 
+
+#if IS_USED(MODULE_PSA_HASH)
 /**
  * @brief   Structure containing the hash contexts needed by the application.
  */
 typedef union {
-    unsigned dummy; /**< Make the union non-empty even with no supported algorithms. */
 #if IS_USED(MODULE_PSA_HASH_MD5) || defined(DOXYGEN)
     psa_hashes_md5_ctx_t md5;   /**< MD5 context */
 #endif
@@ -49,12 +50,13 @@ typedef union {
     psa_hashes_sha512_ctx_t sha512; /**< SHA-512 context */
 #endif
 } psa_hash_context_t;
+#endif
 
+#if IS_USED(MODULE_PSA_CIPHER)
 /**
  * @brief   Structure containing the cipher contexts needed by the application.
  */
 typedef union {
-    unsigned dummy; /**< Make the union non-empty even with no supported algorithms. */
 #if IS_USED(MODULE_PSA_CIPHER_AES_128_ECB) ||\
     IS_USED(MODULE_PSA_CIPHER_AES_128_CBC) ||\
     defined(DOXYGEN)
@@ -67,7 +69,9 @@ typedef union {
     psa_cipher_aes_256_ctx_t aes_256;   /**< AES 256 context*/
 #endif
 } psa_cipher_context_t;
+#endif
 
+#if IS_USED(MODULE_PSA_SECURE_ELEMENT)
 /**
  * @brief   Structure containing the secure element specific cipher contexts needed by the
  *          application.
@@ -82,6 +86,7 @@ typedef struct {
     #endif
     } drv_ctx;  /**< SE specific cipher operation context */
 } psa_se_cipher_context_t;
+#endif
 
 #ifdef __cplusplus
 }
