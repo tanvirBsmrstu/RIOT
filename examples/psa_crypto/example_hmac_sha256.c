@@ -70,3 +70,36 @@ psa_status_t example_hmac_sha256(void)
                            HMAC_MSG, HMAC_MSG_LEN, digest, digest_size,
                            &output_len);
 }
+
+#if MULTIPLE_SE
+psa_status_t example_hmac_sha256_sec_se(void)
+{
+    psa_key_attributes_t attr = psa_key_attributes_init();
+    psa_key_id_t key_id = 0;
+    psa_key_usage_t usage = PSA_KEY_USAGE_SIGN_MESSAGE;
+    psa_key_lifetime_t lifetime = PSA_KEY_LIFETIME_FROM_PERSISTENCE_AND_LOCATION(
+        PSA_KEY_LIFETIME_VOLATILE, PSA_ATCA_LOCATION_DEV1);
+
+    size_t digest_size =
+        PSA_MAC_LENGTH(PSA_KEY_TYPE_HMAC, HMAC_KEY_LEN, PSA_ALG_HMAC(PSA_ALG_SHA_256));
+    uint8_t digest[digest_size];
+    size_t output_len = 0;
+
+    psa_set_key_lifetime(&attr, lifetime);
+    psa_set_key_algorithm(&attr, PSA_ALG_HMAC(PSA_ALG_SHA_256));
+    psa_set_key_usage_flags(&attr, usage);
+    psa_set_key_bits(&attr, PSA_BYTES_TO_BITS(HMAC_KEY_LEN));
+    psa_set_key_type(&attr, PSA_KEY_TYPE_HMAC);
+
+    psa_status_t status = PSA_ERROR_DOES_NOT_EXIST;
+
+    status = psa_import_key(&attr, HMAC_KEY, HMAC_KEY_LEN, &key_id);
+    if (status != PSA_SUCCESS) {
+        return status;
+    }
+
+    return psa_mac_compute(key_id, PSA_ALG_HMAC(PSA_ALG_SHA_256),
+                             HMAC_MSG, HMAC_MSG_LEN, digest, digest_size,
+                             &output_len);
+}
+#endif

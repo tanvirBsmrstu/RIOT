@@ -21,36 +21,15 @@
 #include "psa/crypto.h"
 #include "ztimer.h"
 
-#if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
-psa_atca_slot_config_t slot_config[] = {
-    { PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_SECP_R1), 0, 0 },
-    { PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_SECP_R1), 0, 0 },
-    { PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_SECP_R1), 0, 0 },
-    { PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_SECP_R1), 0, 0 },
-    { PSA_KEY_TYPE_AES, 0, 0 },
-    { PSA_KEY_TYPE_HMAC, 0, 0 },
-    { PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_SECP_R1), 0, 0 },
-    { 0, 1, 1 },
-    { 0, 0, 0 },
-    { PSA_KEY_TYPE_ECC_PUBLIC_KEY(PSA_ECC_FAMILY_SECP_R1), 0, 0 },
-    { PSA_KEY_TYPE_ECC_PUBLIC_KEY(PSA_ECC_FAMILY_SECP_R1), 0, 0 },
-    { PSA_KEY_TYPE_ECC_PUBLIC_KEY(PSA_ECC_FAMILY_SECP_R1), 0, 0 },
-    { PSA_KEY_TYPE_ECC_PUBLIC_KEY(PSA_ECC_FAMILY_SECP_R1), 0, 0 },
-    { PSA_KEY_TYPE_ECC_PUBLIC_KEY(PSA_ECC_FAMILY_SECP_R1), 0, 0 },
-    { 0, 0, 0 },
-    { 0, 0, 0 }
-};
-
-psa_se_config_t atca_config_list[] = {
-    {
-        .slots = slot_config
-    }
-};
-#endif
-
 extern psa_status_t example_cipher_aes_128(void);
 extern psa_status_t example_hmac_sha256(void);
 extern psa_status_t example_ecdsa_p256(void);
+
+#ifdef MULTIPLE_SE
+extern psa_status_t example_cipher_aes_128_sec_se(void);
+extern psa_status_t example_hmac_sha256_sec_se(void);
+extern psa_status_t example_ecdsa_p256_sec_se(void);
+#endif
 
 int main(void)
 {
@@ -80,6 +59,29 @@ int main(void)
     if (status != PSA_SUCCESS) {
         printf("ECDSA failed: %s\n", psa_status_to_humanly_readable(status));
     }
+
+#ifdef MULTIPLE_SE
+    puts("Running Examples with secondary SE:");
+    status = example_hmac_sha256_sec_se();
+    printf("HMAC SHA256 took %d us\n", (int)(ztimer_now(ZTIMER_USEC) - start));
+    if (status != PSA_SUCCESS) {
+        printf("HMAC SHA256 failed: %s\n", psa_status_to_humanly_readable(status));
+    }
+
+    start = ztimer_now(ZTIMER_USEC);
+    status = example_cipher_aes_128_sec_se();
+    printf("Cipher AES 128 took %d us\n", (int)(ztimer_now(ZTIMER_USEC) - start));
+    if (status != PSA_SUCCESS) {
+        printf("Cipher AES 128 failed: %s\n", psa_status_to_humanly_readable(status));
+    }
+
+    start = ztimer_now(ZTIMER_USEC);
+    status = example_ecdsa_p256_sec_se();
+    printf("ECDSA took %d us\n", (int)(ztimer_now(ZTIMER_USEC) - start));
+    if (status != PSA_SUCCESS) {
+        printf("ECDSA failed: %s\n", psa_status_to_humanly_readable(status));
+    }
+#endif
 
     ztimer_release(ZTIMER_USEC);
 

@@ -9,8 +9,17 @@ BOARD ?= native
 # The file `app.config.test` is always used for the build configuration.
 # The config files below are only added if needed.
 ifeq (1, $(TEST_KCONFIG))
-  ifdef SECURE_ELEMENT
+  ifeq (1, $(SECURE_ELEMENT))
+    CFLAGS += -DSECURE_ELEMENT # Application specific (not needed by PSA)
+    CFLAGS += -DCUSTOM_ATCA_PARAMS # Application specific (not needed by PSA)
+    INCLUDES += -I$(APPDIR) # Application specific (not needed by PSA)
     KCONFIG_ADD_CONFIG += $(APPDIR)/app.config.test.se
+  else ifeq (2, $(SECURE_ELEMENT))
+    CFLAGS += -DSECURE_ELEMENT # Application specific (not needed by PSA)
+    CFLAGS += -DMULTIPLE_SE # Application specific (not needed by PSA)
+    CFLAGS += -DCUSTOM_ATCA_PARAMS # Application specific (not needed by PSA)
+    INCLUDES += -I$(APPDIR)
+    KCONFIG_ADD_CONFIG += $(APPDIR)/app.config.test.multi_se
   else ifdef CUSTOM_BACKEND
     KCONFIG_ADD_CONFIG += $(APPDIR)/app.config.test.custom
   else
@@ -37,13 +46,27 @@ else
   USEMODULE += psa_asymmetric
   USEMODULE += psa_asymmetric_ecc_p256r1
 
-  ifdef SECURE_ELEMENT
+  ifeq (1, $(SECURE_ELEMENT))
     # When using a secure element, the type is required.
     # Also you can specify the number of key slots required to store keys.
-    CFLAGS += -DSECURE_ELEMENT
+    CFLAGS += -DSECURE_ELEMENT # Application specific (not needed by PSA)
+    CFLAGS += -DCUSTOM_ATCA_PARAMS  # Application specific (not needed by PSA)
+    INCLUDES += -I$(APPDIR) # Application specific (not needed by PSA)
+
     CFLAGS += -DCONFIG_PSA_PROTECTED_KEY_COUNT=4
     CFLAGS += -DCONFIG_PSA_SINGLE_KEY_COUNT=1
     USEMODULE += psa_secure_element
+    USEMODULE += psa_secure_element_ateccx08a
+    USEMODULE += psa_secure_element_ateccx08a_ecc
+  else ifeq (2, $(SECURE_ELEMENT))
+    CFLAGS += -DSECURE_ELEMENT # Application specific (not needed by PSA)
+    CFLAGS += -DMULTIPLE_SE # Application specific (not needed by PSA)
+    CFLAGS += -DCUSTOM_ATCA_PARAMS # Application specific (not needed by PSA)
+    INCLUDES += -I$(APPDIR) # Application specific (not needed by PSA)
+    CFLAGS += -DCONFIG_PSA_PROTECTED_KEY_COUNT=8
+    CFLAGS += -DCONFIG_PSA_SINGLE_KEY_COUNT=2
+    USEMODULE += psa_secure_element
+    USEMODULE += psa_secure_element_multiple
     USEMODULE += psa_secure_element_ateccx08a
     USEMODULE += psa_secure_element_ateccx08a_ecc
   else ifdef CUSTOM_BACKEND
