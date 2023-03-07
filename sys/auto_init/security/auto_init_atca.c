@@ -21,41 +21,43 @@
 #include "atca_params.h"
 #include "kernel_defines.h"
 
-#define ENABLE_DEBUG 1
+#define ENABLE_DEBUG 0
 #include "debug.h"
 
-#if (IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A))
+#if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
 #include "psa/crypto.h"
 #include "psa_crypto_se_management.h"
 
 extern psa_drv_se_t atca_methods;
-extern psa_se_config_t *atca_config_list;
+extern const char *atca_status_to_humanly_readable(ATCA_STATUS status);
+
+psa_se_config_t atca_config_list[] = { ATCA_CONFIG_LIST };
 #endif
 
 #define ATCA_NUMOF (ARRAY_SIZE(atca_params))
 
-static ATCADevice atca_devs[ATCA_NUMOF];
+static struct atca_device atca_devs[ATCA_NUMOF];
 
 void auto_init_atca(void)
 {
+    DEBUG("[auto_init_atca] Number of secure elements: %d\n", ATCA_NUMOF);
     for (unsigned i = 0; i < ATCA_NUMOF; i++) {
-        atca_devs[i] = NULL;
-        int status = atcab_init_ext(&atca_devs[i], (ATCAIfaceCfg *)&atca_params[i].cfg);
+        int status = initATCADevice((ATCAIfaceCfg *)&atca_params[i].cfg, (ATCADevice)&atca_devs[i]);
         if (status != ATCA_SUCCESS) {
-            LOG_ERROR("[auto_init_atca] error initializing cryptoauth device #%u, status: 0x%02x\n",
-                      i, status);
+            LOG_ERROR("[auto_init_atca] error initializing cryptoauth device #%u, status: %s\n",
+                      i, atca_status_to_humanly_readable(status));
             continue;
         }
-#if (IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A))
+#if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
         DEBUG("[auto_init_atca] Registering Driver with location: %lx\n", atca_params[i].atca_loc);
         status = psa_register_secure_element(atca_params[i].atca_loc,
                                             &atca_methods,
                                             &atca_config_list[i],
-                                            atca_devs[i]);
+                                            &atca_devs[i]);
         if (status != PSA_SUCCESS) {
             LOG_ERROR(
-                "[auto_init_atca] PSA Crypto – error registering cryptoauth PSA driver \
-                for device #%u, status: %d\n", i, status);
+                "[auto_init_atca] PSA Crypto – error registering cryptoauth PSA driver\
+                for device #%u, status: %s\n", i, psa_status_to_humanly_readable(status));
             continue;
         }
 #endif
