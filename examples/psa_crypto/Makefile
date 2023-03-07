@@ -21,30 +21,21 @@ ifeq (1, $(TEST_KCONFIG))
     INCLUDES += -I$(APPDIR)
     KCONFIG_ADD_CONFIG += $(APPDIR)/app.config.test.multi_se
   else ifdef CUSTOM_BACKEND
+    KCONFIG_ADD_CONFIG += $(APPDIR)/app.config.test.base
     KCONFIG_ADD_CONFIG += $(APPDIR)/app.config.test.custom
   else
     KCONFIG_ADD_CONFIG += $(APPDIR)/app.config.test.base
   endif
 else
-  # Necessary configuration when using Make dependency resolution
-  # This first part chooses the operation. If nothing else es specified,
-  # a default backend is built depending on the platform capabilities.
   USEMODULE += ztimer
   USEMODULE += ztimer_usec
 
   USEMODULE += psa_crypto
 
+  # Hashes are needed for ECDSA operations (including secure elements), which
+  # is why we always build them
   USEMODULE += psa_hash
   USEMODULE += psa_hash_sha_256
-
-  USEMODULE += psa_cipher
-  USEMODULE += psa_cipher_aes_128_cbc
-
-  USEMODULE += psa_mac
-  USEMODULE += psa_mac_hmac_sha_256
-
-  USEMODULE += psa_asymmetric
-  USEMODULE += psa_asymmetric_ecc_p256r1
 
   ifeq (1, $(SECURE_ELEMENT))
     # When using a secure element, the type is required.
@@ -70,6 +61,18 @@ else
     USEMODULE += psa_secure_element_ateccx08a
     USEMODULE += psa_secure_element_ateccx08a_ecc
   else ifdef CUSTOM_BACKEND
+    # Necessary configuration when using Make dependency resolution
+    # This first part chooses the operation. If nothing else es specified,
+    # a default backend is built depending on the platform capabilities.
+    USEMODULE += psa_cipher
+    USEMODULE += psa_cipher_aes_128_cbc
+
+    USEMODULE += psa_mac
+    USEMODULE += psa_mac_hmac_sha_256
+
+    USEMODULE += psa_asymmetric
+    USEMODULE += psa_asymmetric_ecc_p256r1
+
     # If you want to use a custom backend, you need to do it this way.
     USEMODULE += psa_cipher_aes_128_cbc_custom_backend
     USEMODULE += psa_cipher_aes_128_cbc_backend_riot # force custom backend
@@ -82,6 +85,18 @@ else
 
     USEMODULE += psa_asymmetric_ecc_p256r1_custom_backend
     USEMODULE += psa_asymmetric_ecc_p256r1_backend_microecc # force custom backend
+  else
+    # Necessary configuration when using Make dependency resolution
+    # This part only chooses the operation. If nothing else es specified,
+    # a default backend is built depending on the platform capabilities.
+    USEMODULE += psa_cipher
+    USEMODULE += psa_cipher_aes_128_cbc
+
+    USEMODULE += psa_mac
+    USEMODULE += psa_mac_hmac_sha_256
+
+    USEMODULE += psa_asymmetric
+    USEMODULE += psa_asymmetric_ecc_p256r1
   endif
 
   ifndef SECURE_ELEMENT
