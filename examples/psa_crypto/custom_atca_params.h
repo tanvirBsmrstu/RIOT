@@ -1,8 +1,31 @@
+/*
+ * Copyright (C) 2023 HAW Hamburg
+ *
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
+ */
+
+/**
+ * @ingroup     examples
+ * @{
+ *
+ * @file
+ * @brief       Example custom atca_params.h file to use multiple ATECC608A
+ *              secure elements as backends for PSA Crypto
+ *
+ * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
+ *
+ */
 #ifndef CUSTOM_ATCA_PARAMS_H
 #define CUSTOM_ATCA_PARAMS_H
 
 #include "cryptoauthlib.h"
 #include "psa/crypto.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define PSA_ATCA_LOCATION_DEV0  (PSA_KEY_LOCATION_PRIMARY_SECURE_ELEMENT)
 #define ATCA_PARAM_I2C_DEV0     (I2C_DEV(0))    /*!< Change this to the bus you want to use */
@@ -93,4 +116,9 @@
 #define ATCA_CONFIG_LIST        { ATCA_SLOTS_DEV0 }
 #endif
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* CUSTOM_ATCA_PARAMS_H */
+/** @} */
