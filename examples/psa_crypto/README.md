@@ -41,14 +41,27 @@ the `app.config.test.*` files.
 > To access the GUI, run `TEST_KCONFIG=1 BOARD=<your board> make menuconfig`.
 
 When building the application with the `TEST_KCONFIG=1` option, the first config file parsed by the build system is `app.config.test`. This selects the PSA Crypto module and other modules our application needs (e.g. ztimer). If you need cryptographic keys, you can specify the number of key slots needed for key storage (the default is set to 5).
+The graph below shows how the `app.config` files in this application are included.
+Selections in `app.config.test` are always applied.
+The others are only added, if you specify the corresponding build option.
 
-If you build this without specifying anything else, PSA Crypto will automatically choose a default crypto backend depending on the platform you're building for.
+```mermaid
+    flowchart TD;
+        app.config.test -- default --> app.config.test.base;
+        app.config.test.base -- CUSTOM_BACKEND=1 --> app.config.test.custom;
+        app.config.test -- SECURE_ELEMENT=1 --> app.config.test.se;
+        app.config.test -- SECURE_ELEMENT=2 --> app.config.test.multi_se;
+```
+If you build this without specifying anything else, the symbols in `app.config.test.base`
+are added and PSA Crypto will automatically choose a default crypto backend depending on the platform you're building for.
 For example when your platform is `native`, software implementations are built.
 When you specify `BOARD=nrf52840dk`, the hardware accelerator of the board will be built.
 
 If you want to force a custom backend, you can specify that in the Kconfig file. This application already contains the configuration for a custom backend (see `app.config.test.custom`), which will be added to the application build when you define `CUSTOM_BACKEND=1`.
 
 Instead of or in addition to the default and custom implementations you can use a secure element as a backend (see Section [Using Secure Elements](#using-secure-elements]).
+Secure elements are independent of the other backends. In this application, when you
+choose secure elements, they are built instead of the other backends.
 
 Please note that the build options `CUSTOM_BACKEND` and `SECURE_ELEMENT` only apply to this specific application and have nothing to do with the PSA implementation.
 
