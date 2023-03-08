@@ -10,7 +10,8 @@
  * @ingroup     pkg_driver_cryptocell_310
  * @{
  *
- * @brief       Glue code translating between PSA Crypto and the CryptoCell 310 driver APIs
+ * @brief       Common AES functions used by all PSA Crypto wrappers
+ *              for the CryptoCell 310 AES APIs.
  *
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
  *
@@ -22,14 +23,14 @@
 #include "ssi_aes.h"
 #include "sns_silib.h"
 #include "psa_error.h"
-#include "cryptocell_util.h"
+#include "cryptocell_310_util.h"
 
 #define ENABLE_DEBUG    0
 #include "debug.h"
 
 #define CC310_MAX_AES_INPUT_BLOCK       (0xFFF0)
 
-psa_status_t common_aes_setup(SaSiAesUserContext_t *ctx,
+psa_status_t cryptocell_310_common_aes_setup(SaSiAesUserContext_t *ctx,
                               SaSiAesEncryptMode_t direction,
                               SaSiAesOperationMode_t mode,
                               SaSiAesPaddingType_t padding,
@@ -63,7 +64,7 @@ psa_status_t common_aes_setup(SaSiAesUserContext_t *ctx,
     return PSA_SUCCESS;
 }
 
-psa_status_t common_aes_encrypt_decrypt(SaSiAesUserContext_t *ctx,
+psa_status_t cryptocell_310_common_aes_encrypt_decrypt(SaSiAesUserContext_t *ctx,
                                         const uint8_t *input,
                                         size_t input_length,
                                         uint8_t *output,

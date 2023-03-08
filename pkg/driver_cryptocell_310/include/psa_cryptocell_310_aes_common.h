@@ -11,14 +11,15 @@
  * @{
  *
  * @file
- * @brief       Glue code translating between PSA Crypto and the CryptoCell 310 driver APIs
+ * @brief       Common AES functions used by all PSA Crypto wrappers
+ *              for the CryptoCell 310 AES APIs.
  *
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
  *
  */
 
-#ifndef PSA_PERIPH_AES_COMMON_H
-#define PSA_PERIPH_AES_COMMON_H
+#ifndef PSA_CRYPTOCELL_310_AES_COMMON_H
+#define PSA_CRYPTOCELL_310_AES_COMMON_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,8 +29,17 @@ extern "C" {
 
 /**
  * @brief   Common setup function for AES operations
+ *
+ * @param   ctx
+ * @param   direction
+ * @param   mode
+ * @param   padding
+ * @param   iv
+ * @param   key_buffer
+ * @param   key_buffer_size
+ * @return  psa_status_t
  */
-psa_status_t common_aes_setup(SaSiAesUserContext_t *ctx,
+psa_status_t cryptocell_310_common_aes_setup(SaSiAesUserContext_t *ctx,
                               SaSiAesEncryptMode_t direction,
                               SaSiAesOperationMode_t mode,
                               SaSiAesPaddingType_t padding,
@@ -39,8 +49,16 @@ psa_status_t common_aes_setup(SaSiAesUserContext_t *ctx,
 
 /**
  * @brief   Common function for an AES encryption
+ *
+ * @param   ctx
+ * @param   input
+ * @param   input_length
+ * @param   output
+ * @param   output_buffer_size
+ * @param   output_length
+ * @return  psa_status_t
  */
-psa_status_t common_aes_encrypt_decrypt(SaSiAesUserContext_t *ctx,
+psa_status_t cryptocell_310_common_aes_encrypt_decrypt(SaSiAesUserContext_t *ctx,
                                         const uint8_t *input,
                                         size_t input_length,
                                         uint8_t *output,
@@ -51,5 +69,5 @@ psa_status_t common_aes_encrypt_decrypt(SaSiAesUserContext_t *ctx,
 }
 #endif
 
-#endif /* PSA_PERIPH_AES_COMMON_H */
+#endif /* PSA_CRYPTOCELL_310_AES_COMMON_H */
 /** @} */

@@ -10,7 +10,7 @@
  * @ingroup     pkg_driver_cryptocell_310
  * @{
  *
- * @brief       Glue code translating between PSA Crypto and the CryptoCell 310 driver APIs
+ * @brief       Glue code translating between PSA Crypto and the CryptoCell 310 AES 128 CBC APIs
  *
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
  *
@@ -18,7 +18,7 @@
  */
 
 #include "psa_error.h"
-#include "psa_periph_aes_common.h"
+#include "psa_cryptocell_310_aes_common.h"
 #include "ssi_aes.h"
 
 #define ENABLE_DEBUG    0
@@ -53,14 +53,14 @@ psa_status_t psa_cipher_cbc_aes_128_encrypt(const psa_key_attributes_t *attribut
         return status;
     }
 
-    status = common_aes_setup((SaSiAesUserContext_t *)&operation.backend_ctx.cipher_ctx.aes_128,
+    status = cryptocell_310_common_aes_setup((SaSiAesUserContext_t *)&operation.backend_ctx.cipher_ctx.aes_128,
                               SASI_AES_ENCRYPT, SASI_AES_MODE_CBC, padding, output, key_buffer,
                               key_buffer_size);
     if (status != PSA_SUCCESS) {
         return status;
     }
 
-    status = common_aes_encrypt_decrypt(
+    status = cryptocell_310_common_aes_encrypt_decrypt(
                                 (SaSiAesUserContext_t *)&operation.backend_ctx.cipher_ctx.aes_128,
                                 input, input_length, output + iv_length, output_size - iv_length,
                                 output_length);
@@ -96,14 +96,14 @@ psa_status_t psa_cipher_cbc_aes_128_decrypt(const psa_key_attributes_t *attribut
     SaSiAesPaddingType_t padding =
         (alg == PSA_ALG_CBC_PKCS7) ? SASI_AES_PADDING_PKCS7 : SASI_AES_PADDING_NONE;
 
-    status = common_aes_setup((SaSiAesUserContext_t *)&operation.backend_ctx.cipher_ctx.aes_128,
+    status = cryptocell_310_common_aes_setup((SaSiAesUserContext_t *)&operation.backend_ctx.cipher_ctx.aes_128,
                               SASI_AES_DECRYPT, SASI_AES_MODE_CBC, padding, input, key_buffer,
                               key_buffer_size);
     if (status != PSA_SUCCESS) {
         return status;
     }
 
-    status = common_aes_encrypt_decrypt(
+    status = cryptocell_310_common_aes_encrypt_decrypt(
                                 (SaSiAesUserContext_t *)&operation.backend_ctx.cipher_ctx.aes_128,
                                 input + operation.default_iv_length, input_length - operation.
                                 default_iv_length, output, output_size, output_length);

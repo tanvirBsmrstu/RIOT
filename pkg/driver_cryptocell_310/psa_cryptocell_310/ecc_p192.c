@@ -11,14 +11,14 @@
  * @{
  *
  * @file
- * @brief       Glue code translating between PSA Crypto and the CryptoCell 310 driver APIs
+ * @brief       Glue code translating between PSA Crypto and the CryptoCell 310 ECC P192 APIs
  *
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
  *
  * @}
  */
 
-#include "psa_periph_ecc_common.h"
+#include "psa_cryptocell_310_ecc_common.h"
 
 psa_status_t psa_generate_ecc_p192r1_key_pair(const psa_key_attributes_t *attributes,
                                               uint8_t *priv_key_buffer,
@@ -29,7 +29,7 @@ psa_status_t psa_generate_ecc_p192r1_key_pair(const psa_key_attributes_t *attrib
     *priv_key_buffer_length = PSA_BITS_TO_BYTES(attributes->bits);
     *pub_key_buffer_length = PSA_EXPORT_PUBLIC_KEY_OUTPUT_SIZE(attributes->type, attributes->bits);
 
-    return periph_common_ecc_generate_key_pair(priv_key_buffer, pub_key_buffer,
+    return cryptocell_310_common_ecc_generate_key_pair(priv_key_buffer, pub_key_buffer,
                                                (uint32_t *)priv_key_buffer_length,
                                                (uint32_t *)pub_key_buffer_length,
                                                CRYS_ECPKI_DomainID_secp192r1);
@@ -50,7 +50,7 @@ psa_status_t psa_ecc_p192r1_sign_hash(  const psa_key_attributes_t *attributes,
     (void)signature_size;
     (void)key_buffer_size;
 
-    return periph_common_ecc_sign_hash(key_buffer,
+    return cryptocell_310_common_ecc_sign_hash(key_buffer,
                                        PSA_BITS_TO_BYTES(attributes->bits),
                                        hash, hash_length, signature,
                                        signature_length, hash_mode,
@@ -69,7 +69,7 @@ psa_status_t psa_ecc_p192r1_verify_hash(const psa_key_attributes_t *attributes,
     CRYS_ECPKI_HASH_OpMode_t hash_mode = MAP_PSA_HASH_TO_CRYS_HASH(PSA_ALG_GET_HASH(alg));
 
     (void)attributes;
-    return periph_common_ecc_verify_hash(key_buffer, key_buffer_size,
+    return cryptocell_310_common_ecc_verify_hash(key_buffer, key_buffer_size,
                                          hash, hash_length, signature,
                                          signature_length, hash_mode,
                                          CRYS_ECPKI_DomainID_secp192r1);

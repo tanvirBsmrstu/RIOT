@@ -10,7 +10,7 @@
  * @ingroup     pkg_driver_cryptocell_310
  * @{
  *
- * @brief       Glue code for ARM Cryptocell driver support in PSA Crypto
+ * @brief       Glue code translating between PSA Crypto and the CryptoCell 310 SHA256 APIs
  *
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
  *
@@ -19,7 +19,7 @@
 
 #include "kernel_defines.h"
 #include "psa_periph_hashes_ctx.h"
-#include "psa_periph_hashes_common.h"
+#include "psa_cryptocell_310_hashes_common.h"
 
 #define ENABLE_DEBUG    0
 #include "debug.h"
@@ -27,14 +27,14 @@
 psa_status_t psa_hashes_sha256_setup(psa_hashes_sha256_ctx_t *ctx)
 {
     DEBUG("Cryptocell SHA256 Setup\n");
-    return common_hash_setup((CRYS_HASHUserContext_t *)ctx, CRYS_HASH_SHA256_mode);
+    return cryptocell_310_common_hash_setup((CRYS_HASHUserContext_t *)ctx, CRYS_HASH_SHA256_mode);
 }
 
 psa_status_t psa_hashes_sha256_update(psa_hashes_sha256_ctx_t *ctx,
                                       const uint8_t *input,
                                       size_t input_length)
 {
-    return common_hash_update((CRYS_HASHUserContext_t *)ctx, input, input_length);
+    return cryptocell_310_common_hash_update((CRYS_HASHUserContext_t *)ctx, input, input_length);
 }
 
 psa_status_t psa_hashes_sha256_finish(psa_hashes_sha256_ctx_t *ctx,
@@ -42,5 +42,5 @@ psa_status_t psa_hashes_sha256_finish(psa_hashes_sha256_ctx_t *ctx,
                                       size_t hash_size,
                                       size_t *hash_length)
 {
-    return common_hash_finish((CRYS_HASHUserContext_t *)ctx, hash, hash_size, hash_length);
+    return cryptocell_310_common_hash_finish((CRYS_HASHUserContext_t *)ctx, hash, hash_size, hash_length);
 }

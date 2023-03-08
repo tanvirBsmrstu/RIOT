@@ -10,13 +10,14 @@
  * @ingroup     pkg_driver_cryptocell_310
  * @{
  *
+ * @file
  * @brief       Utility functions to setup and terminate the CryptoCell 310 driver
  *
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
  *
  */
-#ifndef CRYPTOCELL_UTIL_H
-#define CRYPTOCELL_UTIL_H
+#ifndef CRYPTOCELL_310_UTIL_H
+#define CRYPTOCELL_310_UTIL_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,5 +57,5 @@ void driver_cryptocell_310_terminate(void);
 }
 #endif
 
-#endif /* CRYPTOCELL_UTIL_H */
+#endif /* CRYPTOCELL_310_UTIL_H */
 /** @} */

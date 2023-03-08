@@ -10,14 +10,16 @@
  * @ingroup     pkg_driver_cryptocell_310
  * @{
  *
- * @brief       Glue code translating between PSA Crypto and the CryptoCell 310 driver APIs
+ * @file
+ * @brief       Common ECC functions used by all PSA Crypto wrappers
+ *              for the CryptoCell 310 ECC APIs.
  *
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
  *
  */
 
-#ifndef PSA_PERIPH_ECC_COMMON_H
-#define PSA_PERIPH_ECC_COMMON_H
+#ifndef PSA_CRYPTOCELL_310_ECC_COMMON_H
+#define PSA_CRYPTOCELL_310_ECC_COMMON_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,6 +35,8 @@ extern "C" {
 
 /**
  * @brief   Map PSA hash encodings to CryptoCell specific hash encodings
+ *
+ * @param   hash psa_algorithm_t
  */
 #define MAP_PSA_HASH_TO_CRYS_HASH(hash) \
     ((hash == PSA_ALG_SHA_1) ? CRYS_ECPKI_AFTER_HASH_SHA1_mode : \
@@ -44,8 +48,15 @@ extern "C" {
 
 /**
  * @brief   Common ECC key generation function
+ *
+ * @param   priv_key_buffer
+ * @param   pub_key_buffer
+ * @param   priv_key_buffer_length
+ * @param   pub_key_buffer_length
+ * @param   domain
+ * @return  psa_status_t
  */
-psa_status_t periph_common_ecc_generate_key_pair(uint8_t *priv_key_buffer,
+psa_status_t cryptocell_310_common_ecc_generate_key_pair(uint8_t *priv_key_buffer,
                                                  uint8_t *pub_key_buffer,
                                                  uint32_t *priv_key_buffer_length,
                                                  uint32_t *pub_key_buffer_length,
@@ -53,8 +64,18 @@ psa_status_t periph_common_ecc_generate_key_pair(uint8_t *priv_key_buffer,
 
 /**
  * @brief   Common ECC hash signature function
+ *
+ * @param   priv_key
+ * @param   priv_key_size
+ * @param   hash
+ * @param   hash_length
+ * @param   signature
+ * @param   signature_length
+ * @param   hash_mode
+ * @param   domain
+ * @return  psa_status_t
  */
-psa_status_t periph_common_ecc_sign_hash(const uint8_t *priv_key,
+psa_status_t cryptocell_310_common_ecc_sign_hash(const uint8_t *priv_key,
                                          uint32_t priv_key_size,
                                          const uint8_t *hash,
                                          size_t hash_length,
@@ -65,8 +86,18 @@ psa_status_t periph_common_ecc_sign_hash(const uint8_t *priv_key,
 
 /**
  * @brief   Common ECC hash verification function
+ *
+ * @param   pub_key
+ * @param   pub_key_size
+ * @param   hash
+ * @param   hash_length
+ * @param   signature
+ * @param   signature_length
+ * @param   hash_mode
+ * @param   domain
+ * @return  psa_status_t
  */
-psa_status_t periph_common_ecc_verify_hash(const uint8_t *pub_key,
+psa_status_t cryptocell_310_common_ecc_verify_hash(const uint8_t *pub_key,
                                            size_t pub_key_size,
                                            const uint8_t *hash,
                                            size_t hash_length,
@@ -79,5 +110,5 @@ psa_status_t periph_common_ecc_verify_hash(const uint8_t *pub_key,
 }
 #endif
 
-#endif /* PSA_PERIPH_ECC_COMMON_H */
+#endif /* PSA_CRYPTOCELL_310_ECC_COMMON_H */
 /** @} */

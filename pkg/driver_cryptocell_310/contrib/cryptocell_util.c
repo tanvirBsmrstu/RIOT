@@ -8,7 +8,6 @@
 
 /**
  * @ingroup     pkg_driver_cryptocell_310
-
  * @{
  *
  * @file
@@ -17,14 +16,9 @@
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
  */
 
-#ifndef CRYPTOCELL_UTIL_H
-#define CRYPTOCELL_UTIL_H
-
-#include "kernel_defines.h"
-
-#include <stdio.h>
 #include "vendor/nrf52840.h"
 #include "sns_silib.h"
+#include "kernel_defines.h"
 
 #define ENABLE_DEBUG    0
 #include "debug.h"
@@ -87,5 +81,3 @@ void driver_cryptocell_310_terminate(void)
         DEBUG("CRYS_RND_UnInstatiation failed: 0x%x\n", ret);
     }
 }
-
-#endif /* CRYPTOCELL_UTIL_H */

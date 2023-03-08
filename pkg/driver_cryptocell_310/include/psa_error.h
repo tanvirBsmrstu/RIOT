@@ -16,7 +16,6 @@
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
  *
  */
-
 #ifndef PSA_ERROR_H
 #define PSA_ERROR_H
 

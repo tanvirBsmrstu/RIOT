@@ -10,7 +10,8 @@
  * @ingroup     pkg_driver_cryptocell_310
  * @{
  *
- * @brief       Glue code translating between PSA Crypto and the CryptoCell 310 driver APIs
+ * @brief       Common hash functions used by all PSA Crypto wrappers
+ *              for the CryptoCell 310 hash APIs.
  *
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
  *
@@ -19,7 +20,7 @@
 
 #include "psa/crypto.h"
 #include "psa_error.h"
-#include "cryptocell_util.h"
+#include "cryptocell_310_util.h"
 #include "crys_hash.h"
 
 #define ENABLE_DEBUG    0
@@ -27,7 +28,7 @@
 
 #define CC310_MAX_HASH_INPUT_BLOCK       (0xFFF0)
 
-psa_status_t common_hash_setup(CRYS_HASHUserContext_t *ctx,
+psa_status_t cryptocell_310_common_hash_setup(CRYS_HASHUserContext_t *ctx,
                                CRYS_HASH_OperationMode_t mode)
 {
     int ret = CRYS_HASH_Init(ctx, mode);
@@ -38,7 +39,7 @@ psa_status_t common_hash_setup(CRYS_HASHUserContext_t *ctx,
     return PSA_SUCCESS;
 }
 
-psa_status_t common_hash_update(CRYS_HASHUserContext_t *ctx,
+psa_status_t cryptocell_310_common_hash_update(CRYS_HASHUserContext_t *ctx,
                                 const uint8_t *input,
                                 size_t input_length)
 {
@@ -69,7 +70,7 @@ psa_status_t common_hash_update(CRYS_HASHUserContext_t *ctx,
     return PSA_SUCCESS;
 }
 
-psa_status_t common_hash_finish(CRYS_HASHUserContext_t *ctx, uint8_t *hash, size_t hash_size,
+psa_status_t cryptocell_310_common_hash_finish(CRYS_HASHUserContext_t *ctx, uint8_t *hash, size_t hash_size,
                                 size_t *hash_length)
 {
     cryptocell_310_enable();

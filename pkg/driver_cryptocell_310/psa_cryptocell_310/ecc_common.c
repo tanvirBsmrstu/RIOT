@@ -10,7 +10,8 @@
  * @ingroup     pkg_driver_cryptocell_310
  * @{
  *
- * @brief       Glue code translating between PSA Crypto and the CryptoCell 310 driver APIs
+ * @brief       Common ECC functions used by all PSA Crypto wrappers
+ *              for the CryptoCell 310 ECC APIs.
  *
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
  *
@@ -18,8 +19,8 @@
  */
 
 #include "psa_error.h"
-#include "psa_periph_ecc_common.h"
-#include "cryptocell_util.h"
+#include "psa_cryptocell_310_ecc_common.h"
+#include "cryptocell_310_util.h"
 
 #define ENABLE_DEBUG    0
 #include "debug.h"
@@ -29,7 +30,7 @@ extern CRYS_RND_State_t *rndState_ptr;
 CRYS_ECPKI_Domain_t *pDomain;
 SaSiRndGenerateVectWorkFunc_t rndGenerateVectFunc;
 
-psa_status_t periph_common_ecc_generate_key_pair(uint8_t *priv_key_buffer,
+psa_status_t cryptocell_310_common_ecc_generate_key_pair(uint8_t *priv_key_buffer,
                                                  uint8_t *pub_key_buffer,
                                                  uint32_t *priv_key_buffer_length,
                                                  uint32_t *pub_key_buffer_length,
@@ -69,7 +70,7 @@ psa_status_t periph_common_ecc_generate_key_pair(uint8_t *priv_key_buffer,
     return PSA_SUCCESS;
 }
 
-psa_status_t periph_common_ecc_sign_hash(const uint8_t *priv_key,
+psa_status_t cryptocell_310_common_ecc_sign_hash(const uint8_t *priv_key,
                                          uint32_t priv_key_size,
                                          const uint8_t *hash,
                                          size_t hash_length,
@@ -104,7 +105,7 @@ psa_status_t periph_common_ecc_sign_hash(const uint8_t *priv_key,
     return PSA_SUCCESS;
 }
 
-psa_status_t periph_common_ecc_verify_hash(const uint8_t *pub_key,
+psa_status_t cryptocell_310_common_ecc_verify_hash(const uint8_t *pub_key,
                                            size_t pub_key_size,
                                            const uint8_t *hash,
                                            size_t hash_length,

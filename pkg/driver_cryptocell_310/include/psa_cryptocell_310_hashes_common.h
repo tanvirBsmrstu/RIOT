@@ -10,13 +10,15 @@
  * @ingroup     pkg_driver_cryptocell_310
  * @{
  *
- * @brief       Glue code translating between PSA Crypto and the CryptoCell 310 driver APIs
+ * @file
+ * @brief       Common hash functions used by all PSA Crypto wrappers
+ *              for the CryptoCell 310 hash APIs.
  *
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
  *
  */
-#ifndef PSA_PERIPH_HASHES_COMMON_H
-#define PSA_PERIPH_HASHES_COMMON_H
+#ifndef PSA_CRYPTOCELL_310_HASHES_COMMON_H
+#define PSA_CRYPTOCELL_310_HASHES_COMMON_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,21 +29,36 @@ extern "C" {
 
 /**
  * @brief   Common hash setup function
+ *
+ * @param   ctx
+ * @param   mode
+ * @return  psa_status_t
  */
-psa_status_t common_hash_setup(CRYS_HASHUserContext_t *ctx,
+psa_status_t cryptocell_310_common_hash_setup(CRYS_HASHUserContext_t *ctx,
                                CRYS_HASH_OperationMode_t mode);
 
 /**
  * @brief   Common hash update function
+ *
+ * @param   ctx
+ * @param   input
+ * @param   input_length
+ * @return  psa_status_t
  */
-psa_status_t common_hash_update(CRYS_HASHUserContext_t *ctx,
+psa_status_t cryptocell_310_common_hash_update(CRYS_HASHUserContext_t *ctx,
                                 const uint8_t *input,
                                 size_t input_length);
 
 /**
  * @brief   Common hash finish function
+ *
+ * @param   ctx
+ * @param   hash
+ * @param   hash_size
+ * @param   hash_length
+ * @return  psa_status_t
  */
-psa_status_t common_hash_finish(CRYS_HASHUserContext_t *ctx,
+psa_status_t cryptocell_310_common_hash_finish(CRYS_HASHUserContext_t *ctx,
                                 uint8_t *hash,
                                 size_t hash_size,
                                 size_t *hash_length);
@@ -50,5 +67,5 @@ psa_status_t common_hash_finish(CRYS_HASHUserContext_t *ctx,
 }
 #endif
 
-#endif /* PSA_PERIPH_HASHES_COMMON_H */
+#endif /* PSA_CRYPTOCELL_310_HASHES_COMMON_H */
 /** @} */
