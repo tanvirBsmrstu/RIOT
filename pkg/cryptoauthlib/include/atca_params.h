@@ -84,13 +84,12 @@ extern "C" {
 
 /**@}*/
 
+#if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
 /**
  * @brief   Structure to store ATCA device configuration
  */
 typedef struct {
-#if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
     psa_key_location_t atca_loc;
-#endif
     ATCAIfaceCfg cfg;   /**< ATCA configuration parameters */
 } atca_params_t;
 
@@ -101,6 +100,25 @@ static const atca_params_t atca_params[] =
 {
     ATCA_PARAMS
 };
+#else
+/**
+ * @brief   Allocation of ATCA device descriptors
+ */
+static const ATCAIfaceCfg atca_params[] =
+{
+    ATCA_PARAMS
+};
+#endif
+
+/**
+ * @brief   Number of connected devices
+ */
+#define ATCA_NUMOF (ARRAY_SIZE(atca_params))
+
+/**
+ * @brief   List of device pointers for all available devices
+ */
+extern ATCADevice atca_devs_ptr[ATCA_NUMOF];
 
 #ifdef __cplusplus
 }
