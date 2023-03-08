@@ -128,8 +128,7 @@
  * To use them you need to utilize the `calib`-API of the cryptoauth driver, which
  * allows you to pass a device handle. Pointers to all initialized devices are stored
  * in the `atca_devs_ptr` array, which is included in `atca_params.h`.
- * To use a device pointer, just pass it to the function you want to call as shown
- * below.
+ * Include `atca_params.h` in your source file and pass the device handled as shown below.
  *
  * @code {.c}
  * ATCADevice dev = atca_devs_ptr[0];
