@@ -21,7 +21,7 @@
 #include "atca_params.h"
 #include "kernel_defines.h"
 
-#define ENABLE_DEBUG 1
+#define ENABLE_DEBUG 0
 #include "debug.h"
 
 #if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
@@ -34,6 +34,7 @@ psa_se_config_t atca_config_list[] = { ATCA_CONFIG_LIST };
 #endif
 
 ATCADevice atca_devs_ptr[ATCA_NUMOF];
+
 static struct atca_device atca_devs[ATCA_NUMOF];
 
 #if IS_USED(MODULE_PSA_SECURE_ELEMENT_ATECCX08A)
