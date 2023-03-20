@@ -8,7 +8,7 @@
  *
  * This package provides support for the official library for Microchip CryptoAuth devices.
  *
- * @Warning Some functions can only be used, when the data, config and otp zones
+ * @warning Some functions can only be used, when the data, config and otp zones
  *          of the device are locked. Locking is permanent and cannot be undone.
  *          Be careful if you're not sure you've configured everything correctly.
  *          For more information please refer to the data sheet of the device.
