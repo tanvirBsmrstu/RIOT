@@ -5,6 +5,6 @@
  * @see      https://infocenter.nordicsemi.com/topic/sdk_nrf5_v17.1.0/group__cryptocell__api.html
  *
  * @note    The source of this package is not a git repository, but a zip file downloaded
- *          from the Nordic Semiconductors software center. It is quite large and takes a
+ *          from the Nordic Semiconductor software center. It is quite large and takes a
  *          while to download.
  */
