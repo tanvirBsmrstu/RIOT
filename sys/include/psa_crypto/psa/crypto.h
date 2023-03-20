@@ -31,7 +31,7 @@ extern "C" {
 
 #include "kernel_defines.h"
 
-#if IS_USED(MODULE_PSA_SECURE_ELEMENT)
+#if IS_USED(MODULE_PSA_SECURE_ELEMENT_CONFIG)
 #include "psa/crypto_se_config.h"
 #endif
 

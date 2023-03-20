@@ -236,4 +236,5 @@ endif
 
 ifneq (,$(filter psa_secure_element_ateccx08a, $(USEMODULE)))
   USEPKG += cryptoauthlib
+  USEMODULE += psa_secure_element_config
 endif

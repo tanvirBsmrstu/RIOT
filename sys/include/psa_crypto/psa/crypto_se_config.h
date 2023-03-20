@@ -10,6 +10,7 @@
  * @ingroup     sys_psa_crypto
  * @{
  *
+ * @file
  * @brief       Define structures für SE slot configurations
  *
  * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>

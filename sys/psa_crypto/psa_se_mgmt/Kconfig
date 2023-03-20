@@ -24,6 +24,7 @@ config PSA_MAX_SE_COUNT
 menuconfig MODULE_PSA_SECURE_ELEMENT_ATECCX08A
     bool "Microchip ATECCX08A"
     select PACKAGE_CRYPTOAUTHLIB
+    select MODULE_PSA_SECURE_ELEMENT_CONFIG
     depends on HAS_PERIPH_I2C
     help
         When using Cryptoauthlib as a backend for elliptic curve operations,
@@ -42,5 +43,11 @@ config MODULE_PSA_SECURE_ELEMENT_ASYMMETRIC
     bool
     help
         Indicates that an asymmetric operation is used with secure elements.
+
+config MODULE_PSA_SECURE_ELEMENT_CONFIG
+    bool
+    help
+        Indicates that this SE driver defines a configuration structure for
+        persistent driver data.
 
 endif # MODULE_PSA_SECURE_ELEMENT
