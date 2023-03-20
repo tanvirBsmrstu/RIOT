@@ -48,7 +48,7 @@ else
     CFLAGS += -DCONFIG_PSA_SINGLE_KEY_COUNT=1
     USEMODULE += psa_secure_element
     USEMODULE += psa_secure_element_ateccx08a
-    USEMODULE += psa_secure_element_ateccx08a_ecc
+    USEMODULE += psa_secure_element_ateccx08a_ecc_p256
   else ifeq (2, $(SECURE_ELEMENT))
     CFLAGS += -DSECURE_ELEMENT # Application specific (not needed by PSA)
     CFLAGS += -DMULTIPLE_SE # Application specific (not needed by PSA)
@@ -59,7 +59,7 @@ else
     USEMODULE += psa_secure_element
     USEMODULE += psa_secure_element_multiple
     USEMODULE += psa_secure_element_ateccx08a
-    USEMODULE += psa_secure_element_ateccx08a_ecc
+    USEMODULE += psa_secure_element_ateccx08a_ecc_p256
   else ifdef CUSTOM_BACKEND
     # Necessary configuration when using Make dependency resolution
     # This first part chooses the operation. If nothing else es specified,
