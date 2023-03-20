@@ -23,7 +23,7 @@
  * @file        psa_crypto_se_driver.h
  * @brief       PSA external cryptoprocessor driver module
  *
- *              This header declares types and function signatures for cryptography
+ * @details     This header declares types and function signatures for cryptography
  *              drivers that access key material via opaque references.
  *              This is meant for cryptoprocessors that have a separate key storage from the
  *              space in which the PSA Crypto implementation runs, typically secure
@@ -34,9 +34,6 @@
  *              to be called in a standardized way by a PSA Cryptography API
  *              implementation. The functions comprising the driver HAL, which driver
  *              authors implement, are not intended to be called by application developers.
- *
- * @author      Lena Boeckmann <lena.boeckmann@haw-hamburg.de>
- *
  */
 
 #ifndef PSA_CRYPTO_SE_DRIVER_H

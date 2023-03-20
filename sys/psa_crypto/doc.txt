@@ -182,7 +182,7 @@
  * USEMODULE += psa_cipher_aes_128_cbc
  * @endcode
  *
- * If desired, you can choose a specific backend at compile time. For this you need to specifiy
+ * If desired, you can choose a specific backend at compile time. For this you need to specify
  * that you want to set a custom backend and then explicitly choose the one you want (see below).
  * @code
  * USEMODULE += psa_cipher_aes_128_cbc_custom_backend
@@ -566,12 +566,12 @@
  * the Curve25519).
  *
  * Let's say we have an imaginary software library called `FancyCrypt` and want to use
- * it as a backend of PSA. We've aleady added it to RIOT as a third party package in
+ * it as a backend of PSA. We've already added it to RIOT as a third party package in
  * `pkg/fancycrypt`.
  * Our library provides hashes and elliptic curve operations and to make it accessible to
  * PSA Crypto we need to write wrappers for our API calls.
  *
- * Frist we create a folder called `psa_fancycrypt` in the package directory. Inside we create
+ * First we create a folder called `psa_fancycrypt` in the package directory. Inside we create
  * a file with the name of each operation you want to integrate, e.g. `p256.c` and
  * `hashes_sha_224.c` (when adding operations, remember that the path of the files will also
  * be the [module name](#module-names), so please comply with the current naming scheme).
@@ -819,7 +819,7 @@
  *
  * #### Adding the Glue Code
  * Secure element drivers need to implement a different API than the other backends. It is defined
- * in `sys/psa_crypto/include/psa_crypto_se_driver.h`.
+ * [here](#sys_psa_crypto_se_driver).
  * In our package folder we now create a new folder called `psa_superse_driver` and add a source
  * file called `psa_superse_lib_driver.c`. Here we now implement glue code for all the cryptographic
  * operations our SE supports.
@@ -850,7 +850,7 @@
  *
  * #### Allocation
  * The first thing PSA will do, when an application creates a key on an SE, is ask the driver to
- * find a free key slot on the device. This ist what the `allocate` function is for. How exactly
+ * find a free key slot on the device. This is what the `allocate` function is for. How exactly
  * the slot is allocated, depends on the driver.
  * It may be possible to query that information directly from the device. If that is not possible,
  * we can use the persistent data stored in the driver context. An example for this can be
