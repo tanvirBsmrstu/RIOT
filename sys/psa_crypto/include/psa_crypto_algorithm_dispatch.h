@@ -32,8 +32,7 @@ extern "C" {
 
 /**
  * @brief   Dispatch a hash setup function to a specific backend.
- *
- *          See @ref psa_hash_setup(...)
+ *          See @ref psa_hash_setup()
  *
  * @param operation
  * @param alg
@@ -44,8 +43,7 @@ psa_status_t psa_algorithm_dispatch_hash_setup(psa_hash_operation_t *operation,
 
 /**
  * @brief   Dispatch a hash update function to a specific backend.
- *
- *          See @ref psa_hash_update(...)
+ *          See @ref psa_hash_update()
  *
  * @param operation
  * @param input
@@ -58,8 +56,7 @@ psa_status_t psa_algorithm_dispatch_hash_update(psa_hash_operation_t *operation,
 
 /**
  * @brief   Dispatch a hash finish function to a specific backend.
- *
- *          See @ref psa_hash_finish(...)
+ *          See @ref psa_hash_finish()
  *
  * @param operation
  * @param hash
@@ -74,8 +71,7 @@ psa_status_t psa_algorithm_dispatch_hash_finish(psa_hash_operation_t *operation,
 
 /**
  * @brief   Dispatch a hash signature function to a specific backend.
- *
- *          See @ref psa_sign_hash(...)
+ *          See @ref psa_sign_hash()
  *
  * @param attributes
  * @param alg
@@ -98,8 +94,7 @@ psa_status_t psa_algorithm_dispatch_sign_hash(  const psa_key_attributes_t *attr
 
 /**
  * @brief   Dispatch a hash verification function to a specific backend.
- *
- *          See @ref psa_verify_hash(...)
+ *          See @ref psa_verify_hash()
  *
  * @param attributes
  * @param alg
@@ -120,8 +115,7 @@ psa_status_t psa_algorithm_dispatch_verify_hash(  const psa_key_attributes_t *at
 
 /**
  * @brief   Dispatch the key generation function to a specific backend.
- *
- *          See @ref psa_generate_key(...)
+ *          See @ref psa_generate_key()
  *
  * @param attributes
  * @param slot
@@ -132,8 +126,7 @@ psa_status_t psa_algorithm_dispatch_generate_key(   const psa_key_attributes_t *
 
 /**
  * @brief   Dispatch a cipher encrypt function to a specific backend.
- *
- *          See @ref psa_cipher_encrypt(...)
+ *          See @ref psa_cipher_encrypt()
  *
  * @param attributes
  * @param alg
@@ -156,8 +149,7 @@ psa_status_t psa_algorithm_dispatch_cipher_encrypt( const psa_key_attributes_t *
 
 /**
  * @brief   Dispatch a cipher decrypt function to a specific backend.
- *
- *          See @ref psa_cipher_decrypt(...)
+ *          See @ref psa_cipher_decrypt()
  *
  * @param attributes
  * @param alg
@@ -180,8 +172,7 @@ psa_status_t psa_algorithm_dispatch_cipher_decrypt( const psa_key_attributes_t *
 
 /**
  * @brief   Dispatch a mac computation function to a specific backend.
- *
- *          See @ref psa_mac_compute(...)
+ *          See @ref psa_mac_compute()
  *
  * @param attributes
  * @param alg

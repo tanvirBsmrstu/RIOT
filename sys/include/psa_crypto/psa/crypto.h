@@ -61,8 +61,7 @@ const char *psa_status_to_humanly_readable(psa_status_t status);
 /**
  * @brief   Library initialization.
  *
- * @details Applications must call this function before calling any other function in this module.
- *
+ * @details Applications must call this function before calling any other function in this module. *
  *          Applications are permitted to call this function more than once. Once a call succeeds,
  *          subsequent calls are guaranteed to succeed.
  *
@@ -76,11 +75,11 @@ const char *psa_status_to_humanly_readable(psa_status_t status);
  *              generator.
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_INSUFFICIENT_ENTROPY
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_INSUFFICIENT_ENTROPY
  */
 psa_status_t psa_crypto_init(void);
 
@@ -116,25 +115,25 @@ psa_status_t psa_crypto_init(void);
  * @param   ciphertext_length       On success, the size of the output in the ciphertext buffer.
  *
  * @return  @ref PSA_SUCCESS                        Success.
- *          @ref PSA_ERROR_INVALID_HANDLE
- *          @ref PSA_ERROR_NOT_PERMITTED            The key does not have the
+ * @return  @ref PSA_ERROR_INVALID_HANDLE
+ * @return  @ref PSA_ERROR_NOT_PERMITTED            The key does not have the
  *                                                  @ref PSA_KEY_USAGE_ENCRYPT flag, or it does not
  *                                                  permit the requested algorithm.
- *          @ref PSA_ERROR_INVALID_ARGUMENT         @c key is not compatible with @c alg.
- *          @ref PSA_ERROR_NOT_SUPPORTED            @c alg is not supported or is not an AEAD
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT         @c key is not compatible with @c alg.
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED            @c alg is not supported or is not an AEAD
  *                                                  algorithm.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL         @c ciphertext_size is too small.
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL         @c ciphertext_size is too small.
  *                                                  @ref PSA_AEAD_ENCRYPT_OUTPUT_SIZE() or
  *                                                  @ref PSA_AEAD_ENCRYPT_OUTPUT_MAX_SIZE() can be
  *                                                  used to determine the required buffer size.
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -182,26 +181,26 @@ psa_status_t psa_aead_encrypt(psa_key_id_t key,
  * @param   plaintext_length        On success, the size of the output in the plaintext buffer.
  *
  * @return  @ref PSA_SUCCESS                        Success.
- *          @ref PSA_ERROR_INVALID_HANDLE
- *          @ref PSA_ERROR_INVALID_SIGNATURE        The ciphertext is not authentic.
- *          @ref PSA_ERROR_NOT_PERMITTED            The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE
+ * @return  @ref PSA_ERROR_INVALID_SIGNATURE        The ciphertext is not authentic.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED            The key does not have the @ref
  *                                                  PSA_KEY_USAGE_DECRYPT flag, or it does not
  *                                                  permit the requested algorithm.
- *          @ref PSA_ERROR_INVALID_ARGUMENT         @c key is not compatible with @c alg.
- *          @ref PSA_ERROR_NOT_SUPPORTED            @c alg is not supported or is not an AEAD
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT         @c key is not compatible with @c alg.
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED            @c alg is not supported or is not an AEAD
  *                                                  algorithm.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL         @c plaintext_size is too small.
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL         @c plaintext_size is too small.
  *                                                  @ref PSA_AEAD_DECRYPT_OUTPUT_SIZE() or
  *                                                  @ref PSA_AEAD_DECRYPT_OUTPUT_MAX_SIZE() can be
  *                                                  used to determine the required buffer size.
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -256,21 +255,21 @@ psa_status_t psa_aead_decrypt(psa_key_id_t key,
  *                      @ref PSA_ALG_IS_AEAD(@p alg) is true).
  *
  * @return  @ref PSA_SUCCESS                    Success.
- *          @ref PSA_ERROR_BAD_STATE            The operation state is not valid: it must be
+ * @return  @ref PSA_ERROR_BAD_STATE            The operation state is not valid: it must be
  *                                              inactive.
- *          @ref PSA_ERROR_INVALID_HANDLE
- *          @ref PSA_ERROR_NOT_PERMITTED        The key does not have the @ref PSA_KEY_USAGE_ENCRYPT
+ * @return  @ref PSA_ERROR_INVALID_HANDLE
+ * @return  @ref PSA_ERROR_NOT_PERMITTED        The key does not have the @ref PSA_KEY_USAGE_ENCRYPT
  *                                              flag, or it does not permit the requested algorithm.
- *          @ref PSA_ERROR_INVALID_ARGUMENT     @c key is not compatible with @c alg.
- *          @ref PSA_ERROR_NOT_SUPPORTED        @c alg is not supported or is not an AEAD algorithm.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE            The library has not been previously initialized by
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT     @c key is not compatible with @c alg.
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED        @c alg is not supported or is not an AEAD algorithm.
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE            The library has not been previously initialized by
  *                                              @ref psa_crypto_init(). It is
  *                                              implementation-dependent whether a failure to
  *                                              initialize results in this error code.
@@ -315,23 +314,23 @@ psa_status_t psa_aead_encrypt_setup(psa_aead_operation_t *operation,
  *                      @ref PSA_ALG_IS_AEAD(@p alg) is true).
  *
  * @return  @ref PSA_SUCCESS                        Success.
- *          @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be
+ * @return  @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be
  *                                                  inactive.
- *          @ref PSA_ERROR_INVALID_HANDLE
- *          @ref PSA_ERROR_NOT_PERMITTED            The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE
+ * @return  @ref PSA_ERROR_NOT_PERMITTED            The key does not have the @ref
  *                                                  PSA_KEY_USAGE_DECRYPT flag, or it does not
  *                                                  permit the requested algorithm.
- *          @ref PSA_ERROR_INVALID_ARGUMENT         @c key is not compatible with @c alg.
- *          @ref PSA_ERROR_NOT_SUPPORTED            @c alg is not supported or is not an AEAD
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT         @c key is not compatible with @c alg.
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED            @c alg is not supported or is not an AEAD
  *                                                  algorithm.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -360,17 +359,17 @@ psa_status_t psa_aead_decrypt_setup(psa_aead_operation_t *operation,
  * @param   plaintext_length    Size of the plaintext to encrypt in bytes.
  *
  * @return  @ref PSA_SUCCESS                        Success.
- *          @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be
+ * @return  @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be
  *                                                  active, and @ref psa_aead_set_nonce() and
  *                                                  @ref psa_aead_generate_nonce() must not have
  *                                                  been called yet.
- *          @ref PSA_ERROR_INVALID_ARGUMENT         At least one of the lengths is not acceptable
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT         At least one of the lengths is not acceptable
  *                                                  for the chosen algorithm.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -401,25 +400,25 @@ psa_status_t psa_aead_set_lengths(psa_aead_operation_t *operation,
  * @param   nonce_length    On success, the number of bytes of the generated nonce.
  *
  * @return  @ref PSA_SUCCESS                        Success.
- *          @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be
+ * @return  @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be
  *                                                  an active AEAD encryption operation, with no
  *                                                  nonce set.
- *          @ref PSA_ERROR_BAD_STATE                The operation state is not valid: this is an
+ * @return  @ref PSA_ERROR_BAD_STATE                The operation state is not valid: this is an
  *                                                  algorithm which requires @ref
  *                                                  psa_aead_set_lengths() to be called before
  *                                                  setting the nonce.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL         The size of the nonce buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL         The size of the nonce buffer is too small.
  *                                                  @ref PSA_AEAD_NONCE_LENGTH() or @ref
  *                                                  PSA_AEAD_NONCE_MAX_SIZE can be used to
  *                                                  determine the required buffer size.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -451,23 +450,23 @@ psa_status_t psa_aead_generate_nonce(psa_aead_operation_t *operation,
  *                          the algorithm respectively that were used to set up the AEAD operation.
  *
  * @return  @ref PSA_SUCCESS                        Success.
- *          @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be
+ * @return  @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be
  *                                                  an active AEAD encryption operation, with no
  *                                                  nonce set.
- *          @ref PSA_ERROR_BAD_STATE                The operation state is not valid: this is an
+ * @return  @ref PSA_ERROR_BAD_STATE                The operation state is not valid: this is an
  *                                                  algorithm which requires @ref
  *                                                  psa_aead_set_lengths() to be called before
  *                                                  setting the nonce.
- *          @ref PSA_ERROR_INVALID_ARGUMENT         The size of nonce is not acceptable for the
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT         The size of nonce is not acceptable for the
  *                                                  chosen algorithm.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -480,7 +479,6 @@ psa_status_t psa_aead_set_nonce(psa_aead_operation_t *operation,
  * @brief   Pass additional data to an active AEAD operation.
  *
  * @details Additional data is authenticated, but not encrypted.
- *
  *          This function can be called multiple times to pass successive fragments of the
  *          additional data. This function must not be called after passing data to encrypt
  *          or decrypt with @ref psa_aead_update().
@@ -500,21 +498,21 @@ psa_status_t psa_aead_set_nonce(psa_aead_operation_t *operation,
  * @param   input_length    Size of the input buffer in bytes.
  *
  * @return  @ref PSA_SUCCESS                        Success.
- *          @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be
+ * @return  @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be
  *                                                  active, have a nonce set, have lengths set if
  *                                                  required by the algorithm, and @ref
  *                                                  psa_aead_update() must not have been called yet.
- *          @ref PSA_ERROR_INVALID_ARGUMENT         The total input length overflows the additional
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT         The total input length overflows the additional
  *                                                  data length that was previously specified with
  *                                                  @ref psa_aead_set_lengths().
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -562,28 +560,28 @@ psa_status_t psa_aead_update_ad(psa_aead_operation_t *operation,
  * @param   output_length   On success, the number of bytes that make up the returned output.
  *
  * @return  @ref PSA_SUCCESS                        Success.
- *          @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be
+ * @return  @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be
  *                                                  active, have a nonce set, and have lengths set
  *                                                  if required by the algorithm.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL         The size of the output buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL         The size of the output buffer is too small.
  *                                                  @ref PSA_AEAD_UPDATE_OUTPUT_SIZE() or
  *                                                  @ref PSA_AEAD_UPDATE_OUTPUT_MAX_SIZE() can be
  *                                                  used to determine the required buffer size.
- *          @ref PSA_ERROR_INVALID_ARGUMENT         The total length of input to @ref
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT         The total length of input to @ref
  *                                                  psa_aead_update_ad() so far is less than the
  *                                                  additional data length that was previously
  *                                                  specified with @ref psa_aead_set_lengths()
- *          @ref PSA_ERROR_INVALID_ARGUMENT         The total input length overflows the plaintext
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT         The total input length overflows the plaintext
  *                                                  length that was previously specified with
  *                                                  @ref psa_aead_set_lengths().
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -599,7 +597,6 @@ psa_status_t psa_aead_update(psa_aead_operation_t *operation,
  * @brief   Finish encrypting a message in an AEAD operation.
  *
  * @details The operation must have been set up with @ref psa_aead_encrypt_setup().
- *
  *          This function finishes the authentication of the additional data formed
  *          by concatenating the inputs passed to preceding calls to @ref psa_aead_update_ad()
  *          with the plaintext formed by concatenating the inputs passed to preceding calls to
@@ -634,31 +631,31 @@ psa_status_t psa_aead_update(psa_aead_operation_t *operation,
  * @param   tag_length            On success, the number of bytes that make up the returned tag.
  *
  * @return  @ref PSA_SUCCESS                        Success.
- *          @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be an
+ * @return  @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be an
  *                                                  active encryption operation with a nonce set.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL         The size of the ciphertext or tag buffer is too
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL         The size of the ciphertext or tag buffer is too
  *                                                  small. @ref PSA_AEAD_FINISH_OUTPUT_SIZE() or
  *                                                  @ref PSA_AEAD_FINISH_OUTPUT_MAX_SIZE can be
  *                                                  used to determine the required ciphertext
  *                                                  buffer size. @ref PSA_AEAD_TAG_LENGTH() or
  *                                                  @ref  PSA_AEAD_TAG_MAX_SIZE can be used to
  *                                                  determine the required tag buffer size.
- *          @ref PSA_ERROR_INVALID_ARGUMENT         The total length of input to @ref
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT         The total length of input to @ref
  *                                                  psa_aead_update_ad() so far is less than the
  *                                                  additional data length that was previously
  *                                                  specified with @ref psa_aead_set_lengths()
- *          @ref PSA_ERROR_INVALID_ARGUMENT         The total length of input to @ref
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT         The total length of input to @ref
  *                                                  psa_aead_update() so far is less than the
  *                                                  plaintext length that was previously specified
  *                                                  with @ref psa_aead_set_lengths().
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -675,7 +672,6 @@ psa_status_t psa_aead_finish(psa_aead_operation_t *operation,
  * @brief   Finish authenticating and decrypting a message in an AEAD operation.
  *
  * @details The operation must have been set up with @ref psa_aead_decrypt_setup().
- *
  *          This function finishes the authenticated decryption of the message components:
  *          -   The additional data consisting of the concatenation of the inputs passed to
  *              preceding calls to @ref psa_aead_update_ad().
@@ -710,30 +706,30 @@ psa_status_t psa_aead_finish(psa_aead_operation_t *operation,
  * @param   tag_length          Size of the tag buffer in bytes.
  *
  * @return  @ref PSA_SUCCESS                        Success.
- *          @ref PSA_ERROR_INVALID_SIGNATURE        The calculations were successful, but the
+ * @return  @ref PSA_ERROR_INVALID_SIGNATURE        The calculations were successful, but the
  *                                                  authentication tag is not correct.
- *          @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be an
+ * @return  @ref PSA_ERROR_BAD_STATE                The operation state is not valid: it must be an
  *                                                  active encryption operation with a nonce set.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL         The size of the plaintext buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL         The size of the plaintext buffer is too small.
  *                                                  @ref PSA_AEAD_VERIFY_OUTPUT_SIZE() or
  *                                                  @ref PSA_AEAD_VERIFY_OUTPUT_MAX_SIZE can be
  *                                                  used to determine the required buffer size.
- *          @ref PSA_ERROR_INVALID_ARGUMENT         The total length of input to @ref
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT         The total length of input to @ref
  *                                                  psa_aead_update_ad() so far is less than the
  *                                                  additional data length that was previously
  *                                                  specified with @ref psa_aead_set_lengths()
- *          @ref PSA_ERROR_INVALID_ARGUMENT         The total length of input to @ref
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT         The total length of input to @ref
  *                                                  psa_aead_update() so far is less than the
  *                                                  plaintext length that was previously specified
  *                                                  with @ref psa_aead_set_lengths().
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by  @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -762,10 +758,10 @@ psa_status_t psa_aead_verify(psa_aead_operation_t *operation,
  * @param   operation   Initialized AEAD operation.
  *
  * @return  @ref PSA_SUCCESS                        Success.
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by  @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -800,25 +796,25 @@ psa_status_t psa_aead_abort(psa_aead_operation_t *operation);
  * @param   output_length   On success, the number of bytes that make up the returned output.
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_INVALID_HANDLE
- *          @ref PSA_ERROR_NOT_PERMITTED            The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE
+ * @return  @ref PSA_ERROR_NOT_PERMITTED            The key does not have the @ref
  *                                                  PSA_KEY_USAGE_ENCRYPT flag, or it does not
  *                                                  permit the requested algorithm.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL         The size of the output buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL         The size of the output buffer is too small.
  *                                                  @ref PSA_ASYMMETRIC_ENCRYPT_OUTPUT_SIZE() or
  *                                                  @ref PSA_ASYMMETRIC_ENCRYPT_OUTPUT_MAX_SIZE can
  *                                                  be used to determine the required buffer size.
- *          @ref PSA_ERROR_NOT_SUPPORTED
- *          @ref PSA_ERROR_INVALID_ARGUMENT
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_INSUFFICIENT_ENTROPY
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_ENTROPY
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by  @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -860,27 +856,27 @@ psa_status_t psa_asymmetric_encrypt(psa_key_id_t key,
  * @param   output_length   On success, the number of bytes that make up the returned output.
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_INVALID_HANDLE
- *          @ref PSA_ERROR_NOT_PERMITTED            The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE
+ * @return  @ref PSA_ERROR_NOT_PERMITTED            The key does not have the @ref
  *                                                  PSA_KEY_USAGE_DECRYPT flag, or it does not
  *                                                  permit the requested algorithm.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL         The size of the output buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL         The size of the output buffer is too small.
  *                                                  @ref PSA_ASYMMETRIC_DECRYPT_OUTPUT_SIZE() or
  *                                                  @ref PSA_ASYMMETRIC_DECRYPT_OUTPUT_MAX_SIZE
  *                                                  can be used to determine the required buffer
  *                                                  size.
- *          @ref PSA_ERROR_NOT_SUPPORTED
- *          @ref PSA_ERROR_INVALID_ARGUMENT
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_INSUFFICIENT_ENTROPY
- *          @ref PSA_ERROR_INVALID_PADDING
- *          @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_ENTROPY
+ * @return  @ref PSA_ERROR_INVALID_PADDING
+ * @return  @ref PSA_ERROR_BAD_STATE                The library has not been previously initialized
  *                                                  by  @ref psa_crypto_init(). It is
  *                                                  implementation-dependent whether a failure to
  *                                                  initialize results in this error code.
@@ -913,18 +909,17 @@ psa_status_t psa_asymmetric_decrypt(psa_key_id_t key,
  *
  * @return  @ref PSA_SUCCESS                        Success. The operation object can now be
  *                                                  discarded or reused.
- *          @ref PSA_ERROR_BAD_STATE                The library requires initializing by a call
+ * @return  @ref PSA_ERROR_BAD_STATE                The library requires initializing by a call
  *                                                  to @ref psa_crypto_init().
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_cipher_abort(psa_cipher_operation_t *operation);
 
 /**
  * @brief   Decrypt a message using a symmetric cipher.
  *
- * @details This function decrypts a message encrypted with a symmetric cipher.
- *
+ * @details This function decrypts a message encrypted with a symmetric cipher. *
  *          The input to this function must contain the IV followed by the ciphertext, as output
  *          by @ref psa_cipher_encrypt(). The IV must be @ref PSA_CIPHER_IV_LENGTH(@p key_type,
  *          @p alg) bytes in length, where @c key_type is the type of key.
@@ -952,18 +947,18 @@ psa_status_t psa_cipher_abort(psa_cipher_operation_t *operation);
  *
  * @return  @ref PSA_SUCCESS                Success. The first @p (*output_length) bytes of
  *                                          @p output contain the plaintext.
- *          @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to
+ * @return  @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to
  *                                          @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref PSA_KEY_USAGE_DECRYPT
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref PSA_KEY_USAGE_DECRYPT
  *                                          flag, or it does not permit the requested algorithm.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the output buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the output buffer is too small.
  *                                          @ref PSA_CIPHER_DECRYPT_OUTPUT_SIZE() or
  *                                          @ref PSA_CIPHER_DECRYPT_OUTPUT_MAX_SIZE() can be
  *                                          used to determine a sufficient buffer size.
- *          @ref PSA_ERROR_INVALID_PADDING  The algorithm uses padding, and the input does not
+ * @return  @ref PSA_ERROR_INVALID_PADDING  The algorithm uses padding, and the input does not
  *                                          contain valid padding.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          -   @c alg is not a cipher algorithm.
  *                                          -   @c key is not compatible with alg.
  *                                          -   The input_length is not valid for the algorithm
@@ -972,17 +967,17 @@ psa_status_t psa_cipher_abort(psa_cipher_operation_t *operation);
  *                                              cipher and requires a whole number of blocks,
  *                                              but the total input size is not a multiple
  *                                              of the block size.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          -   @c alg is not supported or is not a cipher
  *                                              algorithm.
  *                                          -   @c key is not supported for use with alg.
  *                                          -   @c input_length is too large for the implementation.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_cipher_decrypt(psa_key_id_t key,
                                 psa_algorithm_t alg,
@@ -1026,26 +1021,26 @@ psa_status_t psa_cipher_decrypt(psa_key_id_t key,
  *                      such that @ref PSA_ALG_IS_CIPHER(@p alg) is true.
  *
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          -   The operation state is not valid: it must be
  *                                              inactive.
  *                                          -   The library requires initializing by a call to
  *                                              @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @p key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref PSA_KEY_USAGE_DECRYPT
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @p key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref PSA_KEY_USAGE_DECRYPT
  *                                          flag, or it does not permit the requested algorithm.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - @c alg is not a cipher algorithm.
  *                                          - @c key is not compatible with alg.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          - @c alg is not supported or is not a cipher algorithm.
  *                                          - @c key is not supported for use with alg.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_cipher_decrypt_setup(psa_cipher_operation_t *operation,
                                       psa_key_id_t key,
@@ -1080,30 +1075,30 @@ psa_status_t psa_cipher_decrypt_setup(psa_cipher_operation_t *operation,
  * @param   output_length   On success, the number of bytes that make up the output.
  *
  * @return  @ref PSA_SUCCESS                    Success.
- *          @ref PSA_ERROR_INVALID_HANDLE
- *          @ref PSA_ERROR_NOT_PERMITTED        The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE
+ * @return  @ref PSA_ERROR_NOT_PERMITTED        The key does not have the @ref
  *                                              PSA_KEY_USAGE_ENCRYPT flag, or it does not permit
  *                                              the requested algorithm.
- *          @ref PSA_ERROR_INVALID_ARGUMENT     @c key is not compatible with alg.
- *          @ref PSA_ERROR_INVALID_ARGUMENT     The @c input_length is not valid for the algorithm
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT     @c key is not compatible with alg.
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT     The @c input_length is not valid for the algorithm
  *                                              and key type. For example, the algorithm is a based
  *                                              on block cipher and requires a whole number of
  *                                              blocks, but the total input size is not a multiple
  *                                              of the block size.
- *          @ref PSA_ERROR_NOT_SUPPORTED        @c alg is not supported or is not a cipher
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED        @c alg is not supported or is not a cipher
  *                                              algorithm.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL     @c output_size is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL     @c output_size is too small.
  *                                              @ref PSA_CIPHER_ENCRYPT_OUTPUT_SIZE() or
  *                                              @ref PSA_CIPHER_ENCRYPT_OUTPUT_MAX_SIZE()
  *                                              can be used to determine the required buffer size.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE            The library has not been previously initialized
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE            The library has not been previously initialized
  *                                              by  @ref psa_crypto_init(). It is
  *                                              implementation-dependent whether a failure to
  *                                              initialize results in this error code.
@@ -1151,27 +1146,27 @@ psa_status_t psa_cipher_encrypt(psa_key_id_t key,
  *                      such that @ref PSA_ALG_IS_CIPHER(@p alg) is true.
  *
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          -   The operation state is not valid: it must be
  *                                              inactive.
  *                                          -   The library requires initializing by a call to
  *                                          @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref
  *                                          PSA_KEY_USAGE_ENCRYPT flag, or it does not permit
  *                                          the requested algorithm.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - @c alg is not a cipher algorithm.
  *                                          - @c key is not compatible with alg.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          - @c alg is not supported or is not a cipher algorithm.
  *                                          - @c key is not supported for use with @c alg.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_cipher_encrypt_setup(psa_cipher_operation_t *operation,
                                       psa_key_id_t key,
@@ -1204,30 +1199,30 @@ psa_status_t psa_cipher_encrypt_setup(psa_cipher_operation_t *operation,
  *
  * @return  @ref PSA_SUCCESS                Success. The first @c (*output_length) bytes of
  *                                          @c output contain the final output.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          -   The operation state is not valid: it must be
  *                                              active, with an IV set if required for the
  *                                              algorithm.
  *                                          -   The library requires initializing by a call to
  *                                              @ref psa_crypto_init().
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the output buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the output buffer is too small.
  *                                          @ref PSA_CIPHER_FINISH_OUTPUT_SIZE() or
  *                                          @ref PSA_CIPHER_FINISH_OUTPUT_MAX_SIZE can be used
  *                                          to determine a sufficient buffer size.
- *          @ref PSA_ERROR_INVALID_PADDING  This is a decryption operation for an algorithm that
+ * @return  @ref PSA_ERROR_INVALID_PADDING  This is a decryption operation for an algorithm that
  *                                          includes padding, and the ciphertext does not contain
  *                                          valid padding.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The total input size passed to this operation is not
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The total input size passed to this operation is not
  *                                          valid for this particular algorithm. For example, the
  *                                          algorithm is a based on block cipher and requires a
  *                                          whole number of blocks, but the total input size
  *                                          is not a multiple of the block size.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_cipher_finish(psa_cipher_operation_t *operation,
                                uint8_t *output,
@@ -1263,22 +1258,22 @@ psa_status_t psa_cipher_finish(psa_cipher_operation_t *operation,
  * @param iv_length On success, the number of bytes of the generated IV.
  *
  * @return  @ref PSA_SUCCESS                    Success.
- *          @ref PSA_ERROR_BAD_STATE            Either:
+ * @return  @ref PSA_ERROR_BAD_STATE            Either:
  *                                              -   The cipher algorithm does not use an IV.
  *                                              -   The operation state is not valid: it must be
  *                                                  active, with no IV set.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL     The size of the iv buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL     The size of the iv buffer is too small.
  *                                              @ref PSA_CIPHER_IV_LENGTH() or
  *                                              @ref PSA_CIPHER_IV_MAX_SIZE can be used to
  *                                              determine the required buffer size.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE            The library has not been previously initialized
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE            The library has not been previously initialized
  *                                              by  @ref psa_crypto_init(). It is
  *                                              implementation-dependent whether a failure to
  *                                              initialize results in this error code.
@@ -1312,23 +1307,23 @@ psa_status_t psa_cipher_generate_iv(psa_cipher_operation_t *operation,
  * @param   iv_length   Size of the IV in bytes.
  *
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          -   The cipher algorithm does not use an IV.
  *                                          -   The operation state is not valid: it must be an
  *                                              active cipher encrypt operation, with no IV set.
  *                                          -   The library requires initializing by a call to
  *                                              @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - The chosen algorithm does not use an IV.
  *                                          - @c iv_length is not valid for the chosen algorithm.
- *          @ref PSA_ERROR_NOT_SUPPORTED    @c iv_length is not supported for use with the
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    @c iv_length is not supported for use with the
  *                                          operation’s algorithm and key.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_cipher_set_iv(psa_cipher_operation_t *operation,
                                const uint8_t *iv,
@@ -1363,26 +1358,26 @@ psa_status_t psa_cipher_set_iv(psa_cipher_operation_t *operation,
  *
  * @return  @ref PSA_SUCCESS                Success. The first @p (*output_length) bytes of
  *                                          @p output contain the output data.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          -   The operation state is not valid: it must be
  *                                              active, with an IV set if required for the
  *                                              algorithm.
  *                                          -   The library requires initializing by a call to
  *                                              @ref psa_crypto_init().
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the output buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the output buffer is too small.
  *                                          @ref PSA_CIPHER_UPDATE_OUTPUT_SIZE() or
  *                                          @ref PSA_CIPHER_UPDATE_OUTPUT_MAX_SIZE() can be
  *                                          used to determine a sufficient buffer size.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The total input size passed to this operation is
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The total input size passed to this operation is
  *                                          too large for this particular algorithm.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The total input size passed to this operation is
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The total input size passed to this operation is
  *                                          too large for the implementation.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_cipher_update(psa_cipher_operation_t *operation,
                                const uint8_t *input,
@@ -1394,8 +1389,7 @@ psa_status_t psa_cipher_update(psa_cipher_operation_t *operation,
 /**
  * @brief   Make a copy of a key.
  *
- * @details Copy key material from one location to another.
- *
+ * @details Copy key material from one location to another. *
  *          This function is primarily useful to copy a key from one location to another, as it
  *          populates a key using the material from another key which can have a different lifetime.
  *
@@ -1446,10 +1440,10 @@ psa_status_t psa_cipher_update(psa_cipher_operation_t *operation,
  * @return  @ref PSA_SUCCESS                Success. If the new key is persistent, the key material
  *                                          and the key’s metadata have been saved to persistent
  *                                          storage.
- *          @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to @ref
+ * @return  @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to @ref
  *                                          psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @p source_key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @p source_key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The following conditions can result in this error:
  *                                          -   @p source_key does not have the @ref
  *                                              PSA_KEY_USAGE_COPY usage flag.
  *                                          -   @p source_key does not have the @ref
@@ -1459,10 +1453,10 @@ psa_status_t psa_cipher_update(psa_cipher_operation_t *operation,
  *                                          -   @p The implementation does not permit creating
  *                                              a key with the specified attributes due to some
  *                                              implementation-specific policy.
- *          @ref PSA_ERROR_ALREADY_EXISTS   This is an attempt to create a persistent key,
+ * @return  @ref PSA_ERROR_ALREADY_EXISTS   This is an attempt to create a persistent key,
  *                                          and there is already a persistent key with the given
  *                                          identifier.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          -   @p attributes specifies a key type or
  *                                              key size which does not match the attributes
  *                                              of @p source_key.
@@ -1470,18 +1464,18 @@ psa_status_t psa_cipher_update(psa_cipher_operation_t *operation,
  *                                              are invalid.
  *                                          -   The key policies from @p source_key and those
  *                                              specified in @p attributes are incompatible.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          -   The @p source_key storage location does not support
  *                                              copying to the target key’s storage location.
  *                                          -   The key attributes, as a whole, are not supported
  *                                              in the target key’s storage location.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_INSUFFICIENT_STORAGE
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_INSUFFICIENT_STORAGE
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_copy_key(psa_key_id_t source_key,
                           const psa_key_attributes_t *attributes,
@@ -1508,31 +1502,31 @@ psa_status_t psa_copy_key(psa_key_id_t source_key,
  *                                                  then the key material that it referred to has
  *                                                  been erased. Alternatively, @p key was
  *                                                  @ref PSA_KEY_ID_NULL.
- *          @ref PSA_ERROR_BAD_STATE                The library requires initializing by a call to
+ * @return  @ref PSA_ERROR_BAD_STATE                The library requires initializing by a call to
  *                                                  @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE           @p key is neither a valid key identifier,
+ * @return  @ref PSA_ERROR_INVALID_HANDLE           @p key is neither a valid key identifier,
  *                                                  nor @ref PSA_KEY_ID_NULL.
- *          @ref PSA_ERROR_NOT_PERMITTED            The key cannot be erased because it is
+ * @return  @ref PSA_ERROR_NOT_PERMITTED            The key cannot be erased because it is
  *                                                  read-only, either due to a policy or due to
  *                                                  physical restrictions.
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE    There was an failure in communication with
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE    There was an failure in communication with
  *                                                  the cryptoprocessor.
  *                                                  The key material might still be present in
  *                                                  the cryptoprocessor.
- *          @ref PSA_ERROR_CORRUPTION_DETECTED      An unexpected condition which is not a storage
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED      An unexpected condition which is not a storage
  *                                                  corruption or a communication failure occurred.
  *                                                  The cryptoprocessor might have been compromised.
- *          @ref PSA_ERROR_STORAGE_FAILURE          The storage operation failed. Implementations
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE          The storage operation failed. Implementations
  *                                                  must make a best effort to erase key material
  *                                                  even in this situation, however, it might be
  *                                                  impossible to guarantee that the key material
  *                                                  is not recoverable in such cases.
- *          @ref PSA_ERROR_DATA_CORRUPT             The storage is corrupted. Implementations must
+ * @return  @ref PSA_ERROR_DATA_CORRUPT             The storage is corrupted. Implementations must
  *                                                  make a best effort to erase key material even
  *                                                  in this situation, however, it might be
  *                                                  impossible to guarantee that the key material
  *                                                  is not recoverable in such cases.
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_destroy_key(psa_key_id_t key);
 
@@ -1622,26 +1616,26 @@ psa_status_t psa_destroy_key(psa_key_id_t key);
  *
  * @return  @ref PSA_SUCCESS                Success. The first @p (*data_length) bytes of data
  *                                          contain the exported key
- *          @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to
+ * @return  @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to
  *                                          @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @p key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref PSA_KEY_USAGE_EXPORT
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @p key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref PSA_KEY_USAGE_EXPORT
  *                                          flag.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the data buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the data buffer is too small.
  *                                          @ref PSA_EXPORT_KEY_OUTPUT_SIZE() or @ref
  *                                          PSA_EXPORT_KEY_PAIR_MAX_SIZE can be used to determine
  *                                          a sufficient buffer size.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          -   The key’s storage location does not support export
  *                                              of the key
  *                                          -   The implementation does not support export of keys
  *                                              with this key type.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_export_key(psa_key_id_t key,
                             uint8_t *data,
@@ -1708,25 +1702,25 @@ psa_status_t psa_export_key(psa_key_id_t key,
  *
  * @return  @ref PSA_SUCCESS                Success. The first @p (*data_length) bytes of @p data
  *                                          contain the exported public key.
- *          @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to
+ * @return  @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to
  *                                          @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the data buffer is too small.
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the data buffer is too small.
  *                                          @ref PSA_EXPORT_PUBLIC_KEY_OUTPUT_SIZE() or
  *                                          @ref PSA_EXPORT_PUBLIC_KEY_MAX_SIZE can be used to
  *                                          determine a sufficient buffer size.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The key is neither a public key nor a key pair.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The key is neither a public key nor a key pair.
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          -   The key’s storage location does not support export
  *                                              of the key.
  *                                          -   The implementation does not support export of keys
  *                                              with this key type.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_export_public_key(psa_key_id_t key,
                                    uint8_t *data,
@@ -1780,25 +1774,25 @@ psa_status_t psa_builtin_generate_key(const psa_key_attributes_t *attributes, ui
  * @return  @ref PSA_SUCCESS                    Success. If the key is persistent, the key material
  *                                              and the key’s metadata have been saved to persistent
  *                                              storage.
- *          @ref PSA_ERROR_ALREADY_EXISTS       This is an attempt to create a persistent key, and
+ * @return  @ref PSA_ERROR_ALREADY_EXISTS       This is an attempt to create a persistent key, and
  *                                              there is already a persistent key with the given
  *                                              identifier.
- *          @ref PSA_ERROR_NOT_SUPPORTED        The key type or key size is not supported, either by
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED        The key type or key size is not supported, either by
  *                                              the implementation in general or in this particular
  *                                              persistent location.
- *          @ref PSA_ERROR_INVALID_ARGUMENT     The key attributes, as a whole, are invalid.
- *          @ref PSA_ERROR_INVALID_ARGUMENT     The key type is an asymmetric public key type.
- *          @ref PSA_ERROR_INVALID_ARGUMENT     The key size is not a valid size for the key type.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_INSUFFICIENT_ENTROPY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_INSUFFICIENT_STORAGE
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE            The library has not been previously initialized
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT     The key attributes, as a whole, are invalid.
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT     The key type is an asymmetric public key type.
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT     The key size is not a valid size for the key type.
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_INSUFFICIENT_ENTROPY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_INSUFFICIENT_STORAGE
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE            The library has not been previously initialized
  *                                              by  @ref psa_crypto_init(). It is
  *                                              implementation-dependent whether a failure to
  *                                              initialize results in this error code.
@@ -1816,7 +1810,7 @@ psa_status_t psa_generate_key(const psa_key_attributes_t *attributes,
  * @param   output_size Size of @c output in bytes
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_INVALID_ARGUMENT @c output is NULL
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT @c output is NULL
  */
 psa_status_t psa_builtin_generate_random(   uint8_t *output,
                                             size_t output_size);
@@ -1834,14 +1828,14 @@ psa_status_t psa_builtin_generate_random(   uint8_t *output,
  *
  * @return  @ref PSA_SUCCESS                Success. @c output contains @c output_size bytes
  *                                          of generated random data.
- *          @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to
+ * @return  @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to
  *                                          @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_ARGUMENT @c output is NULL
- *          @ref PSA_ERROR_NOT_SUPPORTED
- *          @ref PSA_ERROR_INSUFFICIENT_ENTROPY
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT @c output is NULL
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED
+ * @return  @ref PSA_ERROR_INSUFFICIENT_ENTROPY
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_generate_random(uint8_t *output,
                                  size_t output_size);
@@ -2062,14 +2056,14 @@ static inline void psa_reset_key_attributes(psa_key_attributes_t *attributes)
  *                      to a freshly-initialized attribute object.
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_INVALID_HANDLE
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
- *          @ref PSA_ERROR_BAD_STATE        The library has not been previously initialized
+ * @return  @ref PSA_ERROR_INVALID_HANDLE
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_BAD_STATE        The library has not been previously initialized
  *                                          by  @ref psa_crypto_init(). It is
  *                                          implementation-dependent whether a failure to
  *                                          initialize results in this error code.
@@ -2094,10 +2088,10 @@ psa_status_t psa_get_key_attributes(psa_key_id_t key,
  * @param   operation   Initialized hash operation.
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_HARDWARE_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_BAD_STATE        The library has not been previously initialized
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_HARDWARE_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_BAD_STATE        The library has not been previously initialized
  *                                          by  @ref psa_crypto_init(). It is
  *                                          implementation-dependent whether a failure to
  *                                          initialize results in this error code.
@@ -2120,17 +2114,17 @@ psa_status_t psa_hash_abort(psa_hash_operation_t *operation);
  *                              It must be initialized but not active.
  *
  * @return @ref PSA_SUCCESS
- *         @ref PSA_ERROR_BAD_STATE             The following conditions can result in this error:
+ *@return  @ref PSA_ERROR_BAD_STATE             The following conditions can result in this error:
  *                                              -   The @p source_operation state is not valid:
  *                                                  it must be active.
  *                                              -   The @p target_operation state is not valid:
  *                                                  it must be inactive.
  *                                              -   The library requires initializing by a call
  *                                                  to @ref psa_crypto_init().
- *         @ref PSA_ERROR_COMMUNICATION_FAILURE
- *         @ref PSA_ERROR_HARDWARE_FAILURE
- *         @ref PSA_ERROR_CORRUPTION_DETECTED
- *         @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ *@return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ *@return  @ref PSA_ERROR_HARDWARE_FAILURE
+ *@return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ *@return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
  */
 psa_status_t psa_hash_clone(const psa_hash_operation_t *source_operation,
                             psa_hash_operation_t *target_operation);
@@ -2147,21 +2141,21 @@ psa_status_t psa_hash_clone(const psa_hash_operation_t *source_operation,
  *
  * @return  @ref PSA_SUCCESS                    Success. The expected hash is identical to the
  *                                              actual hash of the input.
- *          @ref PSA_ERROR_BAD_STATE            The library requires initializing by a call to
+ * @return  @ref PSA_ERROR_BAD_STATE            The library requires initializing by a call to
  *                                              @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_SIGNATURE    The calculated hash of the message does not match
+ * @return  @ref PSA_ERROR_INVALID_SIGNATURE    The calculated hash of the message does not match
  *                                              the value in hash.
- *          @ref PSA_ERROR_INVALID_ARGUMENT     The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT     The following conditions can result in this error:
  *                                              -   @p alg is not a hash algorithm.
  *                                              -   @p input_length is too large for alg.
- *          @ref PSA_ERROR_NOT_SUPPORTED        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED        The following conditions can result in this error:
  *                                              -   @p alg is not supported or is not a hash
  *                                                  algorithm.
  *                                              -   @p input_length is too large for the
  *                                                  implementation.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_hash_compare(psa_algorithm_t alg,
                               const uint8_t *input,
@@ -2187,20 +2181,20 @@ psa_status_t psa_hash_compare(psa_algorithm_t alg,
  *
  * @return  @ref PSA_SUCCESS                Success. The first @p (*hash_length) bytes of
  *                                          @p hash contain the hash value.
- *          @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to
+ * @return  @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to
  *                                          @ref psa_crypto_init().
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the hash buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the hash buffer is too small.
  *                                          @ref PSA_HASH_LENGTH() can be used to determine
  *                                          a sufficient buffer size.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - @p alg is not a hash algorithm
  *                                          - @p input_length is too large for alg.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          - @c alg is not supported or is not a hash algorithm.
  *                                          - @c input_length is too large for the implementation.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_hash_compute(psa_algorithm_t alg,
                               const uint8_t *input,
@@ -2239,16 +2233,16 @@ psa_status_t psa_hash_compute(psa_algorithm_t alg,
  *
  * @return  @ref PSA_SUCCESS                Success. The first @p (*hash_length) bytes of @p hash
  *                                          contain the hash value.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          -   The operation state is not valid: it must be active.
  *                                          -   The library requires initializing by a call to
  *                                              @ref psa_crypto_init().
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the hash buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the hash buffer is too small.
  *                                          @ref PSA_HASH_LENGTH() can be used to determine
  *                                          a sufficient buffer size.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_hash_finish(psa_hash_operation_t *operation,
                              uint8_t *hash,
@@ -2277,19 +2271,19 @@ psa_status_t psa_hash_finish(psa_hash_operation_t *operation,
  * @param   hash_state_length   Length of hash_state in bytes.
  *
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          -   The operation state is not valid: it must be
  *                                              inactive.
  *                                          -   The library requires initializing by a call to
  *                                              @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_ARGUMENT @p hash_state does not correspond to a valid hash
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT @p hash_state does not correspond to a valid hash
  *                                          suspend state. See Hash suspend state format for
  *                                          the definition.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The provided hash suspend state is for an algorithm
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The provided hash suspend state is for an algorithm
  *                                          that is not supported.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_hash_resume(psa_hash_operation_t *operation,
                              const uint8_t *hash_state,
@@ -2325,16 +2319,16 @@ psa_status_t psa_hash_resume(psa_hash_operation_t *operation,
  *                      that @ref PSA_ALG_IS_HASH(@p alg) is true.
  *
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          -   The operation state is not valid: it must be
  *                                              inactive.
  *                                          -   The library requires initializing by a call to
  *                                              @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_ARGUMENT @p alg is not a hash algorithm.
- *          @ref PSA_ERROR_NOT_SUPPORTED    @p alg is not supported or is not a hash algorithm.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT @p alg is not a hash algorithm.
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    @p alg is not supported or is not a hash algorithm.
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_hash_setup(psa_hash_operation_t *operation,
                             psa_algorithm_t alg);
@@ -2400,19 +2394,19 @@ psa_status_t psa_hash_setup(psa_hash_operation_t *operation,
  *
  * @return  @ref PSA_SUCCESS                Success. The first @p (*hash_state_length) bytes of
  *                                          @p hash_state contain the intermediate hash state.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          -   The operation state is not valid: it must be active.
  *                                          -   The library requires initializing by a call to
  *                                              @ref psa_crypto_init().
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the hash_state buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the hash_state buffer is too small.
  *                                          @ref PSA_HASH_SUSPEND_OUTPUT_SIZE() or
  *                                          @ref PSA_HASH_SUSPEND_OUTPUT_MAX_SIZE can be used
  *                                          to determine a sufficient buffer size.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The hash algorithm being computed does not support
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The hash algorithm being computed does not support
  *                                          suspend and resume.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_hash_suspend(psa_hash_operation_t *operation,
                               uint8_t *hash_state,
@@ -2423,7 +2417,6 @@ psa_status_t psa_hash_suspend(psa_hash_operation_t *operation,
  * @brief   Add a message fragment to a multi-part hash operation.
  *
  * @details The application must call @ref psa_hash_setup() before calling this function.
- *
  *          If this function returns an error status, the operation enters an error
  *          state and must be aborted by calling @ref psa_hash_abort().
  *
@@ -2432,17 +2425,17 @@ psa_status_t psa_hash_suspend(psa_hash_operation_t *operation,
  * @param   input_length    Size of the @p input buffer in bytes.
  *
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          -   The operation state is not valid: it must be active.
  *                                          -   The library requires initializing by a call to
  *                                              @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_ARGUMENT The total input for the operation is too large for the
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The total input for the operation is too large for the
  *                                          hash algorithm.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The total input for the operation is too large for the
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The total input for the operation is too large for the
  *                                          implementation.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_hash_update(psa_hash_operation_t *operation,
                              const uint8_t *input,
@@ -2469,16 +2462,16 @@ psa_status_t psa_hash_update(psa_hash_operation_t *operation,
  *
  * @return  @ref PSA_SUCCESS                    Success. The expected hash is identical to the
  *                                              actual hash of the message.
- *          @ref PSA_ERROR_BAD_STATE            The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE            The following conditions can result in this error:
  *                                              -   The operation state is not valid: it must be
  *                                                  active.
  *                                              -   The library requires initializing by a call to
  *                                                  @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_SIGNATURE    The calculated hash of the message does not match
+ * @return  @ref PSA_ERROR_INVALID_SIGNATURE    The calculated hash of the message does not match
  *                                              the value in hash.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_hash_verify(psa_hash_operation_t *operation,
                              const uint8_t *hash,
@@ -2523,10 +2516,10 @@ psa_status_t psa_hash_verify(psa_hash_operation_t *operation,
  * @return  @ref PSA_SUCCESS                Success. If the key is persistent, the key material
  *                                          and the key’s metadata have been saved to persistent
  *                                          storage.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          -   The key size is nonzero, and is incompatible with
  *                                              the key data in @p data.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The key attributes, as a whole, are not supported,
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The key attributes, as a whole, are not supported,
  *                                          either by the implementation in general or in the
  *                                          specified storage location.
  */
@@ -2590,15 +2583,15 @@ psa_status_t psa_builtin_import_key(const psa_key_attributes_t *attributes,
  * @return  @ref PSA_SUCCESS                Success. If the key is persistent, the key material
  *                                          and the key’s metadata have been saved to persistent
  *                                          storage.
- *          @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to
+ * @return  @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to
  *                                          @ref psa_crypto_init().
- *          @ref PSA_ERROR_NOT_PERMITTED    The implementation does not permit creating a
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The implementation does not permit creating a
  *                                          key with the specified attributes due to some
  *                                          implementation-specific policy.
- *          @ref PSA_ERROR_ALREADY_EXISTS   This is an attempt to create a persistent key,
+ * @return  @ref PSA_ERROR_ALREADY_EXISTS   This is an attempt to create a persistent key,
  *                                          and there is already a persistent key with the given
  *                                          identifier.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - The key type is invalid.
  *                                          - The key size is nonzero, and is incompatible with
  *                                            the key data in @p data.
@@ -2610,16 +2603,16 @@ psa_status_t psa_builtin_import_key(const psa_key_attributes_t *attributes,
  *                                          - The key attributes, as a whole, are invalid.
  *                                          - The key data is not correctly formatted for the key
  *                                            type.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The key attributes, as a whole, are not supported,
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The key attributes, as a whole, are not supported,
  *                                          either by the implementation in general or in the
  *                                          specified storage location.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_INSUFFICIENT_STORAGE
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_INSUFFICIENT_STORAGE
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_import_key(const psa_key_attributes_t *attributes,
                             const uint8_t *data,
@@ -2643,10 +2636,9 @@ psa_status_t psa_import_key(const psa_key_attributes_t *attributes,
  *
  * @return  @ref PSA_SUCCESS            Success. The operation object can now be discarded or
  *                                      reused.
- *          @ref PSA_ERROR_BAD_STATE    The library requires initializing by a call to @ref
+ * @return  @ref PSA_ERROR_BAD_STATE    The library requires initializing by a call to @ref
  *                                      psa_crypto_init().
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
-            @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_COMMUNICATION_FA@return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_key_derivation_abort(psa_key_derivation_operation_t *operation);
 
@@ -2668,12 +2660,12 @@ psa_status_t psa_key_derivation_abort(psa_key_derivation_operation_t *operation)
  *
  * @return  @ref PSA_SUCCESS            Success. The maximum number of bytes that this key
  *                                      derivation can return is (@c *capacity).
- *          @ref PSA_ERROR_BAD_STATE    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE    The following conditions can result in this error:
  *                                      - The operation state is not valid: it must be active.
  *                                      - The library requires initializing by a call to @ref
  *                                        psa_crypto_init().
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_key_derivation_get_capacity(const psa_key_derivation_operation_t *operation,
                                              size_t *capacity);
@@ -2699,30 +2691,30 @@ psa_status_t psa_key_derivation_get_capacity(const psa_key_derivation_operation_
  * @param   data        Input data to use.
  * @param   data_length Size of the data buffer in bytes.
  * @return  @ref PSA_SUCCESS        Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          - The operation state is not valid for this input step.
  *                                            This can happen if the application provides a step
  *                                            out of order or repeats a step that may not be
  *                                            repeated.
  *                                          - The library requires initializing by a call to @ref
  *                                            psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - @c step is not compatible with the operation’s
  *                                            algorithm.
  *                                          - @c step does not allow direct inputs.
  *                                          - @c data_length is too small or too large for step in
  *                                            this particular algorithm.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          - @c step is not supported with the operation’s
  *                                            algorithm.
  *                                          - @c data_length is is not supported for step in this
  *                                            particular algorithm.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_key_derivation_input_bytes(psa_key_derivation_operation_t *operation,
                                             psa_key_derivation_step_t step,
@@ -2747,30 +2739,30 @@ psa_status_t psa_key_derivation_input_bytes(psa_key_derivation_operation_t *oper
  * @param   step        Which step the input data is for.
  * @param   value       The value of the numeric input.
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          - The operation state is not valid for this input step.
  *                                            This can happen if the application provides a step
  *                                            out of order or repeats a step that may not be
  *                                            repeated.
  *                                          - The library requires initializing by a call to @ref
  *                                            psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - @c step is not compatible with the operation’s
  *                                            algorithm.
  *                                          - @c step does not allow numerical inputs.
  *                                          - @c value is not valid for step in the operation’s
  *                                            algorithm.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          - @c step is not supported with the operation’s
  *                                            algorithm.
  *                                          - @c value is not supported for step in the operation’s
  *                                            algorithm.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_key_derivation_input_integer(  psa_key_derivation_operation_t *operation,
                                                 psa_key_derivation_step_t step,
@@ -2813,33 +2805,33 @@ psa_status_t psa_key_derivation_input_integer(  psa_key_derivation_operation_t *
  *                      algorithm used by the operation.
  *
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          - The operation state is not valid for this input step.
  *                                            This can happen if the application provides a step
  *                                            out of order or repeats a step that may not be
  *                                            repeated.
  *                                          - The library requires initializing by a call to @ref
  *                                            psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    The key has neither the @ref PSA_KEY_USAGE_DERIVE nor
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The key has neither the @ref PSA_KEY_USAGE_DERIVE nor
  *                                          the @ref PSA_KEY_USAGE_VERIFY_DERIVATION usage flag,
  *                                          or it does not permit the operation’s algorithm.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - @c step is not compatible with the operation’s
  *                                            algorithm.
  *                                          - @c step does not allow key inputs of the given type,
  *                                            or does not allow key inputs at all.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          - @c step is not supported with the operation’s
  *                                            algorithm.
  *                                          - @c Key inputs of the given type are not supported for
  *                                            step in the operation’s algorithm.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_key_derivation_input_key(psa_key_derivation_operation_t *operation,
                                           psa_key_derivation_step_t step,
@@ -2877,16 +2869,16 @@ psa_status_t psa_key_derivation_input_key(psa_key_derivation_operation_t *operat
  * @param   peer_key_length Size of @c peer_key in bytes.
  *
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          - The operation state is not valid for this key
  *                                            agreement step.
  *                                          - The library requires initializing by a call to @ref
  *                                            psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @c private_key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    @c private_key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @c private_key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    @c private_key does not have the @ref
  *                                          PSA_KEY_USAGE_DERIVE flag, or it does not permit the
  *                                          operation’s algorithm.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - The operation’s algorithm is not a key agreement
  *                                            algorithm.
  *                                          - @c step does not allow an input resulting from a key
@@ -2895,14 +2887,14 @@ psa_status_t psa_key_derivation_input_key(psa_key_derivation_operation_t *operat
  *                                            algorithm.
  *                                          - @c peer_key is not a valid public key corresponding
  *                                            to @c private_key.
- *          @ref PSA_ERROR_NOT_SUPPORTED    @c private_key is not supported for use with the
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    @c private_key is not supported for use with the
  *                                          operation’s algorithm.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_key_derivation_key_agreement(psa_key_derivation_operation_t *operation,
                                               psa_key_derivation_step_t step,
@@ -2928,26 +2920,26 @@ psa_status_t psa_key_derivation_key_agreement(psa_key_derivation_operation_t *op
  *
  * @return  @ref PSA_SUCCESS                    Success. The first output_length bytes of output
  *                                              contain the derived data.
- *          @ref PSA_ERROR_BAD_STATE            The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE            The following conditions can result in this error:
  *                                              - The operation state is not valid: it must be
  *                                                active, with all required input steps complete.
  *                                              - The library requires initializing by a call to
  *                                                @ref psa_crypto_init().
- *          @ref PSA_ERROR_NOT_PERMITTED        One of the inputs was a key whose policy did not
+ * @return  @ref PSA_ERROR_NOT_PERMITTED        One of the inputs was a key whose policy did not
  *                                              allow @ref PSA_KEY_USAGE_DERIVE.
- *          @ref PSA_ERROR_INSUFFICIENT_DATA    The operation’s capacity was less than
+ * @return  @ref PSA_ERROR_INSUFFICIENT_DATA    The operation’s capacity was less than
  *                                              @c output_length bytes. In this case, the following
  *                                              occurs:
  *                                              - No output is written to the output buffer.
  *                                              - The operation’s capacity is set to zero —
  *                                                subsequent calls to this function will not
  *                                                succeed, even with a smaller output buffer.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_key_derivation_output_bytes(psa_key_derivation_operation_t *operation,
                                              uint8_t *output,
@@ -3061,12 +3053,12 @@ psa_status_t psa_key_derivation_output_bytes(psa_key_derivation_operation_t *ope
  * @return  @ref PSA_SUCCESS                Success. If the key is persistent, the key material
  *                                          and the key’s metadata have been saved to persistent
  *                                          storage.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          - The operation state is not valid: it must be active,
  *                                            with all required input steps complete.
  *                                          - The library requires initializing by a call to @ref
  *                                            psa_crypto_init().
- *          @ref PSA_ERROR_NOT_PERMITTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The following conditions can result in this error:
  *                                          - The @ref PSA_KEY_DERIVATION_INPUT_SECRET input step
  *                                            was neither provided through a key, nor the result of
  *                                            a key agreement.
@@ -3075,16 +3067,16 @@ psa_status_t psa_key_derivation_output_bytes(psa_key_derivation_operation_t *ope
  *                                          - The implementation does not permit creating a key
  *                                            with the specified attributes due to some
  *                                            implementation-specific policy.
- *          @ref PSA_ERROR_ALREADY_EXISTS   This is an attempt to create a persistent key, and
+ * @return  @ref PSA_ERROR_ALREADY_EXISTS   This is an attempt to create a persistent key, and
  *                                          there is already a persistent key with the given
  *                                          identifier.
- *          @ref PSA_ERROR_INSUFFICIENT_DATA    There was not enough data to create the desired
+ * @return  @ref PSA_ERROR_INSUFFICIENT_DATA    There was not enough data to create the desired
  *                                              key. In this case, the following occurs:
  *                                              - No key is generated.
  *                                              - The operation’s capacity is set to zero —
  *                                                subsequent calls to this function will not
  *                                                succeed, even if they require less data.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - The key type is invalid, or is an asymmetric public
  *                                            key type.
  *                                          - The key type is @ref PSA_KEY_TYPE_PASSWORD_HASH, and
@@ -3096,16 +3088,16 @@ psa_status_t psa_key_derivation_output_bytes(psa_key_derivation_operation_t *ope
  *                                          - The key usage flags include invalid values.
  *                                          - The key’s permitted-usage algorithm is invalid.
  *                                          - The key attributes, as a whole, are invalid.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The key attributes, as a whole, are not supported,
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The key attributes, as a whole, are not supported,
  *                                          either by the implementation in general or in the
  *                                          specified storage location.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_INSUFFICIENT_STORAGE
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_INSUFFICIENT_STORAGE
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_key_derivation_output_key(const psa_key_attributes_t *attributes,
                                            psa_key_derivation_operation_t *operation,
@@ -3121,15 +3113,15 @@ psa_status_t psa_key_derivation_output_key(const psa_key_attributes_t *attribute
  * @param   capacity    The new capacity of the operation. It must be less or equal to the
  *                      operation’s current capacity.
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          - The operation state is not valid: it must be active.
  *                                          - The library requires initializing by a call to @ref
  *                                            psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_ARGUMENT @c capacity is larger than the operation’s current
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT @c capacity is larger than the operation’s current
  *                                          capacity. In this case, the operation object remains
  *                                          valid and its capacity remains unchanged.
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_key_derivation_set_capacity(psa_key_derivation_operation_t *operation,
                                              size_t capacity);
@@ -3179,17 +3171,17 @@ psa_status_t psa_key_derivation_set_capacity(psa_key_derivation_operation_t *ope
  *                        true and @ref PSA_ALG_IS_RAW_KEY_AGREEMENT(@p alg) is false.
  *
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          - The operation state is not valid: it must be inactive.
  *                                          - The library requires initializing by a call to @ref
  *                                            psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_ARGUMENT @c alg is neither a key derivation algorithm, nor a key
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT @c alg is neither a key derivation algorithm, nor a key
  *                                          agreement and derivation algorithm.
- *          @ref PSA_ERROR_NOT_SUPPORTED    @c alg is not supported or is not a key derivation
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    @c alg is not supported or is not a key derivation
  *                                          algorithm, or a key agreement and derivation algorithm.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_key_derivation_setup(psa_key_derivation_operation_t *operation,
                                       psa_algorithm_t alg);
@@ -3206,9 +3198,9 @@ psa_status_t psa_key_derivation_setup(psa_key_derivation_operation_t *operation,
  *          This is functionally equivalent to the following code:
  *          @code
  *          uint8_t tmp[output_length];
- *          @ref psa_key_derivation_output_bytes(operation, tmp, output_length);
+ *          psa_key_derivation_output_bytes(operation, tmp, output_length);
  *          if (memcmp(expected_output, tmp, output_length) != 0)
- *               return @ref PSA_ERROR_INVALID_SIGNATURE;
+ *               return PSA_ERROR_INVALID_SIGNATURE;
  *          @endcode
  *
  *          However, calling @ref psa_key_derivation_verify_bytes() works even if the key’s policy
@@ -3229,26 +3221,26 @@ psa_status_t psa_key_derivation_setup(psa_key_derivation_operation_t *operation,
  *
  * @return  @ref PSA_SUCCESS                    Success. The output of the key derivation operation
  *                                              matches expected_output.
- *          @ref PSA_ERROR_BAD_STATE            The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE            The following conditions can result in this error:
  *                                              - The operation state is not valid: it must be
  *                                                active, with all required input steps complete.
  *                                              - The library requires initializing by a call to
  *                                                @ref psa_crypto_init().
- *          @ref PSA_ERROR_NOT_PERMITTED        One of the inputs is a key whose policy does not
+ * @return  @ref PSA_ERROR_NOT_PERMITTED        One of the inputs is a key whose policy does not
  *                                              permit @ref PSA_KEY_USAGE_VERIFY_DERIVATION.
- *          @ref PSA_ERROR_INVALID_SIGNATURE    The output of the key derivation operation does
+ * @return  @ref PSA_ERROR_INVALID_SIGNATURE    The output of the key derivation operation does
  *                                              not match the value in expected_output.
- *          @ref PSA_ERROR_INSUFFICIENT_DATA    The operation’s capacity was less than
+ * @return  @ref PSA_ERROR_INSUFFICIENT_DATA    The operation’s capacity was less than
  *                                              @c output_length bytes. In this case, the
  *                                              operation’s capacity is set to zero — subsequent
  *                                              calls to this function will not succeed, even with
  *                                              a smaller expected output length.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_key_derivation_verify_bytes(psa_key_derivation_operation_t *operation,
                                              const uint8_t *expected_output,
@@ -3286,32 +3278,32 @@ psa_status_t psa_key_derivation_verify_bytes(psa_key_derivation_operation_t *ope
 
  * @return  @ref PSA_SUCCESS                    Success. The output of the key derivation operation
  *                                              matches the expected key value.
- *          @ref PSA_ERROR_BAD_STATE            The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE            The following conditions can result in this error:
  *                                              - The operation state is not valid: it must be
  *                                                active, with all required input steps complete.
  *                                              - The library requires initializing by a call to
  *                                                @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE       @c expected is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_HANDLE       @c expected is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED        The following conditions can result in this error:
  *                                              - The key does not have the @ref
  *                                                PSA_KEY_USAGE_VERIFY_DERIVATION flag, or it does
  *                                                not permit the requested algorithm.
  *                                              - One of the inputs is a key whose policy does not
  *                                                permit @ref PSA_KEY_USAGE_VERIFY_DERIVATION.
- *          @ref PSA_ERROR_INVALID_SIGNATURE    The output of the key derivation operation does not
+ * @return  @ref PSA_ERROR_INVALID_SIGNATURE    The output of the key derivation operation does not
  *                                              match the value of the expected key.
- *          @ref PSA_ERROR_INSUFFICIENT_DATA    The operation’s capacity was less than the length
+ * @return  @ref PSA_ERROR_INSUFFICIENT_DATA    The operation’s capacity was less than the length
  *                                              of the @c expected key. In this case, the
  *                                              operation’s capacity is set to zero — subsequent
  *                                              calls to this function will not succeed, even with
  *                                              a smaller expected key length.
- *          @ref PSA_ERROR_INVALID_ARGUMENT     The key type is not @ref PSA_KEY_TYPE_PASSWORD_HASH.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT     The key type is not @ref PSA_KEY_TYPE_PASSWORD_HASH.
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_key_derivation_verify_key(psa_key_derivation_operation_t *operation,
                                            psa_key_id_t expected);
@@ -3333,10 +3325,10 @@ psa_status_t psa_key_derivation_verify_key(psa_key_derivation_operation_t *opera
  * @param   operation   Initialized MAC operation.
  * @return  @ref PSA_SUCCESS            Success. The operation object can now be discarded or
  *                                      reused.
- *          @ref PSA_ERROR_BAD_STATE    The library requires initializing by a call to @ref
+ * @return  @ref PSA_ERROR_BAD_STATE    The library requires initializing by a call to @ref
  *                                      psa_crypto_init().
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_mac_abort(psa_mac_operation_t *operation);
 
@@ -3367,29 +3359,29 @@ psa_status_t psa_mac_abort(psa_mac_operation_t *operation);
  *
  * @return  @ref PSA_SUCCESS            Success. The first @c (*mac_length) bytes of @c mac contain
  *                                      the MAC value.
- *          @ref PSA_ERROR_BAD_STATE    The library requires initializing by a call to @ref
+ * @return  @ref PSA_ERROR_BAD_STATE    The library requires initializing by a call to @ref
  *                                      psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref
  *                                          PSA_KEY_USAGE_SIGN_MESSAGE flag, or it does not permit
  *                                          the requested algorithm.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the mac buffer is too small. @ref
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the mac buffer is too small. @ref
  *                                          PSA_MAC_LENGTH() or @ref PSA_MAC_MAX_SIZE can be used
  *                                          to determine a sufficient buffer size.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - @c alg is not a MAC algorithm.
  *                                          - @c key is not compatible with @c alg.
  *                                          - @c input_length is too large for @c alg.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          - @c alg is not supported or is not a MAC algorithm.
  *                                          - @c key is not supported for use with @c alg.
  *                                          - @c input_length is too large for the implementation.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_mac_compute(psa_key_id_t key,
                              psa_algorithm_t alg,
@@ -3432,20 +3424,20 @@ psa_status_t psa_mac_compute(psa_key_id_t key,
  *                      compute the MAC.
  * @return  @ref PSA_SUCCESS                Success. The first @c (*mac_length) bytes of mac
  *                                          contain the MAC value.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          - The operation state is not valid: it must be an
  *                                            active mac sign operation.
  *                                          - The library requires initializing by a call to @ref
  *                                            psa_crypto_init().
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the mac buffer is too small. @ref
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the mac buffer is too small. @ref
  *                                          PSA_MAC_LENGTH() or @ref PSA_MAC_MAX_SIZE can be used
  *                                          to determine a sufficient buffer size.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_mac_sign_finish(psa_mac_operation_t *operation,
                                  uint8_t *mac,
@@ -3487,26 +3479,26 @@ psa_status_t psa_mac_sign_finish(psa_mac_operation_t *operation,
  * @param   alg         The MAC algorithm to compute: a value of type @ref psa_algorithm_t such
  *                      that @ref PSA_ALG_IS_MAC(@p alg) is true.
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          - The operation state is not valid: it must be inactive.
  *                                          - The library requires initializing by a call to @ref
  *                                          psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref
  *                                          PSA_KEY_USAGE_SIGN_MESSAGE flag, or it does not permit
  *                                          the requested algorithm.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - @c alg is not a MAC algorithm.
  *                                          - @c key is not compatible with @c alg.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          - @c alg is not supported or is not a MAC algorithm.
  *                                          - @c key is not supported for use with @c alg.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_mac_sign_setup(psa_mac_operation_t *operation,
                                 psa_key_id_t key,
@@ -3525,20 +3517,20 @@ psa_status_t psa_mac_sign_setup(psa_mac_operation_t *operation,
  * @param   input           Buffer containing the message fragment to add to the MAC calculation.
  * @param   input_length    Size of the @c input buffer in bytes.
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          - The operation state is not valid: it must be active.
  *                                          - The library requires initializing by a call to @ref
  *                                          psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_ARGUMENT The total input for the operation is too large for the
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The total input for the operation is too large for the
  *                                          MAC algorithm.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The total input for the operation is too large for the
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The total input for the operation is too large for the
  *                                          implementation.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_mac_update(psa_mac_operation_t *operation,
                             const uint8_t *input,
@@ -3557,29 +3549,29 @@ psa_status_t psa_mac_update(psa_mac_operation_t *operation,
  * @param   mac_length      Size of the @c mac buffer in bytes.
  * @return  @ref PSA_SUCCESS                    Success. The expected MAC is identical to the
  *                                              actual MAC of the input.
- *          @ref PSA_ERROR_BAD_STATE            The library requires initializing by a call to @ref
+ * @return  @ref PSA_ERROR_BAD_STATE            The library requires initializing by a call to @ref
  *                                              psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE       @c key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED        The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE       @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED        The key does not have the @ref
  *                                              PSA_KEY_USAGE_VERIFY_MESSAGE flag, or it does not
  *                                              permit the requested algorithm.
- *          @ref PSA_ERROR_INVALID_SIGNATURE    The calculated MAC of the message does not match
+ * @return  @ref PSA_ERROR_INVALID_SIGNATURE    The calculated MAC of the message does not match
  *                                              the value in @c mac.
- *          @ref PSA_ERROR_INVALID_ARGUMENT     The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT     The following conditions can result in this error:
  *                                              - @c alg is not a MAC algorithm.
  *                                              - @c key is not compatible with @c alg.
  *                                              - @c input_length is too large for @c alg.
- *          @ref PSA_ERROR_NOT_SUPPORTED        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED        The following conditions can result in this error:
  *                                              - @c alg is not supported or is not a MAC algorithm.
  *                                              - @c key is not supported for use with @c alg.
  *                                              - @c input_length is too large for the
  *                                                implementation.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_mac_verify(psa_key_id_t key,
                             psa_algorithm_t alg,
@@ -3609,19 +3601,19 @@ psa_status_t psa_mac_verify(psa_key_id_t key,
  *
  * @return  @ref PSA_SUCCESS                    Success. The expected MAC is identical to the
  *                                              actual MAC of the message.
- *          @ref PSA_ERROR_BAD_STATE            The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE            The following conditions can result in this error:
  *                                              - The operation state is not valid: it must be an
  *                                                active mac verify operation.
  *                                              - The library requires initializing by a call to
  *                                                @ref psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_SIGNATURE    The calculated MAC of the message does not match
+ * @return  @ref PSA_ERROR_INVALID_SIGNATURE    The calculated MAC of the message does not match
  *                                              the value in mac.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_mac_verify_finish(psa_mac_operation_t *operation,
                                    const uint8_t *mac,
@@ -3661,26 +3653,26 @@ psa_status_t psa_mac_verify_finish(psa_mac_operation_t *operation,
  * @param   alg         The MAC algorithm to compute: a value of type @ref psa_algorithm_t such
  *                      that @ref PSA_ALG_IS_MAC(@p alg) is true.
  * @return  @ref PSA_SUCCESS                Success.
- *          @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_BAD_STATE        The following conditions can result in this error:
  *                                          - The operation state is not valid: it must be inactive.
  *                                          - The library requires initializing by a call to @ref
  *                                          psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref
  *                                          PSA_KEY_USAGE_VERIFY_MESSAGE flag, or it does not
  *                                          permit the requested algorithm.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - @c alg is not a MAC algorithm.
  *                                          - @c key is not compatible with @c alg.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          - @c alg is not supported or is not a MAC algorithm.
  *                                          - @c key is not supported for use with @c alg.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_mac_verify_setup(psa_mac_operation_t *operation,
                                   psa_key_id_t key,
@@ -3703,14 +3695,14 @@ psa_status_t psa_mac_verify_setup(psa_mac_operation_t *operation,
  * @param   key Identifier of the key to purge.
  * @return  @ref PSA_SUCCESS                Success. The key material has been removed from memory,
  *                                          if the key material is not currently required.
- *          @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to @ref
+ * @return  @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to @ref
  *                                          psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_purge_key(psa_key_id_t key);
 
@@ -3751,31 +3743,31 @@ psa_status_t psa_purge_key(psa_key_id_t key);
  *
  * @return  @ref PSA_SUCCESS                Success. The first (*output_length) bytes of output
  *                                          contain the raw shared secret.
- *          @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to @ref
+ * @return  @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to @ref
  *                                          psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @c private_key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    @c private_key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @c private_key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    @c private_key does not have the @ref
  *                                          PSA_KEY_USAGE_DERIVE flag, or it does not permit
  *                                          the requested algorithm.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the output buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the output buffer is too small.
  *                                          @ref PSA_RAW_KEY_AGREEMENT_OUTPUT_SIZE() or @ref
  *                                          PSA_RAW_KEY_AGREEMENT_OUTPUT_MAX_SIZE can be used to
  *                                          determine a sufficient buffer size.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - @c alg is not a key agreement algorithm.
  *                                          - @c private_key is not compatible with @c alg.
  *                                          - @c peer_key is not a valid public key corresponding
  *                                            to @c private_key.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          - @c alg is not supported or is not a key agreement
  *                                            algorithm.
  *                                          - @c private_key is not supported for use with @c alg.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_raw_key_agreement(psa_algorithm_t alg,
                                    psa_key_id_t private_key,
@@ -3826,32 +3818,32 @@ psa_status_t psa_raw_key_agreement(psa_algorithm_t alg,
  *                              value.
  * @return  @ref PSA_SUCCESS                Success. The first @c (*signature_length) bytes of
  *                                          @c signature contain the signature value.
- *          @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to @ref
+ * @return  @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to @ref
  *                                          psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref PSA_KEY_USAGE_SIGN_HASH
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref PSA_KEY_USAGE_SIGN_HASH
  *                                          flag, or it does not permit the requested algorithm.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the signature buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the signature buffer is too small.
  *                                          @ref PSA_SIGN_OUTPUT_SIZE() or @ref
  *                                          PSA_SIGNATURE_MAX_SIZE can be used to determine a
  *                                          sufficient buffer size.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - @c alg is not an asymmetric signature algorithm.
  *                                          - @c key is not an asymmetric key pair, that is
  *                                            compatible with @c alg.
  *                                          - @c hash_length is not valid for the algorithm and key
  *                                            type.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          - @c alg is not supported or is not an asymmetric
  *                                            signature algorithm.
  *                                          - @c key is not supported for use with alg.
- *          @ref PSA_ERROR_INSUFFICIENT_ENTROPY
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_ENTROPY
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_sign_hash(psa_key_id_t key,
                            psa_algorithm_t alg,
@@ -3889,34 +3881,34 @@ psa_status_t psa_sign_hash(psa_key_id_t key,
  *                              value.
  * @return  @ref PSA_SUCCESS                Success. The first @c (*signature_length) bytes of
  *                                          @c signature contain the signature value.
- *          @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to @ref
+ * @return  @ref PSA_ERROR_BAD_STATE        The library requires initializing by a call to @ref
  *                                          psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE   @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED    The key does not have the @ref
  *                                          PSA_KEY_USAGE_SIGN_MESSAGE flag, or it does not permit
  *                                          the requested algorithm.
- *          @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the signature buffer is too small.
+ * @return  @ref PSA_ERROR_BUFFER_TOO_SMALL The size of the signature buffer is too small.
  *                                          @ref PSA_SIGN_OUTPUT_SIZE() or @ref
  *                                          PSA_SIGNATURE_MAX_SIZE can be used to determine a
  *                                          sufficient buffer size.
- *          @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The following conditions can result in this error:
  *                                          - @c alg is not an asymmetric signature algorithm.
  *                                          - @c key is not an asymmetric key pair, that is
  *                                            compatible with @c alg.
  *                                          - @c input_length is too large for the algorithm and
  *                                            key type.
- *          @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED    The following conditions can result in this error:
  *                                          - @c alg is not supported or is not an asymmetric
  *                                            signature algorithm.
  *                                          - @c key is not supported for use with @c alg.
  *                                          - @c input_length is too large for the implementation.
- *          @ref PSA_ERROR_INSUFFICIENT_ENTROPY
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_ENTROPY
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_sign_message(psa_key_id_t key,
                               psa_algorithm_t alg,
@@ -3962,31 +3954,31 @@ psa_status_t psa_sign_message(psa_key_id_t key,
  * @param signature_length  Size of the signature buffer in bytes.
  *
  * @return  @ref PSA_SUCCESS                    Success. The signature is valid.
- *          @ref PSA_ERROR_BAD_STATE            The library requires initializing by a call to @ref
+ * @return  @ref PSA_ERROR_BAD_STATE            The library requires initializing by a call to @ref
  *                                              psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE       @c key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED        The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE       @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED        The key does not have the @ref
  *                                              PSA_KEY_USAGE_VERIFY_HASH flag, or it does not
  *                                              permit the requested algorithm.
- *          @ref PSA_ERROR_INVALID_SIGNATURE    @c signature is not the result of signing hash with
+ * @return  @ref PSA_ERROR_INVALID_SIGNATURE    @c signature is not the result of signing hash with
  *                                              algorithm @c alg using the private key
  *                                              corresponding to @c key.
- *          @ref PSA_ERROR_INVALID_ARGUMENT     The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT     The following conditions can result in this error:
  *                                              - @c alg is not an asymmetric signature algorithm.
  *                                              - @c key is not a public key or an asymmetric key
  *                                                pair, that is compatible with @c alg.
  *                                              - @c hash_length is not valid for the algorithm and
  *                                                key type.
- *          @ref PSA_ERROR_NOT_SUPPORTED        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED        The following conditions can result in this error:
  *                                              - @c alg is not supported or is not an asymmetric
  *                                                signature algorithm.
  *                                              - @c key is not supported for use with @c alg.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_verify_hash(psa_key_id_t key,
                              psa_algorithm_t alg,
@@ -4016,33 +4008,33 @@ psa_status_t psa_verify_hash(psa_key_id_t key,
  * @param   signature_length    Size of the @c signature buffer in bytes.
  *
  * @return  @ref PSA_SUCCESS                    Success. The signature is valid.
- *          @ref PSA_ERROR_BAD_STATE            The library requires initializing by a call to @ref
+ * @return  @ref PSA_ERROR_BAD_STATE            The library requires initializing by a call to @ref
  *                                              psa_crypto_init().
- *          @ref PSA_ERROR_INVALID_HANDLE       @c key is not a valid key identifier.
- *          @ref PSA_ERROR_NOT_PERMITTED        The key does not have the @ref
+ * @return  @ref PSA_ERROR_INVALID_HANDLE       @c key is not a valid key identifier.
+ * @return  @ref PSA_ERROR_NOT_PERMITTED        The key does not have the @ref
  *                                              PSA_KEY_USAGE_VERIFY_MESSAGE flag, or it does not
  *                                              permit the requested algorithm.
- *          @ref PSA_ERROR_INVALID_SIGNATURE    @c signature is not the result of signing the input
+ * @return  @ref PSA_ERROR_INVALID_SIGNATURE    @c signature is not the result of signing the input
  *                                              message with algorithm @c alg using the private key
  *                                              corresponding to @c key.
- *          @ref PSA_ERROR_INVALID_ARGUMENT     The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT     The following conditions can result in this error:
  *                                              - @c alg is not an asymmetric signature algorithm.
  *                                              - @c key is not a public key or an asymmetric key
  *                                                pair, that is compatible with @c alg.
  *                                              - @c input_length is too large for the algorithm
  *                                                and key type.
- *          @ref PSA_ERROR_NOT_SUPPORTED        The following conditions can result in this error:
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED        The following conditions can result in this error:
  *                                              - @c alg is not supported or is not an asymmetric
  *                                                signature algorithm.
  *                                              - @c key is not supported for use with @c alg.
  *                                              - @c input_length is too large for the
  *                                                implementation.
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_COMMUNICATION_FAILURE
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_STORAGE_FAILURE
- *          @ref PSA_ERROR_DATA_CORRUPT
- *          @ref PSA_ERROR_DATA_INVALID
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_STORAGE_FAILURE
+ * @return  @ref PSA_ERROR_DATA_CORRUPT
+ * @return  @ref PSA_ERROR_DATA_INVALID
  */
 psa_status_t psa_verify_message(psa_key_id_t key,
                                 psa_algorithm_t alg,

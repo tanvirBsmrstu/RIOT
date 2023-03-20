@@ -30,8 +30,7 @@ extern "C" {
 
 /**
  * @brief   Low level wrapper function to call a driver for an AES 128 CBC encryption.
- *
- *          See @ref psa_cipher_encrypt(...)
+ *          See @ref psa_cipher_encrypt()
  *
  * @param attributes
  * @param key_buffer
@@ -56,8 +55,7 @@ psa_status_t psa_cipher_cbc_aes_128_encrypt(const psa_key_attributes_t *attribut
 
 /**
  * @brief   Low level wrapper function to call a driver for an AES 128 CBC decryption.
- *
- *          See @ref psa_cipher_decrypt(...)
+ *          See @ref psa_cipher_decrypt()
  *
  * @param attributes
  * @param key_buffer
@@ -82,8 +80,7 @@ psa_status_t psa_cipher_cbc_aes_128_decrypt(const psa_key_attributes_t *attribut
 
 /**
  * @brief   Low level wrapper function to call a driver for an AES 192 CBC encryption.
- *
- *          See @ref psa_cipher_encrypt(...)
+ *          See @ref psa_cipher_encrypt()
  *
  * @param attributes
  * @param key_buffer
@@ -108,8 +105,7 @@ psa_status_t psa_cipher_cbc_aes_192_encrypt(const psa_key_attributes_t *attribut
 
 /**
  * @brief   Low level wrapper function to call a driver for an AES 256 CBC encryption.
- *
- *          See @ref psa_cipher_encrypt(...)
+ *          See @ref psa_cipher_encrypt()
  *
  * @param attributes
  * @param key_buffer

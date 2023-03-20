@@ -87,10 +87,10 @@ typedef struct psa_se_drv_data_s psa_se_drv_data_t;
  * @param   drv_transient_data      Transient driver data to be used by the driver
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_INVALID_ARGUMENT The location value is invalid
- *          @ref PSA_ERROR_NOT_SUPPORTED
- *          @ref PSA_ERROR_INSUFFICIENT_MEMORY
- *          @ref PSA_ERROR_ALREADY_EXISTS *
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT The location value is invalid
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED
+ * @return  @ref PSA_ERROR_INSUFFICIENT_MEMORY
+ * @return  @ref PSA_ERROR_ALREADY_EXISTS *
  */
 psa_status_t psa_register_secure_element(psa_key_location_t location,
                                          const psa_drv_se_t *methods,
@@ -102,9 +102,8 @@ psa_status_t psa_register_secure_element(psa_key_location_t location,
  *
  * @param   lifetime    Lifetime value of type @ref psa_key_lifetime_t of the key to be used
  *
- * @return  @ref psa_se_drv_data_t*
- *          Pointer to the driver data
- *          @c NULL if no driver exists with this location
+ * @return  @ref psa_se_drv_data_t*     Pointer to the driver data
+ * @return  @c NULL if no driver exists with this location
  */
 psa_se_drv_data_t *psa_get_se_driver_data(psa_key_lifetime_t lifetime);
 
@@ -115,9 +114,8 @@ psa_se_drv_data_t *psa_get_se_driver_data(psa_key_lifetime_t lifetime);
  * @param   p_methods       Pointer that will reference the driver methods
  * @param   p_drv_context   Pointer that will reference the driver context
  *
- * @return  int
- *          1 if a driver was found
- *          0 if no driver exists with this location
+ * @return  1 if a driver was found
+ * @return  0 if no driver exists with this location
  */
 int psa_get_se_driver(  psa_key_lifetime_t lifetime,
                         const psa_drv_se_t **p_methods,
@@ -150,8 +148,8 @@ psa_drv_se_context_t *psa_get_se_drv_context(psa_se_drv_data_t *driver);
  * @param   slot_number Pointer that will contain the slot number of the free SE slot
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
- *          @ref PSA_ERROR_NOT_SUPPORTED
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED
  */
 psa_status_t psa_find_free_se_slot( const psa_key_attributes_t *attributes,
                                     psa_key_creation_method_t method,
@@ -167,7 +165,7 @@ psa_status_t psa_find_free_se_slot( const psa_key_attributes_t *attributes,
  * @param   slot_number Slot number of the key that is to be destroyed
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_NOT_PERMITTED
+ * @return  @ref PSA_ERROR_NOT_PERMITTED
  */
 psa_status_t psa_destroy_se_key(psa_se_drv_data_t *driver,
                                 psa_key_slot_number_t slot_number);

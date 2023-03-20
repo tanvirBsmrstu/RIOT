@@ -94,9 +94,8 @@ void psa_init_key_slots(void);
  *
  * @param   key_id  Key identifier to test.
  *
- * @return  int
- *          1       The key identifier is a volatile key identifier.
- *          0       The key identifier is not a volatile key identifier.
+ * @return  1       The key identifier is a volatile key identifier.
+ * @return  0       The key identifier is not a volatile key identifier.
  */
 static inline int psa_key_id_is_volatile(psa_key_id_t key_id)
 {
@@ -109,8 +108,7 @@ static inline int psa_key_id_is_volatile(psa_key_id_t key_id)
  *
  * @param   slot    Pointer to the slot to be checked
  *
- * @return  int
- *          1 if slot is locked, otherwise 0
+ * @return  1 if slot is locked, otherwise 0
  */
 static inline int psa_is_key_slot_locked(psa_key_slot_t *slot)
 {
@@ -131,7 +129,7 @@ psa_key_slot_number_t * psa_key_slot_get_slot_number(const psa_key_slot_t *slot)
  * @param   lifetime    Lifetime value of the key that's supposed to be checked
  *
  * @return  int
- *          1 if key is stored on external device, otherwise 0
+ * @return  1 if key is stored on external device, otherwise 0
  */
 static inline int psa_key_lifetime_is_external(psa_key_lifetime_t lifetime)
 {
@@ -144,7 +142,7 @@ static inline int psa_key_lifetime_is_external(psa_key_lifetime_t lifetime)
  * @param   slot    Pointer to the key slot to be wiped
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_DOES_NOT_EXIST
+ * @return  @ref PSA_ERROR_DOES_NOT_EXIST
  */
 psa_status_t psa_wipe_key_slot(psa_key_slot_t *slot);
 
@@ -160,8 +158,8 @@ void psa_wipe_all_key_slots(void);
  * @param   slot    Pointer to the slot the key is stored in
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_DOES_NOT_EXIST
- *          @ref PSA_ERROR_NOT_SUPPORTED
+ * @return  @ref PSA_ERROR_DOES_NOT_EXIST
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED
  */
 psa_status_t psa_get_and_lock_key_slot(psa_key_id_t id, psa_key_slot_t **slot);
 
@@ -173,7 +171,7 @@ psa_status_t psa_get_and_lock_key_slot(psa_key_id_t id, psa_key_slot_t **slot);
  * @param   p_slot  Pointer to the empty slot in memory
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_INSUFFICIENT_STORAGE
+ * @return  @ref PSA_ERROR_INSUFFICIENT_STORAGE
  */
 psa_status_t psa_allocate_empty_key_slot(   psa_key_id_t *id,
                                             const psa_key_attributes_t *attr,
@@ -185,7 +183,7 @@ psa_status_t psa_allocate_empty_key_slot(   psa_key_id_t *id,
  * @param   slot    Slot to be locked
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_lock_key_slot(psa_key_slot_t *slot);
 
@@ -195,7 +193,7 @@ psa_status_t psa_lock_key_slot(psa_key_slot_t *slot);
  * @param   slot    Slot to be unlocked
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_unlock_key_slot(psa_key_slot_t *slot);
 
@@ -206,7 +204,7 @@ psa_status_t psa_unlock_key_slot(psa_key_slot_t *slot);
  * @param   driver      Pointer to driver assigned to the existing key location, if it exists
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_INVALID_ARGUMENT
+ * @return  @ref PSA_ERROR_INVALID_ARGUMENT
  */
 psa_status_t psa_validate_key_location( psa_key_lifetime_t lifetime,
                                         psa_se_drv_data_t **driver);
@@ -217,7 +215,7 @@ psa_status_t psa_validate_key_location( psa_key_lifetime_t lifetime,
  * @param   lifetime    Lifetime of key to be validated
  *
  * @return  @ref PSA_SUCCESS
- *          @ref PSA_ERROR_NOT_SUPPORTED
+ * @return  @ref PSA_ERROR_NOT_SUPPORTED
  */
 psa_status_t psa_validate_key_persistence(psa_key_lifetime_t lifetime);
 
@@ -227,9 +225,8 @@ psa_status_t psa_validate_key_persistence(psa_key_lifetime_t lifetime);
  * @param   id      ID of key to be validated
  * @param   vendor  If ID is supposed to be user or vendor ID
  *
- * @return  int
- *          1 if valid
- *          0 if invalid
+ * @return  1 if valid
+ * @return  0 if invalid
  */
 int psa_is_valid_key_id(psa_key_id_t id, int vendor);
 

@@ -31,8 +31,7 @@ extern "C" {
 
 /**
  * @brief   Dispatch call of a hash signature function to a location specific backend.
- *
- * @details See psa_sign_hash()
+ *          See psa_sign_hash()
  *
  * @param attributes
  * @param alg
@@ -55,8 +54,7 @@ psa_status_t psa_location_dispatch_sign_hash(  const psa_key_attributes_t *attri
 
 /**
  * @brief   Dispatch call of a hash verification function to a location specific backend.
- *
- * @details See psa_verify_hash()
+ *          See psa_verify_hash()
  *
  * @param attributes
  * @param alg
@@ -77,8 +75,7 @@ psa_status_t psa_location_dispatch_verify_hash(  const psa_key_attributes_t *att
 
 /**
  * @brief   Dispatch call of a mac computation function to a location specific backend.
- *
- * @details See psa_mac_compute()
+ *          See psa_mac_compute()
  *
  * @param attributes
  * @param alg
@@ -101,8 +98,7 @@ psa_status_t psa_location_dispatch_mac_compute(const psa_key_attributes_t *attri
 
 /**
  * @brief   Dispatch call of the key generation function to a location specific backend.
- *
- * @details See psa_generate_key()
+ *          See psa_generate_key()
  *
  * @param attributes
  * @param slot
@@ -113,8 +109,7 @@ psa_status_t psa_location_dispatch_generate_key(const psa_key_attributes_t *attr
 
 /**
  * @brief   Dispatch call of the key import function to a location specific backend.
- *
- * @details See psa_import_key()
+ *          See psa_import_key()
  *
  * @param attributes
  * @param data
@@ -129,8 +124,7 @@ psa_status_t psa_location_dispatch_import_key( const psa_key_attributes_t *attri
 
 /**
  * @brief   Dispatch call of a cipher encrypt setup function to a location specific backend.
- *
- * @details See psa_cipher_setup()
+ *          See psa_cipher_setup()
  *
  * @param operation
  * @param attributes
@@ -145,8 +139,7 @@ psa_status_t psa_location_dispatch_cipher_encrypt_setup(   psa_cipher_operation_
 
 /**
  * @brief   Dispatch call of a cipher decrypt setup function to a location specific backend.
- *
- * @details See psa_cipher_setup()
+ *          See psa_cipher_setup()
  *
  * @param operation
  * @param attributes
@@ -161,8 +154,7 @@ psa_status_t psa_location_dispatch_cipher_decrypt_setup(psa_cipher_operation_t *
 
 /**
  * @brief   Dispatch call of a function to set a cipher IV to a location specific backend.
- *
- * @details See psa_cipher_set_iv()
+ *          See psa_cipher_set_iv()
  *
  * @param operation
  * @param iv
@@ -175,8 +167,7 @@ psa_status_t psa_location_dispatch_cipher_set_iv(  psa_cipher_operation_t *opera
 
 /**
  * @brief   Dispatch call of a cipher encrypt function to a location specific backend.
- *
- * @details See psa_cipher_encrypt()
+ *          See psa_cipher_encrypt()
  *
  * @param attributes
  * @param alg
@@ -199,8 +190,7 @@ psa_status_t psa_location_dispatch_cipher_encrypt(  const psa_key_attributes_t *
 
 /**
  * @brief   Dispatch call of a cipher decrypt function to a location specific backend.
- *
- * @details See psa_cipher_decrypt()
+ *          See psa_cipher_decrypt()
  *
  * @param attributes
  * @param alg
@@ -223,8 +213,7 @@ psa_status_t psa_location_dispatch_cipher_decrypt(  const psa_key_attributes_t *
 
 /**
  * @brief   Dispatch call of a random number generator to a specific backend.
- *
- * @details See psa_generate_random()
+ *          See psa_generate_random()
  *
  * @param output
  * @param output_size

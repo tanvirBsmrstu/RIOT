@@ -31,8 +31,7 @@ extern "C" {
 
 /**
  * @brief   Low level wrapper function to call a driver for a HMAC SHA256 computation
- *
- * @details See psa_mac_compute()
+ *          See psa_mac_compute()
  *
  * @param   attributes
  * @param   key_buffer

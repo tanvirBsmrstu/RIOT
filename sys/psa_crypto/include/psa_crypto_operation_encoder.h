@@ -76,7 +76,7 @@ typedef enum {
  * @param   curve   Must be a curve of type @ref psa_ecc_family_t
  *
  * @return  @ref psa_asym_key_t
- *          @ref PSA_INVALID_OPERATION  @c curve is not compatible with key size
+ * @return  @ref PSA_INVALID_OPERATION  @c curve is not compatible with key size
  */
 #define GET_ECC_KEY_TYPE_192(curve) \
     ((curve == PSA_ECC_FAMILY_SECP_R1) ? PSA_ECC_P192_R1 : \
@@ -88,7 +88,7 @@ typedef enum {
  * @param   curve   Must be a curve of type @ref psa_ecc_family_t
  *
  * @return  @ref psa_asym_key_t
- *          @ref PSA_INVALID_OPERATION  @c curve is not compatible with key size
+ * @return  @ref PSA_INVALID_OPERATION  @c curve is not compatible with key size
  */
 #define GET_ECC_KEY_TYPE_256(curve) \
     ((curve == PSA_ECC_FAMILY_SECP_R1) ? PSA_ECC_P256_R1 : \
@@ -101,7 +101,7 @@ typedef enum {
  * @param   curve   Must be a curve of type @ref psa_ecc_family_t
  *
  * @return  @ref psa_asym_key_t
- *          @ref PSA_INVALID_OPERATION  @c curve and @c bits are incompatible
+ * @return  @ref PSA_INVALID_OPERATION  @c curve and @c bits are incompatible
  */
 #define PSA_ENCODE_ECC_KEY_TYPE(bits, curve) \
     ((bits == 256) || (bits == 520) ? GET_ECC_KEY_TYPE_256(curve) : \
@@ -115,7 +115,7 @@ typedef enum {
  * @param   type    Key type of type @ref psa_key_type_t
  *
  * @return  @ref psa_cipher_op_t
- *          @ref PSA_INVALID_OPERATION  @c alg, and @c type are incompatible with the key size
+ * @return  @ref PSA_INVALID_OPERATION  @c alg, and @c type are incompatible with the key size
  */
 #define GET_CIPHER_OPERATION_128(alg, type) \
     (((alg == PSA_ALG_CBC_NO_PADDING) && (type == PSA_KEY_TYPE_AES)) ? PSA_CBC_NO_PAD_AES_128 : \
@@ -128,7 +128,7 @@ typedef enum {
  * @param   type    Key type of type @ref psa_key_type_t
  *
  * @return  @ref psa_cipher_op_t
- *          @ref PSA_INVALID_OPERATION  @c alg, and @c type are incompatible with the key size
+ * @return  @ref PSA_INVALID_OPERATION  @c alg, and @c type are incompatible with the key size
  */
 #define GET_CIPHER_OPERATION_192(alg, type) \
     (((alg == PSA_ALG_CBC_NO_PADDING) && (type == PSA_KEY_TYPE_AES)) ? PSA_CBC_NO_PAD_AES_192 : \
@@ -141,7 +141,7 @@ typedef enum {
  * @param   type    Key type of type @ref psa_key_type_t
  *
  * @return  @ref psa_cipher_op_t
- *          @ref PSA_INVALID_OPERATION  @c alg, and @c type are incompatible with the key size
+ * @return  @ref PSA_INVALID_OPERATION  @c alg, and @c type are incompatible with the key size
  */
 #define GET_CIPHER_OPERATION_256(alg, type) \
     (((alg == PSA_ALG_CBC_NO_PADDING) && (type == PSA_KEY_TYPE_AES)) ? PSA_CBC_NO_PAD_AES_256 : \
@@ -156,7 +156,7 @@ typedef enum {
  * @param   type    Key type of type @ref psa_key_type_t
  *
  * @return  @ref psa_cipher_op_t
- *          @ref PSA_INVALID_OPERATION  @c alg, @c bits and @c type are not compatible
+ * @return  @ref PSA_INVALID_OPERATION  @c alg, @c bits and @c type are not compatible
  */
 #define PSA_ENCODE_CIPHER_OPERATION(alg, bits, type) \
     ((bits == 128) ? GET_CIPHER_OPERATION_128(alg, type) : \
