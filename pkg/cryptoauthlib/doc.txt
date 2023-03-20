@@ -1,6 +1,6 @@
 /**
  * @defgroup pkg_cryptoauthlib Microchip CryptoAuthentication Library
- * @ingroup  pkg drivers_misc sys_crypto
+ * @ingroup  pkg drivers_misc
  * @brief    Provides the library for Microchip CryptoAuth devices
  * @see      https://github.com/MicrochipTech/cryptoauthlib
  *
@@ -8,12 +8,10 @@
  *
  * This package provides support for the official library for Microchip CryptoAuth devices.
  *
- * ## Warning
- *
- * Some functions can only be used, when the data, config and otp zones of the
- * device are locked. Locking is permanent and cannot be undone. Be careful if
- * you're not sure you've configured everything correctly.
- * For more information please refer to the data sheet of the device.
+ * @Warning Some functions can only be used, when the data, config and otp zones
+ *          of the device are locked. Locking is permanent and cannot be undone.
+ *          Be careful if you're not sure you've configured everything correctly.
+ *          For more information please refer to the data sheet of the device.
  *
  * ## Usage
  *
@@ -128,7 +126,7 @@
  * To use them you need to utilize the `calib`-API of the cryptoauth driver, which
  * allows you to pass a device handle. Pointers to all initialized devices are stored
  * in the `atca_devs_ptr` array, which is included in `atca_params.h`.
- * Include `atca_params.h` in your source file and pass the device handled as shown below.
+ * Include `atca_params.h` in your source file and pass the device handle as shown below.
  *
  * @code {.c}
  * ATCADevice dev = atca_devs_ptr[0];

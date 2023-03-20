@@ -21,9 +21,9 @@ endif
 FEATURES_BLACKLIST += arch_efm32
 
 ifneq (,$(filter psa_crypto,$(USEMODULE)))
-  USEMODULE += psa_se_driver
+  USEMODULE += psa_atca_driver
 endif
 
-ifneq (,$(filter psa_secure_element_ateccx08a_ecc, $(USEMODULE)))
+ifneq (,$(filter psa_secure_element_ateccx08a_ecc_p256, $(USEMODULE)))
   USEMODULE += psa_secure_element_asymmetric
 endif
