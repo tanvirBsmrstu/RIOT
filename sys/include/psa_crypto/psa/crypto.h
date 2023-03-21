@@ -2638,7 +2638,8 @@ psa_status_t psa_import_key(const psa_key_attributes_t *attributes,
  *                                      reused.
  * @return  @ref PSA_ERROR_BAD_STATE    The library requires initializing by a call to @ref
  *                                      psa_crypto_init().
- * @return  @ref PSA_ERROR_COMMUNICATION_FA@return  @ref PSA_ERROR_CORRUPTION_DETECTED
+ * @return  @ref PSA_ERROR_COMMUNICATION_FAILURE
+ * @return  @ref PSA_ERROR_CORRUPTION_DETECTED
  */
 psa_status_t psa_key_derivation_abort(psa_key_derivation_operation_t *operation);
 
