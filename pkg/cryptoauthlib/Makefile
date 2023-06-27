@@ -10,7 +10,6 @@ include $(RIOTBASE)/pkg/pkg.mk
 
 CMAKE_MINIMAL_VERSION = 3.6.0
 
-CFLAGS += $(INCLUDES)
 CFLAGS += -DATCA_HAL_I2C
 CFLAGS += -Wno-cast-align
 CFLAGS += -Wno-char-subscripts

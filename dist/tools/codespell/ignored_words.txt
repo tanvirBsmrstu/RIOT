@@ -156,3 +156,6 @@ didi
 
 # loath => loathe (both correct, one is an adjective, the other a verb)
 loath
+
+# rsource (used to include Kconfig files) ==> resource, source
+rsource
