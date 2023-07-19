@@ -39,6 +39,11 @@ USEMODULE += ps
 USEMODULE += netdev_default
 USEPKG += paho-mqtt
 
+USEMODULE += auto_init_gnrc_netif
+USEMODULE += gnrc_ipv6_default
+# For testing we also include the ping6 command and some stats
+USEMODULE += gnrc_icmpv6_echo
+
 # paho-mqtt depends on TCP support, choose which stacks you want
 GNRC_IPV6 ?= 1
 LWIP_IPV4 ?= 0

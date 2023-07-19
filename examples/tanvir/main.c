@@ -37,15 +37,15 @@ static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
 #define COMMAND_TIMEOUT_MS              4000
 
 #ifndef DEFAULT_MQTT_CLIENT_ID
-#define DEFAULT_MQTT_CLIENT_ID          ""
+#define DEFAULT_MQTT_CLIENT_ID          "thasan"
 #endif
 
 #ifndef DEFAULT_MQTT_USER
-#define DEFAULT_MQTT_USER               ""
+#define DEFAULT_MQTT_USER               "thasan"
 #endif
 
 #ifndef DEFAULT_MQTT_PWD
-#define DEFAULT_MQTT_PWD                ""
+#define DEFAULT_MQTT_PWD                "thasan"
 #endif
 
 /**
@@ -170,7 +170,7 @@ static int _cmd_con(int argc, char **argv)
             remote_ip, port);
     ret = NetworkConnect(&network, remote_ip, port);
     if (ret < 0) {
-        printf("mqtt_example: Unable to connect\n");
+        printf("mqtt_example: Unable to connect with return code %d\n",ret);
         return ret;
     }
 
