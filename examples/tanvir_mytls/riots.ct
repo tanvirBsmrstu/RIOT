@@ -1,0 +1,73 @@
+
+
+#include "net/sock/tcp.h"
+#include "net/ipv6/addr.h"
+#include <string.h>
+
+#define SERVER_IP "fec0:affe::100" // Replace with the server's IPv6 address
+#define SERVER_PORT 1213    // Replace with the server's port number
+
+#define SEND_BUFFER_SIZE 128
+
+int tclient(void)
+{
+    sock_tcp_t sock;
+    char send_buffer[SEND_BUFFER_SIZE];
+
+    // Create a TCP socket
+    if (sock_tcp_create(&sock, AF_INET6, 0) < 0)
+    {
+        puts("Error creating TCP socket");
+        return 1;
+    }
+
+    // Resolve the server's IPv6 address
+    sock_addr6_t server_addr;
+    if (ipv6_addr_from_str(&server_addr, SERVER_IP) == NULL)
+    {
+        puts("Invalid server IP address");
+        sock_tcp_close(&sock);
+        return 1;
+    }
+
+    // Set the server's port number
+    server_addr.port = SERVER_PORT;
+
+    // Connect to the server
+    if (sock_tcp_connect(&sock, (const sock_addr_t *)&server_addr, sizeof(server_addr)) < 0)
+    {
+        puts("Error connecting to server");
+        sock_tcp_close(&sock);
+        return 1;
+    }
+
+    // Send data to the server
+    strcpy(send_buffer, "Hello, server!");
+    int bytes_sent = sock_tcp_send(&sock, send_buffer, strlen(send_buffer), 0);
+    if (bytes_sent < 0)
+    {
+        puts("Error sending data");
+    }
+    else
+    {
+        printf("Sent %d bytes: %s\n", bytes_sent, send_buffer);
+    }
+
+    // Receive data from the server
+    char recv_buffer[SEND_BUFFER_SIZE];
+    int bytes_received = sock_tcp_recv(&sock, recv_buffer, sizeof(recv_buffer) - 1, 0);
+    if (bytes_received < 0)
+    {
+        puts("Error receiving data");
+    }
+    else
+    {
+        recv_buffer[bytes_received] = '\0';
+        printf("Received %d bytes: %s\n", bytes_received, recv_buffer);
+    }
+
+    // Close the socket
+    sock_tcp_close(&sock);
+
+    return 0;
+}
