@@ -9,7 +9,7 @@ ifneq (0,$(GNRC_IPV6))
   USEMODULE += gnrc_ipv6_default
   # Additional networking modules that can be dropped if not needed
   USEMODULE += gnrc_icmpv6_echo
-  USEMODULE += gnrc_sock_tcp
+  # USEMODULE += gnrc_sock_tcp
 else
   ifeq (0,$(USE_LWIP))
     $(error No network stack selected. Please choose either GNRC or LWIP)

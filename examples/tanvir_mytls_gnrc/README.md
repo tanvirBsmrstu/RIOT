@@ -1,50 +1,40 @@
-### About
-This application demonstrates the usage of the Eclipse paho MQTT package in RIOT.
+This example is about to tcp server and client, it uses posix socket and gnrc stack -> please check Makefile
+Please see tcp.c file, it contains server and client
 
-### Setup
-For using this example, two prerequisites have to be fulfilled:
+### instruction TCP
+1. first run ./network_config.sh, it will create two tap interface and set an ip``fec0:affe::1`` to tapbr0 [for faster debugging the ips are hardcoded]
+2. run 2 instances of this example
 
-1. You need a running MQTT broker like Mosquitto broker for example. Take a look at
-[Mosquitto Broker](https://mosquitto.org/). Check online any guide that will
-help you setting up the broker into some port (a).
-For example this one for debian base linux users
-[How to setup a Mosquitto MQTT Server and receive data](https://www.digitalocean.com/community/questions/how-to-setup-a-mosquitto-mqtt-server-and-receive-data-from-owntracks).
+    [*] first with ``sudo PORT=tap0 make clean all term``
+                then check the interface number with ``ifconfig``
+                then set ip with ``ifconfig 6 add fec0:affe::100`` please change the interface 6 to the one got from previous step
+                then    ``ip server`` it will set server ip address to ``fec0:affe::100``
+                then    ``tcps`` it will run the server
 
-2. Your RIOT node needs to be able to speak to that broker at the same port you set in 1.
+    [*] second instance with ``sudo PORT=tap1 make all term``
+                then check the interface number with ``ifconfig``
+                then set ip with ``ifconfig 6 add fec0:affe::99`` please change the interface 6 to the one got from previous step
+                then ``ip client`` it will set client ip address to ``fec0:affe::99``
+                then ``tcpc`` it will run client and try to connect to the server
 
-### Setting up RIOT `native` on Linux
-- Run `sudo ./dist/tools/tapsetup/tapsetup -c 1`
 
-## Running the example
-- Run on RIOT's root directory:
 
-  make -C examples/tanvir all term
+### state
+    ## n_s gnrc sample tcp server works fine, n_tc is the client
 
-- To connect to a broker, use the `con` command:
-```
-con  <broker ip addr> [port] [clientID] [user] [password] [keepalivetime]
-```
-  * *broker ip addr*: IPv6 or IPv4 broker address.
-  * *port*: broker port. Default 1883
-  * *client ID*: is the client id you set up on the broker. Default can be set
-     through DEFAULT_MQTT_CLIENT_ID in your makefile. Otherwise is an empty string.
-  * *user*: the one set in the broker, check online tutorial to do it regarding chosen broker.
-     Default user can be set through DEFAULT_MQTT_USER in your makefile. Otherwise is an empty string.
-  * *password*: the one set in the broker, check online tutorial to do it regarding chosen broker.
-     Default user can be set through DEFAULT_MQTT_PWD in your makefile. Otherwise is an empty string.
-  * *keepalivetime*: keep alive in seconds for your client. Default 10 secs.
+The current state is that the server and client can connect but when the ``send`` function is called, the instance is crushed and core dumped.
 
-- To subscribe to a topic, run `sub` with the topic name as parameter and a QoS
-  level between 1 to 3, e.g.
-```
-sub hello/world 2
-```
-- To unsubscribe to a topic, run `unsub` with the topic name e.g.
-```
-unsub hello/world
-```
 
-- For publishing, use the `pub` command with a QoS level between 1 to 3:
-```
-pub hello/world "One more beer, please." 2
-```
+### Note
+I don't know where the dumped file is located
+
+### instruction TLS
+it is the same as TCP, use ``tlss`` for server and ``tlsc`` for client
+
+
+### state
+The current state is that the server and client can connect but when TLS handshake is called using ``wolfssl_connect`` the programme gets a segmentation fault
+
+
+### Note
+I don't know where the dumped file is located

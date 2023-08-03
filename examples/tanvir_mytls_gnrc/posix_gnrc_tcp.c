@@ -22,7 +22,7 @@
 
 // #include <wolfssl/options.h>
 
-#define TCP_PORT 1232
+#define TCP_POSIX_PORT 1232
 #define CERT_FILE "../certs/server-cert.pem"
 
 #define SOCK_QUEUE_LEN (5U)
@@ -30,13 +30,13 @@
 // sock_tcp_t sock_queue[SOCK_QUEUE_LEN];
 uint8_t buf[128];
 
-int tcp_server(int argc, char **argv)
+int tcp_posix_server(void)
 {
     int server_socket=0, client_socket=0; // listening socket, connection socket
     char buff[256];
 
     /* declare wolfSSL objects */
-
+    printf("This is a posix tcp server with gnrc netstack");
     struct sockaddr_in6 servAddr;
 
     /* Create a socket that uses an internet IPv6 address,
@@ -52,10 +52,7 @@ int tcp_server(int argc, char **argv)
     memset(&servAddr, 0, sizeof(servAddr));
     /* Fill in the server address */
     servAddr.sin6_family = AF_INET6;      /* using IPv6      */
-    servAddr.sin6_port = htons(TCP_PORT); /* on DEFAULT_PORT */
-
-    (void)argc;
-    (void)argv;
+    servAddr.sin6_port = htons(TCP_POSIX_PORT); /* on DEFAULT_PORT */
 
     /* Bind the server socket to local port */
     if (bind(server_socket, (struct sockaddr *)&servAddr, sizeof(servAddr)) == -1)
@@ -71,8 +68,7 @@ int tcp_server(int argc, char **argv)
         goto sock_close;
     }
 
-    puts("This is the TCP Server!");
-    printf("Server is listening on port %d\n", TCP_PORT);
+    printf("Server is listening on port %d\n", TCP_POSIX_PORT);
 
     struct sockaddr_in6 clientAddr;
     socklen_t size = sizeof(clientAddr);
@@ -120,12 +116,12 @@ sock_close:
 
 
 
-int tcp_client(char *server_ip)
+int tcp_posix_client(char *server_ip)
 {
     int BUFFER_SIZE = 20;
     char buffer[BUFFER_SIZE];
     int client_socket = 0;
-
+    
     /* Create a socket that uses an internet IPv6 address,
      * Sets the socket to be stream based (TCP),
      * 0 means choose the default protocol. */
@@ -139,7 +135,7 @@ int tcp_client(char *server_ip)
     memset(&servAddr, 0, sizeof(servAddr));
     /* Fill in the server address */
     servAddr.sin6_family = AF_INET6;      /* using IPv6      */
-    servAddr.sin6_port = htons(TCP_PORT); /* on SERVER_PORT */
+    servAddr.sin6_port = TCP_POSIX_PORT; /* on SERVER_PORT */
 
     /* Get the server IPv6 address from the compile-time string parameter */
     if (inet_pton(AF_INET6, server_ip, &servAddr.sin6_addr.s6_addr) != 1)
@@ -147,7 +143,7 @@ int tcp_client(char *server_ip)
         fprintf(stderr, "ERROR: invalid address\n");
         goto sock_close;
     }
-    printf("Trying to connect to %s\n",server_ip);
+    printf("posix client : Trying to connect to %s port: %d\n",server_ip,TCP_POSIX_PORT);
     /* Connect to the server */
     if (connect(client_socket, (struct sockaddr *)&servAddr, sizeof(servAddr)) == -1)
     {

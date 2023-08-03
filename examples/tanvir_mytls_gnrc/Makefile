@@ -42,8 +42,8 @@ USEMODULE += auto_init_gnrc_netif
 USEMODULE += gnrc_ipv6_default
 USEMODULE += gnrc_icmpv6_echo    # For testing we also include the ping6 command and some stats
 # Activate ICMPv6 error messages
-USEMODULE += gnrc_icmpv6_error
-USEMODULE += gnrc_sock_tcp
+#USEMODULE += gnrc_icmpv6_error
+#USEMODULE += gnrc_tcp
 
 USEPKG += paho-mqtt
 #CFLAGS += -Dpaho-mqtt3cs
@@ -93,9 +93,11 @@ USEMODULE+=wolfcrypt_random
 USEMODULE+=wolfssl_internal
 USEMODULE+=wolfssl_wolfio
 USEMODULE+=wolfssl_keys
- USEMODULE+=wolfssl_ssl
+USEMODULE+=wolfssl_ssl
 USEMODULE+=wolfssl_tls
 USEMODULE+=wolfcrypt_aes_gcm
+USEMODULE+=wolfssl_gnrc
+USEMODULE+=wolfssl_dtls
 
 
 CFLAGS+=-DHAVE_AESGCM -DWC_RSA_PSS -DHAVE_HKDF -DWOLFSSL_SP_MATH_ALL
@@ -113,7 +115,7 @@ include Makefile.lwip
 include Makefile.gnrc
 
 USEMODULE += sock_async_event
-USEMODULE += sock_ip
+#USEMODULE += sock_ip
 USEMODULE += sock_udp
 USEMODULE += sock_tcp
 

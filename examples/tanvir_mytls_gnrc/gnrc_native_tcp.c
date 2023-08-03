@@ -13,14 +13,12 @@
 sock_tcp_t sock_queue[SOCK_QUEUE_LEN];
 
  
-int tcpServer(void)
+int tcp_gnrc_native_server(void)
 {
    
     int res;
     sock_tcp_queue_t queue;
     sock_tcp_ep_t local = SOCK_IPV6_EP_ANY;
-  
- 
     local.port = TcpPort;
  
     if ((res=sock_tcp_listen(&queue, &local, sock_queue, SOCK_QUEUE_LEN, 0)) < 0) {
@@ -69,12 +67,11 @@ int tcpServer(void)
 ////////////////////////////////////////////// client ////////////////////////////
 
  
-int tcpClient(char * remoteIP)
+int tcp_gnrc_native_client(char * remoteIP)
 {
     int res;
     sock_tcp_t sock;
     sock_tcp_ep_t remote = SOCK_IPV6_EP_ANY;
- 
     remote.port = TcpPort;
     uint8_t buf[128];
 
