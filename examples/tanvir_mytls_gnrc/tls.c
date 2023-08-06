@@ -47,7 +47,7 @@ int my_io_send(WOLFSSL *ssl, char *buf, int sz, void *ctx);
 
 //
 
-
+Network myctx;
 
 int tls_server(void)
 {

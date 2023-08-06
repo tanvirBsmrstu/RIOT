@@ -1,0 +1,18 @@
+ifneq (0,$(GNRC_IPV6))
+  USEMODULE += auto_init_gnrc_netif
+  # Activate ICMPv6 error messages
+  USEMODULE += gnrc_icmpv6_error
+  # Specify the mandatory networking modules for IPv6
+  USEMODULE += gnrc_ipv6_default
+  # Additional networking modules that can be dropped if not needed
+  USEMODULE += gnrc_icmpv6_echo
+
+  USEMODULE += sock_async_event
+  USEMODULE += sock_udp
+  USEMODULE += sock_tcp
+
+  USEMODULE += ztimer
+  USEMODULE += ztimer_msec
+else
+  $(error this module currently has support for only GNRC_IPV6.)
+endif

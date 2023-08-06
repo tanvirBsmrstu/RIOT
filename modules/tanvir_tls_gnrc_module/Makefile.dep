@@ -1,0 +1,7 @@
+
+ifneq (,$(filter tanvir_tls_gnrc,$(USEMODULE))) # if module in USEMODULE
+  #USEMODULE += dep1                         # add dependencies to USEMODULE
+  #USEMODULE += dep2
+  include $(CURDIR)/Makefile.gnrc
+  include $(CURDIR)/Makefile.wolfssl
+endif
