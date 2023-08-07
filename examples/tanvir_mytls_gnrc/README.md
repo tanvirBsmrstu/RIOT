@@ -7,34 +7,23 @@ Please see tcp.c file, it contains server and client
 
     [*] first with ``sudo PORT=tap0 make clean all term``
                 then check the interface number with ``ifconfig``
-                then set ip with ``ifconfig 6 add fec0:affe::100`` please change the interface 6 to the one got from previous step
-                then    ``ip server`` it will set server ip address to ``fec0:affe::100``
-                then    ``tcps`` it will run the server
+                then set ip with ``ifconfig 6 add fec0:affe::100`` please change the interface 6 to the one got from 
+                now ``tlss`` this will start the tls server using the x509 certificate at ``./certs/certificates``
 
     [*] second instance with ``sudo PORT=tap1 make all term``
                 then check the interface number with ``ifconfig``
                 then set ip with ``ifconfig 6 add fec0:affe::99`` please change the interface 6 to the one got from previous step
-                then ``ip client`` it will set client ip address to ``fec0:affe::99``
-                then ``tcpc`` it will run client and try to connect to the server
+                now ``tlsc`` this will start the tls server using the x509 certificate at ``./certs/certificates``
 
+    ### NOTE
+    for faster development client will always request to ``fec0:affe::100`` and this is hardcoded for now.
 
 
 ### state
-    ## n_s gnrc sample tcp server works fine, n_tc is the client
+    ## server and client can successfully communicate using x509 certificate
 
-The current state is that the server and client can connect but when the ``send`` function is called, the instance is crushed and core dumped.
-
-
-### Note
-I don't know where the dumped file is located
 
 ### instruction TLS
 it is the same as TCP, use ``tlss`` for server and ``tlsc`` for client
 
 
-### state
-The current state is that the server and client can connect but when TLS handshake is called using ``wolfssl_connect`` the programme gets a segmentation fault
-
-
-### Note
-I don't know where the dumped file is located
