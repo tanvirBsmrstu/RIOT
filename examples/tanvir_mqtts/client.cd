@@ -1,0 +1,176 @@
+#include <wolfssl/wolfcrypt/settings.h>
+#include <wolfssl/ssl.h>
+
+#include <net/sock/tcp.h>
+#include <errno.h>
+
+#include "net/dns.h"
+#include "log.h"
+
+#ifdef MODULE_IPV6_ADDR
+#include "net/ipv6/addr.h"
+#endif
+// #ifdef MODULE_IPV4_ADDR
+// #include "net/ipv4/addr.h"
+// #endif
+
+typedef struct Network
+{
+    sock_tcp_t sock; /**< socket number */
+    /**
+     * @brief read internal function
+     */
+    // int (*mqttread) (struct Network*, unsigned char*, int, int);
+    // /**
+    //  * @brief write internal function
+    //  */
+    // int (*mqttwrite) (struct Network*, unsigned char*, int, int);
+} Network;
+uint8_t buff[128];
+#define TLS_PORT 1234
+
+extern const unsigned char server_cert[];
+extern const unsigned long server_cert_len;
+
+int TcpConnect(Network *n, char *addr_ip, int port)
+{
+    int ret = -1;
+    sock_tcp_ep_t remote = SOCK_IPV4_EP_ANY;
+
+    /* Parsing <address> */
+    char *iface = ipv6_addr_split_iface(addr_ip);
+    if (!iface) {
+        if (gnrc_netif_numof() == 1) {
+            /* assign the single interface found in gnrc_netif_numof() */
+            remote.netif = (uint16_t)gnrc_netif_iter(NULL)->pid;
+        }
+    }
+    else {
+        gnrc_netif_t *netif = gnrc_netif_get_by_pid(atoi(iface));
+        if (netif == NULL) {
+            LOG(LOG_ERROR, "ERROR: interface not valid\n");
+            // usage(argv[0]);
+            return -1;
+        }
+        remote.netif = (uint16_t)netif->pid;
+    }
+    ret = dns_query(addr_ip, &remote.addr, AF_UNSPEC);
+    if (ret > 0)
+    {
+        remote.port = port;
+        remote.family = ret == 4 ? AF_INET : AF_INET6;
+    }
+
+    if (IS_USED(MODULE_IPV4_ADDR) && (remote.port == 0) &&
+        ipv4_addr_from_str((ipv4_addr_t *)&remote.addr, addr_ip))
+    {
+        remote.port = port;
+    }
+
+    if (IS_USED(MODULE_IPV6_ADDR) && (remote.port == 0) &&
+        ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, addr_ip))
+    {
+        remote.port = port;
+        remote.family = AF_INET6;
+    }
+
+    if (remote.port == 0)
+    {
+        LOG_ERROR("Error: unable to parse destination address\n");
+        return ret;
+    }
+    printf("Targeting remote : %s PORT: %d Netif: %d\n",addr_ip,remote.port,remote.netif);
+
+
+    wolfSSL_Init();
+    WOLFSSL_CTX *ctx;
+    WOLFSSL *ssl;
+
+    /* Create and initialize WOLFSSL_CTX */
+    if ((ctx = wolfSSL_CTX_new(wolfTLSv1_2_client_method())) == NULL)
+    {
+        fprintf(stderr, "ERROR: failed to create WOLFSSL_CTX\n");
+        return -1;
+    }
+    // wolfSSL_CTX_set_cipher_list(ctx, "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256");
+    /* Load client certificates into WOLFSSL_CTX */
+    // if (wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE, NULL)
+    //     != SSL_SUCCESS) {
+    //     fprintf(stderr, "ERROR: failed to load %s, please check the file.\n",
+    //             CERT_FILE);
+    //     return -1;
+    // }
+
+    /* Disable certificate validation from the client side */
+    wolfSSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, 0);
+    /* Load certificate file for the DTLS client */
+    if (wolfSSL_CTX_use_certificate_buffer(ctx, server_cert,
+                server_cert_len, SSL_FILETYPE_ASN1 ) != SSL_SUCCESS)
+    {
+        LOG(LOG_ERROR, "Error loading cert buffer\n");
+        return -1;
+    }
+    
+    if( sock_tcp_connect(&n->sock, &remote, TLS_PORT, 0)!=0){
+        puts("Failed to connect to server ###\n");
+    }else{
+         puts("Connected to server ###\n");
+    }
+
+    /* Create a WOLFSSL object */
+    if ((ssl = wolfSSL_new(ctx)) == NULL)
+    {
+        fprintf(stderr, "ERROR: failed to create WOLFSSL object\n");
+        return -1;
+    }
+    
+    wolfSSL_SetIOReadCtx(ssl, &n->sock);
+    wolfSSL_SetIOWriteCtx(ssl, &n->sock);
+
+    // /* Attach wolfSSL to the socket */
+    // wolfSSL_set_fd(ssl, n->sock);
+    // wolfssl_set
+
+    /* Connect to wolfSSL on the server side */
+    if (wolfSSL_connect(ssl) != SSL_SUCCESS)
+    {
+        fprintf(stderr, "ERROR: failed to connect to wolfSSL\n");
+        return -1;
+    }
+    printf("wolf connected\n");
+
+    
+    puts("Sending \"Hello!\"");
+    if ((ret = sock_tcp_write(&n->sock, "Hello!", sizeof("Hello!"))) < 0) {
+        puts("Errored on write");
+    }
+    else {
+        if ((ret = sock_tcp_read(&n->sock, &buff, sizeof(buff),
+                                 SOCK_NO_TIMEOUT)) <= 0) {
+            puts("Disconnected");
+        }
+        printf("Read: \"");
+        for (int i = 0; i < ret; i++) {
+            printf("%c", buff[i]);
+        }
+        puts("\"");
+    }
+    sock_tcp_disconnect(&n->sock);
+    
+    return ret;
+}
+
+ int tls_client(int argc, char **argv)
+{
+    char *server_ip = NULL;
+    puts("This is a TLS Client!");
+    if (argc != 2)
+    {
+        fprintf(stderr, "Usage: %s IP_ADDR_SERVER\n", argv[0]);
+        return -1;
+    }
+    printf("Client is connecting to server at address %s port %d...\n", argv[1], TLS_PORT);
+    server_ip = argv[1];
+    Network n;
+    return TcpConnect(&n, server_ip, TLS_PORT);
+}
