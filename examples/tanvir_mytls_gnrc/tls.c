@@ -17,6 +17,9 @@
 
 #include "net/af.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #define SOCK_QUEUE_TLS_LEN (1U)
 
 sock_tcp_t sock_queue_TLS[SOCK_QUEUE_TLS_LEN];
@@ -25,6 +28,17 @@ extern const unsigned char server_cert[];
 extern const unsigned char server_key[];
 extern unsigned int server_cert_len;
 extern unsigned int server_key_len;
+
+#define SERVER_CERT "./certs/certificates/server.pem"
+#define SERVER_KEY "./certs/certificates/server.key"
+unsigned char* server_cert_buf;
+unsigned char* server_key_buf;
+size_t server_cert_buf_len;
+size_t server_key_buf_len;
+#define CA_CERT "./certs/certificates/ca.pem"
+unsigned char* ca_cert_buf;
+size_t ca_cert_buf_len;
+void load_cert_buffer(bool isServer);
 
 typedef struct Network
 {
@@ -213,6 +227,7 @@ WOLFSSL_CTX *init_wolfSSL_ctx_util(bool isServer, Network *myctx)
 {
     WOLFSSL_CTX *ctx = NULL;
     wolfSSL_Init();
+    load_cert_buffer(isServer);
 
     /* Create and initialize WOLFSSL_CTX */
     if ((ctx = wolfSSL_CTX_new(isServer ? wolfTLSv1_2_server_method() : wolfTLSv1_2_client_method())) == NULL)
@@ -223,16 +238,16 @@ WOLFSSL_CTX *init_wolfSSL_ctx_util(bool isServer, Network *myctx)
     if (isServer)
     {
         /* Load certificate file for the DTLS server */
-        if (wolfSSL_CTX_use_certificate_buffer(ctx, server_cert,
-                                               server_cert_len, SSL_FILETYPE_ASN1) != SSL_SUCCESS)
+        if (wolfSSL_CTX_use_certificate_buffer(ctx, server_cert_buf,
+                                               server_cert_buf_len, SSL_FILETYPE_PEM) != SSL_SUCCESS)
         {
             LOG(LOG_ERROR, "Failed to load certificate from memory.\n");
             return NULL;
         }
 
         /* Load the private key */
-        if (wolfSSL_CTX_use_PrivateKey_buffer(ctx, server_key,
-                                              server_key_len, SSL_FILETYPE_ASN1) != SSL_SUCCESS)
+        if (wolfSSL_CTX_use_PrivateKey_buffer(ctx, server_key_buf,
+                                              server_key_buf_len, SSL_FILETYPE_PEM) != SSL_SUCCESS)
         {
             LOG(LOG_ERROR, "Failed to load private key from memory.\n");
             return NULL;
@@ -241,9 +256,9 @@ WOLFSSL_CTX *init_wolfSSL_ctx_util(bool isServer, Network *myctx)
     else
     {
         /* Load client certificates into WOLFSSL_CTX */
-        if (wolfSSL_CTX_load_verify_buffer(ctx, ca_cert_der_2048,
-                                           sizeof_ca_cert_der_2048,
-                                           SSL_FILETYPE_ASN1) != SSL_SUCCESS)
+        if (wolfSSL_CTX_load_verify_buffer(ctx, ca_cert_buf,
+                                           ca_cert_buf_len,
+                                           SSL_FILETYPE_PEM) != SSL_SUCCESS)
         {
             fprintf(stderr, "ERROR: failed to load ca buffer\n");
             return NULL;
@@ -331,3 +346,57 @@ int my_io_recv(WOLFSSL *ssl, char *buf, int sz, void *ctx)
     return bytesRead;
 }
 
+
+////////////////////////////////////////////////////////////
+
+
+
+unsigned char* read_file_to_buffer(const char* filename, size_t* buffer_size) {
+    FILE* file = fopen(filename, "rb"); // Open the file in binary read mode
+
+    if (!file) {
+        perror("Failed to open file");
+        return NULL;
+    }
+
+    // Determine the size of the file
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    // Allocate memory for the buffer
+    unsigned char* buffer = (unsigned char*)malloc(file_size);
+    if (!buffer) {
+        perror("Memory allocation failed");
+        fclose(file);
+        return NULL;
+    }
+
+    // Read the file into the buffer
+    size_t bytes_read = fread(buffer, 1, file_size, file);
+    fclose(file);
+
+    if (bytes_read != (size_t)file_size) {
+        perror("Failed to read file");
+        free(buffer);
+        return NULL;
+    }
+
+    if (buffer_size) {
+        *buffer_size = (size_t)file_size;
+    }
+
+    return buffer;
+}
+
+void load_cert_buffer(bool isServer) {
+    if(isServer){
+        server_cert_buf = read_file_to_buffer(SERVER_CERT, &server_cert_buf_len);
+        server_key_buf = read_file_to_buffer(SERVER_KEY, &server_key_buf_len);
+    }else{
+         ca_cert_buf = read_file_to_buffer(CA_CERT, &ca_cert_buf_len);
+    }
+    
+   
+    return;
+}
