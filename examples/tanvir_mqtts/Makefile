@@ -120,8 +120,8 @@ USEMODULE += sock_udp
 USEMODULE += sock_tcp
 
 
-USEMODULE += ztimer
-USEMODULE += ztimer_msec
+USEMODULE += ztimer64
+USEMODULE += ztimer64_msec
 
 ####
 

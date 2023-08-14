@@ -20,10 +20,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "ztimer.h"
+#include "paho_mqtt.h"
+#include "MQTTClient.h"
+
+#define WRITE_CHUNK_SIZE 128
+
 #define SOCK_QUEUE_TLS_LEN (1U)
 
-sock_tcp_t sock_queue_TLS[SOCK_QUEUE_TLS_LEN];
-uint8_t serverBuf[128];
+// sock_tcp_t sock_queue_TLS[SOCK_QUEUE_TLS_LEN];
+// uint8_t serverBuf[128];
 extern const unsigned char server_cert[];
 extern const unsigned char server_key[];
 extern unsigned int server_cert_len;
@@ -31,136 +37,179 @@ extern unsigned int server_key_len;
 
 #define SERVER_CERT "./certs/certificates/server.pem"
 #define SERVER_KEY "./certs/certificates/server.key"
-unsigned char* server_cert_buf;
-unsigned char* server_key_buf;
+unsigned char *server_cert_buf;
+unsigned char *server_key_buf;
 size_t server_cert_buf_len;
 size_t server_key_buf_len;
-#define CA_CERT "./certs/certificates/ca.pem"
-unsigned char* ca_cert_buf;
+#define CA_CERT "./last_cert/certs/ca.pem"
+unsigned char *ca_cert_buf;
 size_t ca_cert_buf_len;
 void load_cert_buffer(bool isServer);
 
-typedef struct Network
-{
-    sock_tcp_t *sock; /**< socket number */
-    /**
-     * @brief read internal function
-     */
-    // int (*mqttread) (struct Network*, unsigned char*, int, int);
-    // /**
-    //  * @brief write internal function
-    //  */
-    // int (*mqttwrite) (struct Network*, unsigned char*, int, int);
-} Network;
 #define TLS_PORT 1234
 
 WOLFSSL_CTX *init_wolfSSL_server(Network *myctx);
 WOLFSSL_CTX *init_wolfSSL_client(Network *myctx);
 int my_io_recv(WOLFSSL *ssl, char *buf, int sz, void *ctx);
 int my_io_send(WOLFSSL *ssl, char *buf, int sz, void *ctx);
-
+int tls_connect(Network *myctx, char *remoteIP, int port);
 //
+WOLFSSL *ssl = NULL;
+WOLFSSL_CTX *ctx = NULL;
+// sock_tcp_queue_t queue;
 
-Network myctx;
-
-int tls_server(void)
+int Network_Read(Network *n, unsigned char *buf, int buf_len, int timeout_ms)
 {
-    sock_tcp_queue_t queue;
-    sock_tcp_ep_t local = SOCK_IPV6_EP_ANY;
-    local.port = TLS_PORT;
+    if (!ssl)
+    {
+        // printf("Network Read : No ssl object found\n");
+        return 0;
+    }
+    ztimer_now_t start_time = ztimer_now(ZTIMER_MSEC);
+    ztimer_now_t end_time = start_time + (timeout_ms * US_PER_MS);
+    int recvLen = 0;
+    int rc = 0;
+    while (recvLen < buf_len)
+    {
+        int chunk_size = buf_len - recvLen;
+        rc = wolfSSL_read(ssl, buf + recvLen, chunk_size);
 
-    if (sock_tcp_listen(&queue, &local, sock_queue_TLS, SOCK_QUEUE_TLS_LEN, 0) < 0)
-    {
-        puts("Error creating listening queue");
-        return 1;
-    }
-    puts("This is the TLS Server!");
-    printf("Server is listening on port %d\n", TLS_PORT);
-
-    sock_tcp_t *sock;
-    puts("server is waiting for incoming request....");
-    if (sock_tcp_accept(&queue, &myctx.sock, SOCK_NO_TIMEOUT) < 0)
-    {
-        puts("Error accepting new sock");
-    }
-
-    puts("TCP connection is done\nIniting wolfssl");
-    WOLFSSL_CTX *ctx = NULL;
-    WOLFSSL *ssl = NULL;
-    ctx = init_wolfSSL_server(&myctx);
-    if ((ssl = wolfSSL_new(ctx)) == NULL)
-    {
-        printf("SSL object creation failed\n");
-        sock_tcp_disconnect(myctx.sock);
-        sock_tcp_stop_listen(&queue);
-        return -1;
-    }
-    else
-    {
-        printf("SSL object has been create successfully\n");
-    }
-    puts("Server will perform TLS handshake");
-    // / Perform the TLS handshake
-    wolfSSL_SetIOReadCtx(ssl, &myctx);
-    wolfSSL_SetIOWriteCtx(ssl, &myctx);
-    int ret = wolfSSL_accept(ssl);
-    if (ret != SSL_SUCCESS)
-    {
-        printf("TLS handshake error: %d\n", ret);
-    }
-    puts("TLS handshake successfull");
-    // TLS handshake successful, echo received data back to the client
-    char buffer[128];
-    int bytesRead;
-    do
-    {
-        bytesRead = wolfSSL_read(ssl, serverBuf, sizeof(serverBuf) - 1);
-        if (bytesRead > 0)
+        if (rc > 0)
         {
-            serverBuf[bytesRead] = '\0'; // Null-terminate the received data
-            printf("Received: %s\n", serverBuf);
-            serverBuf[0] = '$';
-            serverBuf[1] = '$';
-
-            // Echo back to the client
-            wolfSSL_write(ssl, serverBuf, bytesRead);
+            recvLen += rc;
         }
-    } while (bytesRead > 0);
+        else if (rc < 0)
+        {
+            recvLen = rc;
+            break;
+        }
 
-    sock_tcp_disconnect(myctx.sock);
+        // /* Check if the timeout has been exceeded */
 
-    sock_tcp_stop_listen(&queue);
+        if (ztimer_now(ZTIMER_MSEC) > end_time)
+        {
+            break;
+        }
+    }
+    printf("Network Read : %d bytes\n", recvLen);
+    return recvLen;
+}
+int Network_Send(Network *n, unsigned char *buf, int buf_len, int timeout_ms)
+{
+    if (!ssl)
+    {
+        // printf("Network Send : No ssl object found\n");
+        return 0;
+    }
+    ztimer_now_t start_time = ztimer_now(ZTIMER_MSEC);
+    ztimer_now_t end_time = start_time + (timeout_ms * US_PER_MS);
+    int sentLen = 0;
+
+    while (sentLen < buf_len)
+    {
+        int chunk_size = buf_len - sentLen;
+
+        int rc = 0;
+        rc = wolfSSL_write(ssl, buf + sentLen, chunk_size);
+
+        if (rc > 0)
+        {
+            sentLen += rc;
+        }
+        else if (rc < 0)
+        {
+            sentLen = rc;
+            break;
+        }
+
+        /* Check if the timeout has been exceeded */
+        if (ztimer_now(ZTIMER_MSEC) > end_time)
+        {
+            break;
+        }
+    }
+    printf("Network Send : %d bytes\n", sentLen);
+    return sentLen;
+}
+int Network_Connect(Network *n, char *remoteIP, int port)
+{
+    return tls_connect(n, remoteIP, port);
+}
+int Network_Init(Network *n)
+{
+
+    n->mqttread = Network_Read;
+    n->mqttwrite = Network_Send;
+    // n->disconnect = Network_Disconnect;
     return 0;
 }
 
-int tls_client(char *remoteIP)
+void cleanup_client(Network *n)
+{
+    // if (ssl)
+    //     wolfSSL_free(ssl);
+    // if (ctx)
+    //     wolfSSL_CTX_free(ctx);
+    // wolfSSL_Cleanup();
+    // sock_tcp_disconnect(&n->sock);
+}
+
+void Network_Disconnect(Network *n)
+{
+    cleanup_client(n);
+    return;
+}
+
+/*void cleanup(Network *n)
+{
+    if (ssl)
+        wolfSSL_free(ssl);
+    if (ctx)
+        wolfSSL_CTX_free(ctx);
+    wolfSSL_Cleanup();
+    if (n->sock)
+        sock_tcp_disconnect(n->sock);
+    sock_tcp_stop_listen(&queue);
+}*/
+
+void testSSL(void)
+{
+    if (ssl == NULL)
+    {
+        printf("No ssl object\n");
+        exit(-1);
+    }
+    else
+    {
+        printf("ready.......................ssl.......\n");
+    }
+}
+
+int tls_connect(Network *myctx, char *remoteIP, int port)
 {
     int res;
-    sock_tcp_t sock;
+
     sock_tcp_ep_t remote = SOCK_IPV6_EP_ANY;
 
-    remote.port = TLS_PORT;
-    uint8_t buf[128];
+    remote.port = port;
+
     puts("TLS client");
-    Network myctx;
-    myctx.sock = &sock;
+
+    // myctx.sock = &sock;
     ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, remoteIP);
-    puts("TLS client");
-    if (sock_tcp_connect(myctx.sock, &remote, 0, 0) < 0)
+    if ((res = sock_tcp_connect(&myctx->sock, &remote, 0, 0)) < 0)
     {
-        puts("Error connecting sock");
-        return 1;
+        printf("Error connecting sock %s\n", strerror(res));
+        return res;
     }
 
     puts("TCP connection is done\nIniting wolfssl");
-    WOLFSSL_CTX *ctx = NULL;
-    WOLFSSL *ssl = NULL;
-    ctx = init_wolfSSL_client(&myctx);
-
-    if ((ssl = wolfSSL_new(ctx)) == NULL)
+    ctx = init_wolfSSL_client(myctx);
+   WOLFSSL* localssl = NULL;
+    if ((localssl = wolfSSL_new(ctx)) == NULL)
     {
         printf("SSL object creation failed\n");
-        sock_tcp_disconnect(myctx.sock);
+        // sock_tcp_disconnect(&myctx->sock);
 
         return -1;
     }
@@ -169,56 +218,26 @@ int tls_client(char *remoteIP)
         printf("SSL object has been create successfully\n");
     }
     puts("Server will perform TLS handshake");
-    wolfSSL_SetIOReadCtx(ssl, &myctx);
-    wolfSSL_SetIOWriteCtx(ssl, &myctx);
+    wolfSSL_SetIOReadCtx(localssl, myctx);
+    wolfSSL_SetIOWriteCtx(localssl, myctx);
     /* Perform the SSL/TLS handshake */
-    int ret = wolfSSL_connect(ssl);
+    int ret = wolfSSL_connect(localssl);
     if (ret != SSL_SUCCESS)
     {
-        fprintf(stderr, "SSL handshake failed: %d\n", wolfSSL_get_error(ssl, ret));
-        wolfSSL_free(ssl);
-        sock_tcp_disconnect(myctx.sock);
-        wolfSSL_CTX_free(ctx);
-        wolfSSL_Cleanup();
-        return 1;
+        char text[100];
+        wolfSSL_ERR_error_string(wolfSSL_get_error(localssl, ret), text);
+        fprintf(stderr, "SSL handshake failed: %d with %s\n", wolfSSL_get_error(localssl, ret), text);
+        // wolfSSL_free(ssl);
+        // sock_tcp_disconnect(&myctx->sock);
+        // wolfSSL_CTX_free(ctx);
+        // wolfSSL_Cleanup();
+        return ret;
     }
-
+    ssl=localssl;
     /* SSL/TLS handshake successful */
     printf("SSL handshake successful!\n");
 
-    /* Send data to the server */
-    const char *message = "Hello, Server!";
-    ret = wolfSSL_write(ssl, message, strlen(message));
-    if (ret < 0)
-    {
-        fprintf(stderr, "Error sending data: %d\n", wolfSSL_get_error(ssl, ret));
-        wolfSSL_free(ssl);
-        sock_tcp_disconnect(myctx.sock);
-        wolfSSL_CTX_free(ctx);
-        wolfSSL_Cleanup();
-        return 1;
-    }
-
-    /* Wait for a while to let the server process the data */
-    // ztimer_sleep(2);
-
-    /* Receive data from the server */
-    int bytesRead = wolfSSL_read(ssl, buf, sizeof(buf) - 1);
-    if (bytesRead > 0)
-    {
-        buf[bytesRead] = '\0';
-        printf("Received from server: %s\n", buf);
-    }
-    else
-    {
-        fprintf(stderr, "Error receiving data: %d\n", wolfSSL_get_error(ssl, bytesRead));
-    }
-
     /* Clean up */
-    wolfSSL_free(ssl);
-    sock_tcp_disconnect(myctx.sock);
-    wolfSSL_CTX_free(ctx);
-    wolfSSL_Cleanup();
 
     return 0;
 }
@@ -267,7 +286,7 @@ WOLFSSL_CTX *init_wolfSSL_ctx_util(bool isServer, Network *myctx)
     /* Set custom I/O callbacks and context */
     wolfSSL_CTX_SetIORecv(ctx, my_io_recv);
     wolfSSL_CTX_SetIOSend(ctx, my_io_send);
-   
+
     return ctx;
 }
 
@@ -292,18 +311,19 @@ void printError(char *msg)
 /* Custom I/O send function */
 int my_io_send(WOLFSSL *ssl, char *buf, int sz, void *ctx)
 {
-    if (ctx == NULL){
+    if (ctx == NULL)
+    {
         printError("underlying socket can not be decided by wolfssl I/O callback due to ctx=Null.");
         return -1;
     }
-    // casting to get IOReadCtx   
+    // casting to get IOReadCtx
     Network *app_ctx = (Network *)ctx;
-    if (!app_ctx || !app_ctx->sock)
+    if (!app_ctx)
     {
         printError("underlying socket can not be decided by wolfssl I/O callback due to Invalid socket.");
     }
     // Use sock_tcp_write to send data over the socket
-    ssize_t bytesSent = sock_tcp_write(app_ctx->sock, buf, sz);
+    ssize_t bytesSent = sock_tcp_write(&app_ctx->sock, buf, sz);
 
     if (bytesSent >= 0)
     {
@@ -318,25 +338,26 @@ int my_io_send(WOLFSSL *ssl, char *buf, int sz, void *ctx)
 }
 int my_io_recv(WOLFSSL *ssl, char *buf, int sz, void *ctx)
 {
-    if (ctx == NULL){
+    if (ctx == NULL)
+    {
         printError("underlying socket can not be decided by wolfssl I/O callback due to ctx=Null.");
         return -1;
     }
-    // casting to get IOReadCtx   
+    // casting to get IOReadCtx
     Network *app_ctx = (Network *)ctx;
-    if (!app_ctx || !app_ctx->sock)
+    if (!app_ctx)
     {
         printError("underlying socket can not be decided by wolfssl I/O callback due to Invalid socket.");
     }
     // Use sock_tcp_read to receive data from the socket
-    ssize_t bytesRead = sock_tcp_read(app_ctx->sock, buf, sz, SOCK_NO_TIMEOUT);
+    ssize_t bytesRead = sock_tcp_read(&app_ctx->sock, buf, sz, SOCK_NO_TIMEOUT);
     if (bytesRead > 0)
     {
         printf("Received %zd bytes: %s\n", bytesRead, buf);
     }
     else if (bytesRead == 0)
     {
-        // printf("Connection closed by the peer.\n");
+        printf("Connection closed by the peer.\n");
     }
     else
     {
@@ -346,15 +367,14 @@ int my_io_recv(WOLFSSL *ssl, char *buf, int sz, void *ctx)
     return bytesRead;
 }
 
-
 ////////////////////////////////////////////////////////////
 
+unsigned char *read_file_to_buffer(const char *filename, size_t *buffer_size)
+{
+    FILE *file = fopen(filename, "rb"); // Open the file in binary read mode
 
-
-unsigned char* read_file_to_buffer(const char* filename, size_t* buffer_size) {
-    FILE* file = fopen(filename, "rb"); // Open the file in binary read mode
-
-    if (!file) {
+    if (!file)
+    {
         perror("Failed to open file");
         return NULL;
     }
@@ -365,8 +385,9 @@ unsigned char* read_file_to_buffer(const char* filename, size_t* buffer_size) {
     fseek(file, 0, SEEK_SET);
 
     // Allocate memory for the buffer
-    unsigned char* buffer = (unsigned char*)malloc(file_size);
-    if (!buffer) {
+    unsigned char *buffer = (unsigned char *)malloc(file_size);
+    if (!buffer)
+    {
         perror("Memory allocation failed");
         fclose(file);
         return NULL;
@@ -376,27 +397,84 @@ unsigned char* read_file_to_buffer(const char* filename, size_t* buffer_size) {
     size_t bytes_read = fread(buffer, 1, file_size, file);
     fclose(file);
 
-    if (bytes_read != (size_t)file_size) {
+    if (bytes_read != (size_t)file_size)
+    {
         perror("Failed to read file");
         free(buffer);
         return NULL;
     }
 
-    if (buffer_size) {
+    if (buffer_size)
+    {
         *buffer_size = (size_t)file_size;
     }
 
     return buffer;
 }
 
-void load_cert_buffer(bool isServer) {
-    if(isServer){
+void load_cert_buffer(bool isServer)
+{
+    if (isServer)
+    {
         server_cert_buf = read_file_to_buffer(SERVER_CERT, &server_cert_buf_len);
         server_key_buf = read_file_to_buffer(SERVER_KEY, &server_key_buf_len);
-    }else{
-         ca_cert_buf = read_file_to_buffer(CA_CERT, &ca_cert_buf_len);
     }
-    
-   
+    else
+    {
+        ca_cert_buf = read_file_to_buffer(CA_CERT, &ca_cert_buf_len);
+    }
+
     return;
 }
+///////////////////////////////////////////
+
+/*
+int tls_server(void)
+{
+
+    sock_tcp_ep_t local = SOCK_IPV6_EP_ANY;
+    local.port = TLS_PORT;
+
+    if (sock_tcp_listen(&queue, &local, sock_queue_TLS, SOCK_QUEUE_TLS_LEN, 0) < 0)
+    {
+        puts("Error creating listening queue");
+        return 1;
+    }
+    puts("This is the TLS Server!");
+    printf("Server is listening on port %d\n", TLS_PORT);
+
+    sock_tcp_t *sock;
+    puts("server is waiting for incoming request....");
+    if (sock_tcp_accept(&queue, &myctx.sock, SOCK_NO_TIMEOUT) < 0)
+    {
+        puts("Error accepting new sock");
+    }
+
+    puts("TCP connection is done\nIniting wolfssl");
+    ctx = NULL;
+    ssl = NULL;
+    ctx = init_wolfSSL_server(&myctx);
+    if ((ssl = wolfSSL_new(ctx)) == NULL)
+    {
+        printf("SSL object creation failed\n");
+        sock_tcp_disconnect(myctx.sock);
+        sock_tcp_stop_listen(&queue);
+        return -1;
+    }
+    else
+    {
+        printf("SSL object has been create successfully\n");
+    }
+    puts("Server will perform TLS handshake");
+    // / Perform the TLS handshake
+    wolfSSL_SetIOReadCtx(ssl, &myctx);
+    wolfSSL_SetIOWriteCtx(ssl, &myctx);
+    int ret = wolfSSL_accept(ssl);
+    if (ret != SSL_SUCCESS)
+    {
+        printf("TLS handshake error: %d\n", ret);
+    }
+    puts("TLS handshake successfull");
+    return 0;
+}
+*/
