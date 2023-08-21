@@ -43,10 +43,11 @@ USEMODULE += gnrc_ipv6_default
 USEMODULE += gnrc_icmpv6_echo    # For testing we also include the ping6 command and some stats
 # Activate ICMPv6 error messages
 #USEMODULE += gnrc_icmpv6_error
-#USEMODULE += gnrc_tcp
+USEMODULE += gnrc_tcp
 
 USEPKG += paho-mqtt
-#CFLAGS += -Dpaho-mqtt3cs
+# CFLAGS += -D
+# USEMODULE += paho-mqtt3cs
 # paho-mqtt depends on TCP support, choose which stacks you want
 GNRC_IPV6 ?= 1
 LWIP_IPV4 ?= 0

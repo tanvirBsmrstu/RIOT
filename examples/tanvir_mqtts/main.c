@@ -40,6 +40,13 @@ static char tls_stack[THREAD_STACKSIZE_DEFAULT];
 #define SERVER_IP "fec0:affe::100"
 #define CLIENT_IP "fec0:affe::99"
 
+
+
+static MQTTClient client;
+static Network network;
+
+
+
 // extern int tls_client(char *remoteIPv6);
 // extern int tls_server(void);
 
@@ -58,12 +65,18 @@ static void *tcp_server_thread(void *arg)
     tcp_posix_server();
     return NULL; /* should never be reached */
 }
-// static void *tls_server_thread(void *arg)
-// {
-//     (void)arg;
-//     tls_server();
-//     return NULL; /* should never be reached */
-// }
+static void *mqtt_thread(void *arg)
+{
+    (void)arg;
+    MQTTStartTask(&client);
+    return NULL; /* should never be reached */
+}
+void startMqttTask(void)
+{
+    thread_create(tls_stack, sizeof(tls_stack), THREAD_PRIORITY_MAIN - 1, 0,
+                  mqtt_thread, NULL, "mqttstack");
+    return;
+}
 
 // static int _cmd_tls_server(int argc, char **argv)
 // {
@@ -148,7 +161,7 @@ static int _cmd_gnrc_native_tcpClient(int argc, char **argv)
 /**
  * @brief Keepalive timeout in seconds
  */
-#define DEFAULT_KEEPALIVE_SEC 10
+#define DEFAULT_KEEPALIVE_SEC 100
 
 #ifndef MAX_LEN_TOPIC
 #define MAX_LEN_TOPIC 100
@@ -162,11 +175,10 @@ static int _cmd_gnrc_native_tcpClient(int argc, char **argv)
 #define IS_RETAINED_MSG 0
 
 extern int Network_Init(Network *n);
-extern int Network_Connect(Network *n,char* remoteIP, int port);
+extern int Network_Connect(Network *n, char *remoteIP, int port);
 extern void Network_Disconnect(Network *n);
 
-static MQTTClient client;
-static Network network;
+
 static int topic_cnt = 0;
 static char _topic_to_subscribe[MAX_TOPICS][MAX_LEN_TOPIC];
 
@@ -276,7 +288,7 @@ static int _cmd_con(int argc, char **argv)
            remote_ip, port);
     printf("mqtt_example: Trying to connect to %s, port: %d\n",
            remote_ip, port);
-    ret = Network_Connect(&network,remote_ip,port);
+    ret = Network_Connect(&network, remote_ip, port);
     if (ret < 0)
     {
         printf("mqtt_example: Unable to connect with return code %d\n", ret);
@@ -285,7 +297,9 @@ static int _cmd_con(int argc, char **argv)
 
     printf("user:%s clientId:%s password:%s\n", data.username.cstring,
            data.clientID.cstring, data.password.cstring);
-           testSSL();
+    // startMqttTask();
+    // testSSL();
+    MQTTStartTask(&client);
     ret = MQTTConnect(&client, &data);
     if (ret < 0)
     {
@@ -298,8 +312,8 @@ static int _cmd_con(int argc, char **argv)
         printf("mqtt_example: Connection successfully\n");
     }
 
-    char* input[] = {"pub", "testt", "hi riot os"};
-    _cmd_pub(3,input);
+    char *input[] = {"pub", "testt", "hi riot os"};
+    _cmd_pub(3, input);
     return (ret > 0) ? 0 : 1;
 }
 
@@ -322,7 +336,7 @@ static int _cmd_pub(int argc, char **argv)
     message.retained = IS_RETAINED_MSG;
     message.payload = argv[2];
     message.payloadlen = strlen(message.payload);
-
+    //testSSL();
     int rc;
     if ((rc = MQTTPublish(&client, argv[1], &message)) < 0)
     {
@@ -409,7 +423,7 @@ static int _cmd_unsub(int argc, char **argv)
     return ret;
 }
 
-static unsigned char buf[BUF_SIZE];
+static unsigned char writebuf[BUF_SIZE];
 static unsigned char readbuf[BUF_SIZE];
 
 static const shell_command_t shell_commands[] =
@@ -436,14 +450,14 @@ int main(void)
         msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
     }
     // ztimer_init();
-     Network_Init(&network);
-printf("Hi mqtts\n");
-    MQTTClientInit(&client, &network, COMMAND_TIMEOUT_MS, buf, BUF_SIZE,
+    Network_Init(&network);
+    printf("Hi mqtts\n");
+    MQTTClientInit(&client, &network, COMMAND_TIMEOUT_MS, writebuf, BUF_SIZE,
                    readbuf,
                    BUF_SIZE);
     printf("Running mqtt paho example. Type help for commands info\n");
 
-    MQTTStartTask(&client);
+   
 
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);

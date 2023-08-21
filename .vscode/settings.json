@@ -9,7 +9,8 @@
         "Makefile.*": "makefile",
         "*.mk": "makefile",
         "ssl.h": "c",
-        "socket": "c"
+        "socket": "c",
+        "thread": "cpp"
     },
     "[shellscript][c][cpp]": {
         "editor.tabSize": 4,
