@@ -1,0 +1,148 @@
+
+#include <az_riot.h>
+#include <azure/az_core.h>
+#include <azure/az_iot.h>
+// #include <azure/az_iot.h>
+// #include <azure/core/nternal/az_precondition_internal.h>
+#include <stdio.h>
+
+#define HOST "contoso.azure-devices.net"
+#define DEVICE_ID "contoso_device"
+
+azRiotData azctx;
+ az_iot_hub_client my_client;
+static az_span my_iothub_hostname = AZ_SPAN_LITERAL_FROM_STR(HOST);
+static az_span my_device_id = AZ_SPAN_LITERAL_FROM_STR(DEVICE_ID);
+// Make sure to size the buffer to fit the client id (16 is an example)
+static char my_mqtt_client_id[16];
+static size_t my_mqtt_client_id_length;
+// Make sure to size the buffer to fit the username (128 is an example)
+static char my_mqtt_user_name[128];
+static size_t my_mqtt_user_name_length;
+
+// void setVars(void)
+// {
+//     my_mqtt_client_id = iot_hub_clientId;
+//     my_mqtt_client_id_length = sizeof(iot_hub_clientId);
+//     my_mqtt_user_name = iot_hub_username;
+//     my_mqtt_user_name_length = sizeof(iot_hub_username);
+//     return;
+// }
+
+// void default_precondition_failed_callback()
+// {
+//     // This is the default callback implementation for precondition failed errors
+//     // You can customize the behavior here, such as logging an error message
+//     printf("Precondition failed error occurred\n");
+// }
+
+// static bool azureClientCreate(
+//     az_iot_hub_client *azureClient, /* Azure IoT Hub client object */
+//     char *azureUserName,            /* Azure user name buffer */
+//     size_t azureUserNameLen,        /* length of Azure user name */
+//     char *azureClientId,            /* Azure IoT Hub client ID buffer */
+//     size_t azureClientIdLen         /* length of Azure IoT Hub */
+//     /* client ID */
+// )
+// {
+//     az_precondition_failed_set_callback(default_precondition_failed_callback);
+//     az_result azureRes;
+//     az_iot_hub_client_options azureOpt = az_iot_hub_client_options_default();
+//     az_span iotHubHostName = AZ_SPAN_LITERAL_FROM_STR(HOST);
+//     az_span iotHubDeviceId = AZ_SPAN_LITERAL_FROM_STR(DEVICE_ID);
+
+//     /* init Azure Client */
+//     azureRes = az_iot_hub_client_init(azureClient, iotHubHostName, iotHubDeviceId, &azureOpt);
+//     if (az_result_succeeded(azureRes))
+//     {
+//         printf("az_iot_hub_client_init OK.");
+//     }
+//     else
+//     {
+//         printf("az_iot_hub_client_init ERROR!\n");
+//         return false;
+//     }
+
+//     azureRes = az_iot_hub_client_get_client_id(azureClient, azureClientId, azureClientIdLen, NULL);
+//     if (az_result_succeeded(azureRes))
+//     {
+//         printf("az_iot_hub_client_get_client_id OK: %s\n", azureClientId);
+//     }
+//     else
+//     {
+//         printf("az_iot_hub_client_get_client_id ERROR!\n");
+//         return false;
+//     }
+//     // #ifndef X509_CERTIFICATE
+//     //     /* generate a password for MQTT */
+//     //     if (!mqttPasswordGen(azureClient, pwd, sizeof(pwd)))
+//     //     {
+//     //         return false;
+//     //     }
+//     // #endif
+//     azureRes = az_iot_hub_client_get_user_name(azureClient, azureUserName, azureUserNameLen, NULL);
+//     if (az_result_succeeded(azureRes))
+//     {
+//         printf("az_iot_hub_client_get_user_name OK: %s\n", azureUserName);
+//     }
+//     else
+//     {
+//         printf("az_iot_hub_client_get_user_name ERROR!\n");
+//         return false;
+//     }
+
+//     return true;
+// }
+
+int azInit()
+{
+
+    // setVars();
+    // az_precondition_failed_set_callback(default_precondition_failed_callback);
+    // int rc;
+    // // Get the default IoT Hub options.
+    // az_iot_hub_client_options options = az_iot_hub_client_options_default();
+    // // Initialize the hub client with hostname, device id, and default connection options.
+    // // options.iot_hub_hostname = my_iothub_hostname;
+    // // options.device_id = my_device_id;
+    // //  options.model_id = AZ_SPAN_NULL;
+    // // options.user_agent = az_span_create_from_str("RIOT");
+
+    // if (az_result_failed(rc = az_iot_hub_client_init(
+    //                          &my_client,
+    //                          my_iothub_hostname,
+    //                          my_device_id,
+    //                          &options)))
+    // {
+    //     printf("Failed initializing Azure IoT Hub client\n");
+    //     printf("azInit return value : %d\n", rc);
+    //     return rc;
+    // }
+
+    // if (az_result_failed(az_iot_hub_client_get_client_id(
+    //         &my_client, my_mqtt_client_id, sizeof(my_mqtt_client_id), &my_mqtt_client_id_length)))
+    // {
+    //     printf("Failed initializing Azure IoT Hub client : ClientID\n");
+    //     return -1;
+    // }
+    // if (az_result_failed(az_iot_hub_client_get_user_name(
+    //         &my_client, my_mqtt_user_name, sizeof(my_mqtt_user_name), &my_mqtt_user_name_length)))
+    // {
+    //     printf("Failed initializing Azure IoT Hub client : Username\n");
+    //     return -1;
+    // }
+
+    // printf("azInit done return value : %d\n UserName %s\nClientID %s\n", rc, my_mqtt_user_name, my_mqtt_client_id);
+    // return 0;
+    // return azureClientCreate(&my_client,my_mqtt_user_name, my_mqtt_user_name_length,my_mqtt_client_id, my_mqtt_client_id_length);
+    
+    bool ret = Initialize_azClient(&my_client,&azctx);
+    if (ret){
+        printf("username : %s\ndevice-id : %s\nclient-id : %s\nhost : %s\n",azctx.username,azctx.deviceID,azctx.clientID,azctx.host);
+        return 0;
+    }else{
+        printf("az client init failed.");
+        return -1;
+    }
+    
+}

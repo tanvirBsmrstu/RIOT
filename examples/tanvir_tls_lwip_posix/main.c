@@ -29,8 +29,8 @@
 #include "paho_mqtt.h"
 #include "MQTTClient.h"
 
-#include "lwip/ip6_addr.h"
-#include "net/ipv6/addr.h"
+#include "lwip/ip4_addr.h"
+#include "net/ipv4/addr.h"
 #include "lwip.h"
 #include "lwip/opt.h"
 #include "lwip/netif.h"
@@ -44,8 +44,8 @@ extern int tcp_client(char *serverIP);
 extern int tcp_server(void);
 // extern int tclient(void);
 
-#define SERVER_IP "fec0:affe::100"
-#define CLIENT_IP "fec0:affe::99"
+#define SERVER_IP "192.168.1.5"
+#define CLIENT_IP "192.168.1.7"
 
 
 static char stack_tls_server[THREAD_STACKSIZE_DEFAULT];
@@ -99,18 +99,44 @@ static int _cmd_tcp(int argc, char **argv)
     // tclient();
     return 0;
 }
-static void manual_eth_address(struct netif *iface, char *ip)
+// static void manual_eth_address(struct netif *iface, char *ip)
+// {
+//     ip4_addr_t ipaddr, netmask, gw;
+
+//     if (ip4addr_aton(ip, &ipaddr) == 0)
+//     {
+//         puts("Error: unable to parse destination address");
+//         return;
+//     }
+
+//     netif_add_ip4_address(iface, &ipaddr, 0);
+//     printf("ip set to %s\n", ip);
+// }
+static void manual_eth_address(struct netif *iface,char* ip)
 {
-    ip6_addr_t ipaddr, netmask, gw;
 
-    if (ip6addr_aton(ip, &ipaddr) == 0)
-    {
-        puts("Error: unable to parse destination address");
-        return;
+     int octets[4];
+    int i = 0,token=0,index=0;
+    for(;ip[i];i++){
+        if(ip[i]=='.'){
+            octets[index++]=token;
+            token=0;
+            continue;
+        }
+        token=(ip[i]-'0')+10*token;
     }
+    octets[index]=token;
 
-    netif_add_ip6_address(iface, &ipaddr, 0);
-    printf("ip set to %s\n", ip);
+    // while ((token = strtok_r(ip, ".", &ip))) {
+    //     octets[i++] = atoi(token);
+    // }
+
+    ip4_addr_t ipaddr, netmask, gw;
+    IP4_ADDR(&ipaddr, octets[0], octets[1],octets[2], octets[3]);
+    IP4_ADDR(&netmask, 255, 255, 255, 0);
+    IP4_ADDR(&gw,octets[0], octets[1],octets[2], 1);
+    netif_set_addr(iface, &ipaddr, &netmask, &gw);
+     printf("ip set to %s\n", ip);
 }
 
 static int difconfig(int argc, char **argv)
@@ -119,17 +145,17 @@ static int difconfig(int argc, char **argv)
     (void)argv;
     for (struct netif *iface = netif_list; iface != NULL; iface = iface->next)
     {
-        printf("%s_%02u: ", iface->name, iface->num);
+        printf("%s_%02u: \n", iface->name, iface->num);
 
-        char addrstr[IPV6_ADDR_MAX_STR_LEN];
-        for (int i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i++)
-        {
-            if (!ipv6_addr_is_unspecified((ipv6_addr_t *)&iface->ip6_addr[i]))
-            {
-                printf(" inet6 %s\n", ipv6_addr_to_str(addrstr, (ipv6_addr_t *)&iface->ip6_addr[i],
-                                                       sizeof(addrstr)));
-            }
-        }
+        // char addrstr[IPV6_ADDR_MAX_STR_LEN];
+        // for (int i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i++)
+        // {
+        //     if (!ipv6_addr_is_unspecified((ipv6_addr_t *)&iface->ip6_addr[i]))
+        //     {
+        //         printf(" inet6 %s\n", ipv6_addr_to_str(addrstr, (ipv6_addr_t *)&iface->ip6_addr[i],
+        //                                                sizeof(addrstr)));
+        //     }
+        // }
 
         puts("");
     }
@@ -190,14 +216,14 @@ int main(void)
 
     // msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
     //     }
-    // #ifdef MODULE_LWIP
-    //     /* let LWIP initialize */
-    //     /* Initialize TCP/IP stack */
-    //     printf("LWIP\n");
-    //       ztimer_init();
-    //       lwip_bootstrap();
-    //      ztimer_sleep(ZTIMER_MSEC, 1 * MS_PER_SEC);
-    // #endif
+    #ifdef MODULE_LWIP
+        /* let LWIP initialize */
+        /* Initialize TCP/IP stack */
+        printf("LWIP\n");
+          ztimer_init();
+          lwip_bootstrap();
+         ztimer_sleep(ZTIMER_MSEC, 5);
+    #endif
 
     // NetworkInit(&network);
 

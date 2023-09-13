@@ -1,0 +1,15 @@
+MODULE = azure-sdk-core
+
+#NO_AUTO_SRC = 1
+#SUBMODULES += 1
+
+ifeq (llvm,$(TOOLCHAIN))
+  CFLAGS += -Wno-unused-parameter
+endif
+
+#CFLAGS += -DPRECONDITIONS=OFF
+#CFLAGS += -DLOGGING=OFF 
+#reduces the size of the sdk
+
+
+include $(RIOTBASE)/Makefile.base

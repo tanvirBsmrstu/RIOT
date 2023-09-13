@@ -10,7 +10,8 @@
         "*.mk": "makefile",
         "ssl.h": "c",
         "socket": "c",
-        "thread": "cpp"
+        "thread": "cpp",
+        "az_riot.h": "c"
     },
     "[shellscript][c][cpp]": {
         "editor.tabSize": 4,

@@ -26,8 +26,5 @@ Please see tcp.c file, it contains server and client
 ### instruction TLS
 it is the same as TCP, use ``tlss`` for server and ``tlsc`` for client
 
-
-ifconfig 6 add fec0:affe::99
-con fec0:affe::1
-pub testt "hi riot os tt"
-sub testd 
+ifconfig 6 add fec0:affe::100
+ifconfig 6 add 192.168.1.100

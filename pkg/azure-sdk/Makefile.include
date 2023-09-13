@@ -1,0 +1,14 @@
+INCLUDES += -I$(PKGDIRBASE)/azure-sdk/sdk/inc/
+#INCLUDES += -I$(PKGDIRBASE)/azure-sdk/sdk/src/azure/core/
+#INCLUDES += -I$(PKGDIRBASE)/azure-sdk/sdk/src/azure/iot/
+INCLUDES += -I$(RIOTBASE)/pkg/azure-sdk/include
+
+#SRC += $(PKGDIRBASE)/azure-sdk/sdk/src/azure/iot/
+#SRC += $(PKGDIRBASE)/azure-sdk/sdk/src/azure/core/
+
+DIRS += $(RIOTBASE)/pkg/azure-sdk/contrib/
+#define to use MQTT Paho as a task using MQTTStartTask()
+CFLAGS += -DCMAKE_C_STANDARD=99
+CFLAGS += -DTRANSPORT_PAHO=ON
+CFLAGS += -Wno-error=strict-prototypes
+CFLAGS += -Wno-error=old-style-definition
