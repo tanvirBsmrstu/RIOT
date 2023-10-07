@@ -28,3 +28,11 @@ it is the same as TCP, use ``tlss`` for server and ``tlsc`` for client
 
 ifconfig 6 add fec0:affe::100
 ifconfig 6 add 192.168.1.100
+
+
+ifconfig 6 add fd12:dead:beef::200/64
+nib route add 6 :: fd12:dead:beef::1
+
+
+TRHN-DPS.azure-devices-provisioning.net 64:ff9b::2871:b0aa
+global.azure-devices-provisioning.net 64:ff9b::3374:91ca

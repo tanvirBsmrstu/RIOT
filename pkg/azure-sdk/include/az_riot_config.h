@@ -4,6 +4,9 @@
 ///////////////////////  AZURE /////////////////////
 #define AZ_RIOT_HUB_HOST "TRHN-HUB.azure-devices.net"
 #define AZ_RIOT_HUB_DEVICEID "TRHN-device01"
+#define AZ_RIOT_DPS_HOST "global.azure-devices-provisioning.net"
+#define AZ_RIOT_DPS_IDSCOPE "0ne00B1BDDA"
+#define AZ_RIOT_DPS_REGISTRATION_ID "riot-registrationID"
 ///////////////////////  AZURE /////////////////////
 
 /////////////////////// TLS    /////////////////////
@@ -35,14 +38,14 @@
 /**
  * @brief Keepalive timeout in seconds
  */
-#define DEFAULT_KEEPALIVE_SEC 100
+#define DEFAULT_KEEPALIVE_SEC 240
 
 #ifndef MAX_LEN_TOPIC
-#define MAX_LEN_TOPIC 100
+#define MAX_LEN_TOPIC 64
 #endif
 
 #ifndef MAX_TOPICS
-#define MAX_TOPICS 4
+#define MAX_TOPICS 8
 #endif
 
 

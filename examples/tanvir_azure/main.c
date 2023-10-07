@@ -42,8 +42,6 @@ static char tls_stack[THREAD_STACKSIZE_DEFAULT];
 #define SERVER_IP "fec0:affe::100"
 #define CLIENT_IP "fec0:affe::99"
 
-
-
 static MQTTClient client;
 static Network network;
 
@@ -51,18 +49,33 @@ static Network network;
 #include <azure/az_core.h>
 #include <azure/az_iot.h>
 
+azRiotHUB_data az_hub_ctx;
+az_iot_hub_client hub_client;
 
-azRiotData azctx;
-az_iot_hub_client my_client; 
-
-void InitializeAZ(){
-    bool ret = Initialize_azClient(&my_client,&azctx);
-    if (ret){
-        printf("username : %s\ndevice-id : %s\nclient-id : %s\nhost : %s\n",azctx.username,azctx.deviceID,azctx.clientID,azctx.host);
-        
-    }else{
-        printf("az client init failed.");
-        
+void InitializeAZ()
+{
+    bool ret = Initialize_azClient(&hub_client, &az_hub_ctx);
+    if (ret)
+    {
+        printf("username : %s\ndevice-id : %s\nclient-id : %s\nhost : %s\n", az_hub_ctx.username, az_hub_ctx.deviceID, az_hub_ctx.clientID, az_hub_ctx.host);
+    }
+    else
+    {
+        printf("az hub client init failed.");
+    }
+}
+az_iot_provisioning_client dps_client;
+azRiotDPS_data az_dps_ctx;
+void InitializeDPS()
+{
+    bool ret = Initialize_azDPS_client(&dps_client, &az_dps_ctx);
+    if (ret)
+    {
+        printf("username : %s\ndevice-id : %s\nclient-id : %s\nhost : %s\n", az_dps_ctx.username, az_dps_ctx.deviceID, az_dps_ctx.clientID, az_dps_ctx.host);
+    }
+    else
+    {
+        printf("az dps client init failed.");
     }
 }
 
@@ -78,7 +91,6 @@ extern int tcp_posix_server(void);
 
 extern void testSSL(void);
 
-
 static void *tcp_server_thread(void *arg)
 {
     (void)arg;
@@ -91,10 +103,13 @@ static void *mqtt_thread(void *arg)
     MQTTStartTask(&client);
     return NULL; /* should never be reached */
 }
+Thread mqttThread;
+
 void startMqttTask(void)
 {
-    thread_create(tls_stack, sizeof(tls_stack), THREAD_PRIORITY_MAIN - 1, 0,
-                  mqtt_thread, NULL, "mqttstack");
+    // thread_create(tls_stack, sizeof(tls_stack), THREAD_PRIORITY_MAIN - 1, 0,
+    //               mqtt_thread, NULL, "mqttstack");
+    ThreadStart(&mqttThread,NULL,&client);
     return;
 }
 
@@ -157,12 +172,9 @@ static int _cmd_gnrc_native_tcpClient(int argc, char **argv)
     return 0;
 }
 
-
-
 extern int Network_Init(Network *n);
 extern int Network_Connect(Network *n, char *remoteIP, int port);
 extern void Network_Disconnect(Network *n);
-extern int setInitIP(char *selfIP);
 
 static int topic_cnt = 0;
 static char _topic_to_subscribe[MAX_TOPICS][MAX_LEN_TOPIC];
@@ -223,7 +235,7 @@ static int _cmd_con(int argc, char **argv)
     }
 
     //  char *remote_ip = "20.49.110.129";
-    char *remote_ip = azctx.host;
+    char *remote_ip = az_dps_ctx.host;
 
     int ret = -1;
 
@@ -242,7 +254,7 @@ static int _cmd_con(int argc, char **argv)
     }
 
     MQTTPacket_connectData data = MQTTPacket_connectData_initializer;
-    
+
     data.MQTTVersion = MQTT_VERSION_v311;
 
     data.clientID.cstring = DEFAULT_MQTT_CLIENT_ID;
@@ -252,16 +264,10 @@ static int _cmd_con(int argc, char **argv)
     }
 
     data.username.cstring = DEFAULT_MQTT_USER;
-    
+
     if (argc > 4)
     {
         data.username.cstring = argv[4];
-    }
-
-    data.password.cstring = DEFAULT_MQTT_PWD;
-    if (argc > 5)
-    {
-        data.password.cstring = argv[5];
     }
 
     data.keepAliveInterval = DEFAULT_KEEPALIVE_SEC;
@@ -270,8 +276,8 @@ static int _cmd_con(int argc, char **argv)
         data.keepAliveInterval = atoi(argv[6]);
     }
     //
-    data.username.cstring = azctx.username;
-    data.clientID.cstring = azctx.clientID;
+    data.username.cstring = az_dps_ctx.username;
+    data.clientID.cstring = az_dps_ctx.clientID;
     //
     data.cleansession = IS_CLEAN_SESSION;
     data.willFlag = 0;
@@ -288,9 +294,9 @@ static int _cmd_con(int argc, char **argv)
 
     printf("user:%s clientId:%s password:%s\n", data.username.cstring,
            data.clientID.cstring, data.password.cstring);
-    // startMqttTask();
-    // testSSL();
-    MQTTStartTask(&client);
+     startMqttTask();
+    printf("trying mqtt connect.......");
+    // MQTTStartTask(&client);
     ret = MQTTConnect(&client, &data);
     if (ret < 0)
     {
@@ -300,10 +306,10 @@ static int _cmd_con(int argc, char **argv)
     }
     else
     {
-        printf("mqtt_example: Connection successfully\n");
+        printf("mqtt_example: Connection successfully (%d)\n",client.isconnected);
     }
-
-    char *input[] = {"pub", "testt", "hi riot os"};
+    //  testSSL();
+    char *input[] = {"pub", "$dps/registrations/PUT/iotdps-register/?$rid=1", "{\"registrationId\":\"riot-registrationID\"}"};
     _cmd_pub(3, input);
     return (ret > 0) ? 0 : 1;
 }
@@ -327,7 +333,7 @@ static int _cmd_pub(int argc, char **argv)
     message.retained = IS_RETAINED_MSG;
     message.payload = argv[2];
     message.payloadlen = strlen(message.payload);
-    //testSSL();
+     testSSL();
     int rc;
     if ((rc = MQTTPublish(&client, argv[1], &message)) < 0)
     {
@@ -433,30 +439,25 @@ static const shell_command_t shell_commands[] =
         {"n_tc", "ative tcp client(works fine)", _cmd_gnrc_native_tcpClient},
         {NULL, NULL, NULL}};
 
-
-static void initNetIf(){
-   
-}
-
 int main(void)
 {
 
-    // if (IS_USED(MODULE_GNRC_ICMPV6_ECHO))
-    // {
+    if (IS_USED(MODULE_GNRC_ICMPV6_ECHO))
+    {
         msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
-    // }
-    setInitIP("192.168.0.95");
-     InitializeAZ();
+    }
+
+    InitializeDPS();
+    InitializeAZ();
+
     // ztimer_init();
     Network_Init(&network);
     printf("Hi mqtts\n");
-    
+
     MQTTClientInit(&client, &network, COMMAND_TIMEOUT_MS, writebuf, BUF_SIZE,
                    readbuf,
                    BUF_SIZE);
     printf("Running mqtt paho example. Type help for commands info\n");
-
-   
 
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);

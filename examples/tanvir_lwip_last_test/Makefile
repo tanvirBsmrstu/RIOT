@@ -6,6 +6,7 @@ BOARD ?= native
 # This has to be the absolute path to the RIOT base directory:
 RIOTBASE ?= $(CURDIR)/../..
 
+
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
 # development process:
@@ -14,16 +15,13 @@ RIOTBASE ?= $(CURDIR)/../..
 # Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1
 
-WIFI_SSID ?= "A book of ice and fire"
-WIFI_PASS ?= "sorry@214"
 
 # Optionally include remoteDNS support. This includes resolution of names at an
 # upstream DNS server and the handling of RDNSS options in Router Advertisements
 # to auto-configure that upstream DNS server.
-USEMODULE += sock_dns              # include DNS client
-USEMODULE += gnrc_ipv6_nib_dns     # include RDNSS option handling
-# USEMODULE += sock_dns
- USEMODULE += auto_init_sock_dns
+# USEMODULE += sock_dns              # include DNS client
+# USEMODULE += gnrc_ipv6_nib_dns     # include RDNSS option handling
+
 ifneq (,$(DEFAULT_MQTT_CLIENT_ID))
   CFLAGS += -DDEFAULT_MQTT_CLIENT_ID=\"$(DEFAULT_MQTT_CLIENT_ID)\"
 endif
@@ -37,27 +35,21 @@ endif
 USEMODULE += shell
 USEMODULE += shell_cmds_default
 USEMODULE += ps
-USEMODULE += netdev_default
-###################  IP STACK ###############
-
-
-
-
 USEPKG += paho-mqtt
-# CFLAGS += -DMQTT_TASK
-USEPKG += azure-sdk
-USEMODULE += azure-sdk-contrib
-# CFLAGS += -DF
-# USEMODULE += paho-mqtt3cs
-# paho-mqtt depends on TCP support, choose which stacks you want
-GNRC_IPV6 ?= 1
-LWIP_IPV4 ?= 0
-LWIP_IPV6 ?= 0
+# The names of libraries to be built
+CFLAGS += -DMQTT_EMBED_LIB_C=paho-embed-mqtt3cs
+
+CFLAGS += -Wno-unused-but-set-variable
+# CFLAGS += -Wno-error=unused-but-set-variable
+
+
+LWIP_IPV4 ?= 1
 
 
 
 ###### IP Stack ####
-
+USEMODULE += netdev_default
+#CFLAGS += -DTHREAD_STACKSIZE_MAIN=20000
 
 ### LWIP ##
 # ifneq (0, $(LWIP_IPV6))
@@ -66,23 +58,39 @@ LWIP_IPV6 ?= 0
 # endif
 # USEMODULE += lwip_ipv6
 # USEMODULE += lwip_netdev
+# USEMODULE += netdev_eth
 # USEMODULE += auto_init_lwip
-# USEMODULE += sock_tcp
-# USEMODULE += sock_ip
-
-# CFLAGS += -DSO_REUSE
-# CFLAGS += -DLWIP_SO_RCVTIMEO
-# CFLAGS += -DLWIP_SOCK_TCP_ACCEPT_TIMEOUT=500
-# CFLAGS += -DLWIP_NETIF_LOOPBACK=1
-# CFLAGS += -DLWIP_HAVE_LOOPIF=1
 
 
-###### IP Stack #####
+# USEMODULE += lwip_tcp 
+# USEMODULE += netdev_default
+# USEMODULE += inet_csum
+# USEMODULE += lwip_sock_tcp
+ifeq ($(BOARD),native)
+  USEMODULE += lwip_ethernet
+endif
+
+USEMODULE += sock_tcp
+USEMODULE += sock_ip
+
+# Add POSIX modules
+USEMODULE += posix_select
+USEMODULE += posix_sockets
+USEMODULE += posix_inet
+
+CFLAGS += -DSO_REUSE
+CFLAGS += -DLWIP_SO_RCVTIMEO
+CFLAGS += -DLWIP_SOCK_TCP_ACCEPT_TIMEOUT=500
+CFLAGS += -DLWIP_ICMP6=1
+CFLAGS += -DLWIP_NETIF_LOOPBACK=1
+CFLAGS += -DLWIP_HAVE_LOOPIF=1
+
+USEMODULE += posix_sockets
+
 
 #########wolf ssl
 USEPKG += wolfssl
-#USEMODULE+=wolfssl_socket
-USEMODULE+=wolfcrypt
+USEMODULE+=wolfssl_socket
 USEMODULE+=wolfcrypt_rsa
 #USEMODULE+=wolfcrypt_ecc
 USEMODULE+=wolfcrypt_aes
@@ -97,15 +105,13 @@ USEMODULE+=wolfssl_keys
 USEMODULE+=wolfssl_ssl
 USEMODULE+=wolfssl_tls
 USEMODULE+=wolfcrypt_aes_gcm
-USEMODULE+=wolfssl_gnrc
-USEMODULE+=wolfssl_dtls
 
+CFLAGS+=-DHAVE_AESGCM -DWC_RSA_PSS -DHAVE_HKDF
 
-CFLAGS+=-DHAVE_AESGCM -DWC_RSA_PSS -DHAVE_HKDF -DWOLFSSL_SP_MATH_ALL
+CFLAGS += -DWOLFSSL_SP_MATH_ALL
 
-# CFLAGS += -DOPENSSL_EXTRA
-#  CFLAGS += -DOPENSSL_ALL
-#CFLAGS += -DWOLFSSL_GNRC
+#CFLAGS += -DWOLFSSL_LWIP
+#CFLAGS += -DOPENSSL_EXTRA
 
 #################
 #CFLAGS += -DDTLS_DEFAULT_PORT=$(DTLS_PORT) -DDTLS_WOLFSSL -Wno-unused-parameter -Wno-unused-variable
@@ -113,24 +119,17 @@ CFLAGS += -Wno-unused-parameter -Wno-unused-variable
 
 
 include Makefile.lwip
-include Makefile.gnrc
+#include Makefile.gnrc
 
-USEMODULE += sock_async_event
-
+#USEMODULE += sock_async_event
+#USEMODULE += sock_ip
 USEMODULE += sock_udp
-USEMODULE += sock_tcp
+#USEMODULE += sock_tcp
 
-
-USEMODULE += ztimer64
-USEMODULE += ztimer64_msec
+USEMODULE += ztimer
+USEMODULE += ztimer_msec
 
 ####
-
-# Add DNS server configuration
-CFLAGS += -DGNRC_NETIF_IPV6_DNS_NUMOF=1
-CFLAGS += -DGNRC_NETIF_IPV6_DNS="2001:4860:4860::6464"
-
-###
 
 include $(RIOTBASE)/Makefile.include
 
@@ -138,4 +137,5 @@ ifneq (,$(filter arch_esp,$(FEATURES_USED)))
   CFLAGS += -DWIFI_SSID=\"$(WIFI_SSID)\"
   CFLAGS += -DWIFI_PASS=\"$(WIFI_PASS)\"
 endif
-CFLAGS +=  -Wno-unused-parameter -Wno-unused-variable -Wno-error=unused-function
+CFLAGS +=  -Wno-unused-parameter -Wno-unused-variable
+-Werror=maybe-uninitialized

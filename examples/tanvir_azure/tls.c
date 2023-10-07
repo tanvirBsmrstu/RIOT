@@ -29,8 +29,6 @@
 
 #define WRITE_CHUNK_SIZE 128
 
-#define SOCK_QUEUE_TLS_LEN (1U)
-
 // WOLFSSL_SESSION *ssl_session;
 
 // sock_tcp_t sock_queue_TLS[SOCK_QUEUE_TLS_LEN];
@@ -46,7 +44,14 @@ unsigned char *server_cert_buf;
 unsigned char *server_key_buf;
 size_t server_cert_buf_len;
 size_t server_key_buf_len;
-#define CA_CERT "./last_cert/certs/ca.pem"
+// #define CA_CERT "./last_cert/certs/ca.pem"
+#define CA_CERT "./certificates/digiCert_ca_azure.pem"
+#define DEVICE_CERT "./certificates/riot-registrationID-full-chain.cert.pem"
+#define DEVICE_KEY "./certificates/riot-registrationID.key.pem"
+unsigned char *device_cert_chain_buf;
+unsigned char *device_key_buf;
+size_t device_cert_chain_buf_len;
+size_t device_key_buf_len;
 unsigned char *ca_cert_buf;
 size_t ca_cert_buf_len;
 void load_cert_buffer(bool isServer);
@@ -122,21 +127,33 @@ int Network_Read(Network *n, unsigned char *buf, int buf_len, int timeout_ms)
         printf("Network Read : No ssl object found\n");
         return 0;
     }
-
+    // timeout_ms=5;
     ztimer_now_t start_time = ztimer_now(ZTIMER_MSEC);
     ztimer_now_t end_time = start_time + timeout_ms;
     int recvLen = 0;
     int rc = 0;
-    //  printf("Network reading len %d timeout %d\n",buf_len - recvLen, timeout_ms);
+    printf("Asking wolfssl_read to read %d bytes data in timeout %d ms\n",buf_len, timeout_ms);
 
     while ((recvLen < buf_len) && (ztimer_now(ZTIMER_MSEC) < end_time))
     {
+        
         int chunk_size = buf_len - recvLen;
+        printf("Entering wolfssl_read received_len %d bytes; requesting chunk_size %d \n",recvLen,chunk_size);
         rc = wolfSSL_read(ssl, buf + recvLen, chunk_size);
+        printf("Leaving wolfssl_read return = %d\n",rc);
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            // No data available, handle accordingly
+            printf("No data available yet, waiting...\n");
+
+            // You might want to sleep or use select/poll here to wait for data
+            // Example using usleep for demonstration (not recommended in production)
+            ztimer_sleep(ZTIMER_MSEC,100);  // Sleep for 100 ms
+        }
         int err = wolfSSL_get_error(ssl, rc);
+        printf("checking wolfSSL_get_error return = %d\n",err);
         if (err == WOLFSSL_ERROR_WANT_READ)
         {
-            // printf("ERROR : WOLFSSL_ERROR_WANT_READ\n");
+             printf("ERROR : WOLFSSL_ERROR_WANT_READ\n");
             ztimer_sleep(ZTIMER_MSEC, 5);
             continue;
         }
@@ -164,30 +181,36 @@ int Network_Read(Network *n, unsigned char *buf, int buf_len, int timeout_ms)
             break;
         }
     }
-
+    printf("Leaving Network_Read received_len %d ; request_len %d\n",recvLen,buf_len);
     return recvLen;
 }
 int Network_Send(Network *n, unsigned char *buf, int buf_len, int timeout_ms)
 {
     if (!ssl)
     {
-        // printf("Network Send : No ssl object found\n");
+        printf("Network Send : No ssl object found\n");
         return 0;
     }
+    // timeout_ms=5;
     ztimer_now_t start_time = ztimer_now(ZTIMER_MSEC);
     ztimer_now_t end_time = start_time + timeout_ms;
     int sentLen = 0;
-    printf("Network sending ....\n");
+     printf("Asking wolfssl_write to send %d bytes data in timeout %d ms\n",buf_len, timeout_ms);
     while (sentLen < buf_len)
     {
         int chunk_size = buf_len - sentLen;
-
+        printf("Entering wolfssl_write request_len %d bytes; already sent %d ; Full length %d \n",chunk_size, sentLen,buf_len);
         int rc = 0;
         rc = wolfSSL_write(ssl, buf + sentLen, chunk_size);
+        printf("Leaving wolfSSL_write return = %d\n",rc);
+        if(rc==0) break;
         int err = wolfSSL_get_error(ssl, rc);
-        if (err == WOLFSSL_ERROR_WANT_WRITE)
+        printf("checking wolfSSL_get_error return = %d\n",err);
+        if (rc == WOLFSSL_ERROR_WANT_WRITE)
         {
-            printf("ERROR : WOLFSSL_ERROR_WANT_WRITE\n");
+            printf("ERROR : WOLFSSL_ERROR_WANT_WRITE(sending)\n");
+            continue;
+
         }
         if (rc > 0)
         {
@@ -205,7 +228,7 @@ int Network_Send(Network *n, unsigned char *buf, int buf_len, int timeout_ms)
             break;
         }
     }
-    printf("Network Send : %d bytes\n", sentLen);
+    printf("Leaving Network_Write sent_len %d ; request_len %d\n",sentLen,buf_len);
     return sentLen;
 }
 int Network_Connect(Network *n, char *remoteIP, int port)
@@ -262,66 +285,30 @@ void testSSL(void)
     }
 }
 
-int setInitIP(char *selfIP)
-{
-    // gnrc_netif_t *netif = gnrc_netif_iter(NULL);
-    // if (netif == NULL)
-    // {
-    //     puts("No network interface available");
-    //     return -1;
-    // }
-
-    // ipv4_addr_t ipv4_addr;
-    // ipv4_addr_from_str(&ipv4_addr, selfIP); // Replace with your IPv4 address
-    // gnrc_netif_ipv6_addr_add(netif, &ipv4_addr, 24, 0);
-    return 0;
-}
-
 int tls_connect(Network *myctx, char *remoteIP, int port)
 {
     int res;
     sock_tcp_ep_t remote = SOCK_IPV6_EP_ANY;
-// #ifdef AZ_HAVE_GNRC_IPv6
-//     printf("MY_VARIABLE is GNRC_IPV6\n");
-//     ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, remoteIP);
-//     return 0;
-// #else
-// #ifdef AZ_HAVE_GNRC_IPv4
-//     printf("MY_VARIABLE is GNRC_IPV4\n");
-//     remote = SOCK_IPV4_EP_ANY;
-//     ipv4_addr_from_str((ipv4_addr_t *)&remote.addr, remoteIP);
-//     return 0;
-// #else
-//     printf("MY_VARIABLE is not set\n");
-//     return -1;
-// #endif
-// #endif
-
-    // if (processIP(remoteIP, &remote) < 0)
-    // {
-    //     printf("[ERROR] : remote ip processing failed\n");
-    //     return -1;
-    // }
-
-    
-    //remoteIP="google.com";
-    puts("TLS client");
-    printf("trying dns for %s\n",remoteIP);
-    ipv6_addr_t receiverIP6;
-    res = dns_query(remoteIP, &receiverIP6, AF_INET6);
-
-    
-    if (res < 0)
-    {
-        LOG_ERROR("Error: DNS failed %d\n",res);
-        return res;
-        // remote.family = ret == 4 ? AF_INET : AF_INET6;
-    }
-    ipv6_addr_print(&receiverIP6);
-    //ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, receiverIP);
     remote.port = port;
-    printf(" -- dns : %d", res);
-    return -1;
+    remoteIP = "64:ff9b::3374:91ca";
+    ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, remoteIP);
+    puts("TLS client");
+    printf("trying dns for %s  port %d\n", remoteIP,port);
+    // ipv6_addr_t receiverIP6;
+    // res = dns_query(remoteIP, &receiverIP6, AF_INET6);
+
+    // if (res < 0)
+    // {
+    //     LOG_ERROR("Error: DNS failed %d\n",res);
+    //     remoteIP="64:ff9b::3374:91ca";
+    //     ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, remoteIP);
+    //     // remote.family = ret == 4 ? AF_INET : AF_INET6;
+    // }
+    // // ipv6_addr_print(&receiverIP6);
+    // //ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, receiverIP);
+    // remote.port = port;
+    // printf(" -- dns : %d \n new ip %s\n", res, remoteIP);
+
     // if (IS_USED(MODULE_IPV6_ADDR) && (remote.port == 0) &&
     //     ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, remoteIP))
     // {
@@ -349,7 +336,7 @@ int tls_connect(Network *myctx, char *remoteIP, int port)
     if ((localssl = wolfSSL_new(ctx)) == NULL)
     {
         printf("SSL object creation failed\n");
-        // sock_tcp_disconnect(&myctx->sock);
+        sock_tcp_disconnect(&myctx->sock);
 
         return -1;
     }
@@ -360,21 +347,36 @@ int tls_connect(Network *myctx, char *remoteIP, int port)
     puts("Server will perform TLS handshake");
     wolfSSL_SetIOReadCtx(localssl, myctx);
     wolfSSL_SetIOWriteCtx(localssl, myctx);
+    // wolfSSL_set_using_nonblock(localssl, 1);
     /* Perform the SSL/TLS handshake */
-    int ret = wolfSSL_connect(localssl);
-    if (ret != SSL_SUCCESS)
-    {
-        char text[100];
-        wolfSSL_ERR_error_string(wolfSSL_get_error(localssl, ret), text);
-        fprintf(stderr, "SSL handshake failed: %d with %s\n", wolfSSL_get_error(localssl, ret), text);
-        // wolfSSL_free(ssl);
-        // sock_tcp_disconnect(&myctx->sock);
-        // wolfSSL_CTX_free(ctx);
-        // wolfSSL_Cleanup();
-        return ret;
-    }
+
+    int ssl_ret;
+    // do
+    // {
+        ssl_ret = wolfSSL_connect(localssl);
+        if (ssl_ret == SSL_ERROR_WANT_READ)
+        {
+            // Handle non-blocking read
+            // Wait for the socket to become readable and retry
+            printf("SSL_ERROR_WANT_READ\n");
+        }
+        else if (ssl_ret != SSL_SUCCESS)
+        {
+            // Handle other SSL errors
+            char text[100];
+            wolfSSL_ERR_error_string(wolfSSL_get_error(localssl, ssl_ret), text);
+            fprintf(stderr, "SSL handshake failed: %d with %s\n", wolfSSL_get_error(localssl, ssl_ret), text);
+            // wolfSSL_free(ssl);
+            // sock_tcp_disconnect(&myctx->sock);
+            // wolfSSL_CTX_free(ctx);
+            // wolfSSL_Cleanup();
+            return ssl_ret;
+        }
+    // } while (ssl_ret == SSL_ERROR_WANT_READ);
+
     ssl = localssl;
     /* SSL/TLS handshake successful */
+    if(ssl_ret==SSL_SUCCESS)
     printf("SSL handshake successful!\n");
 
     /* Clean up */
@@ -414,6 +416,7 @@ WOLFSSL_CTX *init_wolfSSL_ctx_util(bool isServer, Network *myctx)
     }
     else
     {
+
         /* Load client certificates into WOLFSSL_CTX */
         if (wolfSSL_CTX_load_verify_buffer(ctx, ca_cert_buf,
                                            ca_cert_buf_len,
@@ -422,6 +425,21 @@ WOLFSSL_CTX *init_wolfSSL_ctx_util(bool isServer, Network *myctx)
             fprintf(stderr, "ERROR: failed to load ca buffer\n");
             return NULL;
         }
+        /* Load device certificate for x509 attestation into WOLFSSL_CTX */
+        if (wolfSSL_CTX_load_verify_chain_buffer_format(ctx, device_cert_chain_buf,
+                                                        device_cert_chain_buf_len, SSL_FILETYPE_PEM) != SSL_SUCCESS)
+        {
+            fprintf(stderr, "ERROR: failed to load device certificate chain buffer\n");
+            return NULL;
+        }
+        /* Load the private key */
+        if (wolfSSL_CTX_use_PrivateKey_buffer(ctx, device_key_buf,
+                                              device_key_buf_len, SSL_FILETYPE_PEM) != SSL_SUCCESS)
+        {
+            fprintf(stderr, "ERROR: failed to load device key buffer\n");
+            return NULL;
+        }
+        printf("Certificates are successfully loaded\n");
     }
     /* Set custom I/O callbacks and context */
     wolfSSL_CTX_SetIORecv(ctx, my_io_recv);
@@ -461,21 +479,68 @@ int my_io_send(WOLFSSL *ssl, char *buf, int sz, void *ctx)
     if (!app_ctx)
     {
         printError("underlying socket can not be decided by wolfssl I/O callback due to Invalid socket.");
+         return WOLFSSL_CBIO_ERR_GENERAL;
     }
+    printf("TCP_SEND trying to send %d bytes\n",sz);
     // Use sock_tcp_write to send data over the socket
     ssize_t bytesSent = sock_tcp_write(&app_ctx->sock, buf, sz);
-
+     printf("TCP_SEND return = %d\n",bytesSent);
     if (bytesSent >= 0)
     {
-        printf("Sent %zd bytes: %s\n", bytesSent, buf);
-    }
-    else
+        printf("Sent %zd bytes of %d\n", bytesSent, sz);
+    // }else if(bytesSent==0){
+
+    //     return WOLFSSL_CBIO_ERR_WANT_WRITE;
+    // }
+    }else
     {
-        printf("Error while sending data: %zd\n", bytesSent);
+        
+        switch (bytesSent)
+        {
+        case -ENOTCONN:
+        printf("TCP_SEND conn close...\n");
+        return WOLFSSL_CBIO_ERR_CONN_CLOSE;
+        // return WOLFSSL_CBIO_ERR_WANT_READ;
+        case -EAGAIN:
+            //  printf("EAGAIN EAGAIN...\n");
+             ztimer_sleep(ZTIMER_MSEC,10);
+            return 0;
+            // return WOLFSSL_CBIO_ERR_WANT_READ;
+            
+
+        default:
+            printf("Error while sending data: %zd\n", bytesSent);
+            break;
+        }
     }
 
     return bytesSent;
 }
+bool debugtrc=true;
+
+// int GNRC_ReceiveFrom(WOLFSSL *ssl, char *buf, int sz, void *_ctx)
+// {
+//     sock_udp_ep_t ep;
+//     int ret;
+//     word32 timeout = wolfSSL_dtls_get_current_timeout(ssl) * 1000000;
+//     sock_tls_t *ctx = (sock_tls_t *)_ctx;
+//     if (!ctx)
+//         return WOLFSSL_CBIO_ERR_GENERAL;
+//     (void)ssl;
+//     if (wolfSSL_get_using_nonblock(ctx->ssl)) {
+//         timeout = 0;
+//     }
+//     ret = sock_udp_recv(&ctx->conn.udp, buf, sz, timeout, &ep);
+//     if (ret > 0) {
+//         if (ctx->peer_addr.port == 0)
+//             XMEMCPY(&ctx->peer_addr, &ep, sizeof(sock_udp_ep_t));
+//     }
+//     if (ret == -ETIMEDOUT) {
+//         return WOLFSSL_CBIO_ERR_WANT_READ;
+//     }
+//     return ret;
+// }
+
 int my_io_recv(WOLFSSL *ssl, char *buf, int sz, void *ctx)
 {
     if (ctx == NULL)
@@ -488,27 +553,37 @@ int my_io_recv(WOLFSSL *ssl, char *buf, int sz, void *ctx)
     if (!app_ctx)
     {
         printError("underlying socket can not be decided by wolfssl I/O callback due to Invalid socket.");
+        return WOLFSSL_CBIO_ERR_GENERAL;
     }
+    // printf("TCP_RECV trying to receive %d bytes\n",sz);
     // Use sock_tcp_read to receive data from the socket
     ssize_t bytesRead = sock_tcp_read(&app_ctx->sock, buf, sz, 0);
-
+    // printf("TCP_RECV return = %d\n",bytesRead);
     if (bytesRead > 0)
     {
-        printf("Received %zd bytes: %s\n", bytesRead, buf);
+        printf("Received %zd (total size %d) bytes: %s\n", bytesRead,sz, buf);
     }
     else if (bytesRead == 0)
     {
+        if(debugtrc)
         printf("Connection closed by the peer.\n");
+        debugtrc=false;
+        return WOLFSSL_CBIO_ERR_CONN_CLOSE;
     }
     else
     {
         switch (bytesRead)
         {
         case -ETIMEDOUT:
+        printf("Reading timeout...\n");
+        return WOLFSSL_CBIO_ERR_TIMEOUT;
+        // return WOLFSSL_CBIO_ERR_WANT_READ;
         case -EAGAIN:
-            // printf("Reading timeout...\n");
-            return -323;
-            break;
+            //  printf("EAGAIN EAGAIN...\n");
+             ztimer_sleep(ZTIMER_MSEC,10);
+            return 0;
+            // return WOLFSSL_CBIO_ERR_WANT_READ;
+            
 
         default:
             printf("Error while receiving data: %zd\n", bytesRead);
@@ -573,6 +648,8 @@ void load_cert_buffer(bool isServer)
     }
     else
     {
+        device_cert_chain_buf = read_file_to_buffer(DEVICE_CERT, &device_cert_chain_buf_len);
+        device_key_buf = read_file_to_buffer(DEVICE_KEY, &device_key_buf_len);
         ca_cert_buf = read_file_to_buffer(CA_CERT, &ca_cert_buf_len);
     }
 
