@@ -36,3 +36,6 @@ nib route add 6 :: fd12:dead:beef::1
 
 TRHN-DPS.azure-devices-provisioning.net 64:ff9b::2871:b0aa
 global.azure-devices-provisioning.net 64:ff9b::3374:91ca
+
+next try
+sync freertos read

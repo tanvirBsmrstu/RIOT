@@ -144,19 +144,22 @@ bool Initialize_azDPS_client(az_iot_provisioning_client *dpsClient, azRiotDPS_da
     if (_data == NULL)
         return false;
     az_result azureRes;
+       create_mqtt_endpoint(DPS,_data->endpoint,100);
     az_iot_provisioning_client_options azureOpt = az_iot_provisioning_client_options_default();
-    az_span dpsGloablHostName = AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_DPS_HOST);
+    az_span dpsGloablHostName = az_span_create_from_str(_data->endpoint);//AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_DPS_HOST);
     az_span dpsRegistrationID = AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_DPS_REGISTRATION_ID);
     az_span dpsIdScope = AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_DPS_IDSCOPE);
+ 
     _data->host = AZ_RIOT_DPS_HOST;
     _data->deviceID = AZ_RIOT_DPS_REGISTRATION_ID;
     _data->idScope = AZ_RIOT_DPS_IDSCOPE;
     // _data->resgistrationID = AZ_RIOT_DPS_REGISTRATION_ID;
+    // az_span_create_from_str(_data->endpoint);
 
     // char mqtt_endpoint_buffer[PROVISIONING_ENDPOINT_BUFFER_LENGTH];
     // create_mqtt_endpoint(DPS,mqtt_endpoint_buffer,sizeof(mqtt_endpoint_buffer));
     //  _data->host=mqtt_endpoint_buffer;
-    azureRes = az_iot_provisioning_client_init(dpsClient, dpsGloablHostName, dpsIdScope, dpsRegistrationID, &azureOpt);
+    azureRes = az_iot_provisioning_client_init(dpsClient,dpsGloablHostName, dpsIdScope, dpsRegistrationID, &azureOpt);
     if (az_result_succeeded(azureRes))
     {
         printf("az_iot_dps_client_init OK.\n");

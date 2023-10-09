@@ -6,7 +6,7 @@
 #define AZ_RIOT_HUB_DEVICEID "TRHN-device01"
 #define AZ_RIOT_DPS_HOST "global.azure-devices-provisioning.net"
 #define AZ_RIOT_DPS_IDSCOPE "0ne00B1BDDA"
-#define AZ_RIOT_DPS_REGISTRATION_ID "riot-registrationID"
+#define AZ_RIOT_DPS_REGISTRATION_ID "riot-registration-id01"
 ///////////////////////  AZURE /////////////////////
 
 /////////////////////// TLS    /////////////////////
@@ -16,7 +16,7 @@
 ////////////////////// MQTT   /////////////////////
 #define BUF_SIZE 2048
 #define MQTT_VERSION_v311 4 /* MQTT v3.1.1 version is 4 */
-#define COMMAND_TIMEOUT_MS 4000
+#define COMMAND_TIMEOUT_MS 10000
 
 #ifndef DEFAULT_MQTT_CLIENT_ID
 #define DEFAULT_MQTT_CLIENT_ID "thasan"
@@ -49,7 +49,7 @@
 #endif
 
 
-#define IS_CLEAN_SESSION 0
+#define IS_CLEAN_SESSION 1
 #define IS_RETAINED_MSG 0
 ////////////////////// MQTT   /////////////////////
 

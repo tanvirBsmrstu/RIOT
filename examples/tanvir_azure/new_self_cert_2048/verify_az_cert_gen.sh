@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-verificationCode="976B21F385D1654446681AD8A69293EFA55ED8BA4C98F46D"
+verificationCode="D6603806D54A2BDA44105ED29CA0878E4DC4A453461CD32F"
 
 echo "------------Verification cert-------------------"
 openssl genrsa -aes256 -passout pass:1234 -out ./private/verification-$verificationCode.key.pem 2048

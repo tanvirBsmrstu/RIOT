@@ -57,7 +57,7 @@ void InitializeAZ()
     bool ret = Initialize_azClient(&hub_client, &az_hub_ctx);
     if (ret)
     {
-        printf("username : %s\ndevice-id : %s\nclient-id : %s\nhost : %s\n", az_hub_ctx.username, az_hub_ctx.deviceID, az_hub_ctx.clientID, az_hub_ctx.host);
+        printf("username : %s\ndevice-id : %s\nclient-id : %s\nhost : %s \n", az_hub_ctx.username, az_hub_ctx.deviceID, az_hub_ctx.clientID, az_hub_ctx.host);
     }
     else
     {
@@ -71,7 +71,7 @@ void InitializeDPS()
     bool ret = Initialize_azDPS_client(&dps_client, &az_dps_ctx);
     if (ret)
     {
-        printf("username : %s\ndevice-id : %s\nclient-id : %s\nhost : %s\n", az_dps_ctx.username, az_dps_ctx.deviceID, az_dps_ctx.clientID, az_dps_ctx.host);
+        printf("username : %s\ndevice-id : %s\nclient-id : %s\nhost : %s endpoint : %s\n", az_dps_ctx.username, az_dps_ctx.deviceID, az_dps_ctx.clientID, az_dps_ctx.host,az_dps_ctx.endpoint);
     }
     else
     {
@@ -223,6 +223,9 @@ static int _cmd_discon(int argc, char **argv)
     return res;
 }
 static int _cmd_pub(int argc, char **argv);
+#define MQTTPacket_connectData_initializer { {'M', 'Q', 'T', 'C'}, 0, 4, {NULL, {0, NULL}}, 60, 1, 0, \
+		MQTTPacket_willOptions_initializer, {NULL, {0, NULL}}, {NULL, {0, NULL}} }
+
 static int _cmd_con(int argc, char **argv)
 {
     if (argc < 2)
@@ -257,18 +260,18 @@ static int _cmd_con(int argc, char **argv)
 
     data.MQTTVersion = MQTT_VERSION_v311;
 
-    data.clientID.cstring = DEFAULT_MQTT_CLIENT_ID;
-    if (argc > 3)
-    {
-        data.clientID.cstring = argv[3];
-    }
+    // data.clientID.cstring = DEFAULT_MQTT_CLIENT_ID;
+    // if (argc > 3)
+    // {
+    //     data.clientID.cstring = argv[3];
+    // }
 
-    data.username.cstring = DEFAULT_MQTT_USER;
-
-    if (argc > 4)
-    {
-        data.username.cstring = argv[4];
-    }
+    // data.username.cstring = DEFAULT_MQTT_USER;
+    // data.password.cstring = NULL;
+    // if (argc > 4)
+    // {
+    //     data.username.cstring = argv[4];
+    // }
 
     data.keepAliveInterval = DEFAULT_KEEPALIVE_SEC;
     if (argc > 6)
@@ -283,8 +286,8 @@ static int _cmd_con(int argc, char **argv)
     data.willFlag = 0;
     printf("mqtt_example: Connecting to MQTT Broker from %s %d\n",
            remote_ip, port);
-    printf("mqtt_example: Trying to connect to %s, port: %d\n",
-           remote_ip, port);
+    printf("mqtt_example: Trying to connect userName %s, client id : %s pass : %s\n",
+           data.username.cstring,data.clientID.cstring,data.password.cstring);
     ret = Network_Connect(&network, remote_ip, port);
     if (ret < 0)
     {
@@ -294,9 +297,9 @@ static int _cmd_con(int argc, char **argv)
 
     printf("user:%s clientId:%s password:%s\n", data.username.cstring,
            data.clientID.cstring, data.password.cstring);
-     startMqttTask();
+    //  startMqttTask();
     printf("trying mqtt connect.......");
-    // MQTTStartTask(&client);
+      MQTTStartTask(&client);
     ret = MQTTConnect(&client, &data);
     if (ret < 0)
     {
@@ -306,18 +309,22 @@ static int _cmd_con(int argc, char **argv)
     }
     else
     {
-        printf("mqtt_example: Connection successfully (%d)\n",client.isconnected);
+        printf("mqtt_example: Connection successfully (%d) ret :%d\n",client.isconnected,ret);
     }
     //  testSSL();
-    char *input[] = {"pub", "$dps/registrations/PUT/iotdps-register/?$rid=1", "{\"registrationId\":\"riot-registrationID\"}"};
-    _cmd_pub(3, input);
+    char *input[] = {"pub", "$dps/registrations/PUT/iotdps-register/?$rid=1", "{\"registrationId\":\"riot-registration-id01\"}"};
+    // _cmd_pub(3, input);
     return (ret > 0) ? 0 : 1;
 }
 
 static int _cmd_pub(int argc, char **argv)
 {
-    enum QoS qos = QOS0;
+    char *input[] = {"pub", "$dps/registrations/PUT/iotdps-register/?$rid=1", "{\"registrationId\":\"riot-registration-id01\"}"};
+    argv=input;
+    argc=3;
 
+    enum QoS qos = QOS0;
+    
     if (argc < 3)
     {
         printf("usage: %s <topic name> <string msg> [QoS level]\n",

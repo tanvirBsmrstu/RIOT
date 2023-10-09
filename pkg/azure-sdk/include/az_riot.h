@@ -20,6 +20,7 @@ typedef struct azRiotDPS_data{
     char username[128];
     size_t username_length;
     char clientID[60];
+    char endpoint[100];
     size_t clientID_length;
 }azRiotDPS_data;
 
