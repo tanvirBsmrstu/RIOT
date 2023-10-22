@@ -15,7 +15,7 @@
 #define MAX_TOPICS 8
 #endif
 #ifndef MQTT_VERSION_v311
-#define MQTT_VERSION_v311               4       /* MQTT v3.1.1 version is 4 */
+#define MQTT_VERSION_v311 4 /* MQTT v3.1.1 version is 4 */
 #endif
 
 static int topic_cnt = 0;
@@ -35,13 +35,25 @@ static int mqtts_initialized = 0;
 static Network networkStack;
 static MQTTClient client;
 
+static MqttsMessageArrivalCallback app_layer_callback;
+void mqtts_set_message_arrival_callback(MqttsMessageArrivalCallback _callback)
+{
+    app_layer_callback = _callback;
+}
 static void _on_msg_received(MessageData *data)
 {
-    printf("paho_mqtt_example: message received on topic"
-           " %.*s: %.*s\n",
-           (int)data->topicName->lenstring.len,
-           data->topicName->lenstring.data, (int)data->message->payloadlen,
-           (char *)data->message->payload);
+    if (app_layer_callback != NULL)
+    {
+        app_layer_callback(data->topicName->lenstring.data, (int)data->topicName->lenstring.len, (char *)data->message->payload, (int)data->message->payloadlen);
+    }
+    else
+    {
+        printf("paho_mqtt_example: message received on topic"
+               " %.*s: %.*s\n",
+               (int)data->topicName->lenstring.len,
+               data->topicName->lenstring.data, (int)data->message->payloadlen,
+               (char *)data->message->payload);
+    }
 }
 
 int MQTTS_Read(Network *n, unsigned char *buf, int buf_len, int timeout_ms)
@@ -84,8 +96,9 @@ int mqtts_init(MQTTSContext *mqtts_ctx, unsigned char *writebuf, int writebuf_si
 MQTTSContext *mqtts_create_context(void (*_log_callback)(const char *message))
 {
 
-    TLSContext* tls_ctx =  tls_create_context(_log_callback);
-    if(tls_ctx==NULL){
+    TLSContext *tls_ctx = tls_create_context(_log_callback);
+    if (tls_ctx == NULL)
+    {
         tls_log("tls context creation failed");
         return NULL;
     }

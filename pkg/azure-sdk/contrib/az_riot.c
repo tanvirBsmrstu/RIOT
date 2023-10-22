@@ -150,7 +150,7 @@ bool Initialize_azDPS_client(az_iot_provisioning_client *dpsClient, azRiotDPS_da
     az_span dpsRegistrationID = AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_DPS_REGISTRATION_ID);
     az_span dpsIdScope = AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_DPS_IDSCOPE);
  
-    _data->host = AZ_RIOT_DPS_HOST;
+    _data->host = AZ_RIOT_DPS_GLOBAL_HOST;
     _data->deviceID = AZ_RIOT_DPS_REGISTRATION_ID;
     _data->idScope = AZ_RIOT_DPS_IDSCOPE;
     // _data->resgistrationID = AZ_RIOT_DPS_REGISTRATION_ID;

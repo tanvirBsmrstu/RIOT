@@ -3,12 +3,11 @@
 
 #include <gnrc_wolfssl_tls.h>
 
-
-
 struct MQTTSContext; // forward declaration
 typedef struct MQTTSContext MQTTSContext;
 
-
+typedef void (*MqttsMessageArrivalCallback)(char *topic, int topic_len, char *payload, int payload_len);
+void mqtts_set_message_arrival_callback(MqttsMessageArrivalCallback _callback);
 
 /**
  * @file mqtts_riot_iface.h
@@ -108,4 +107,4 @@ void mqtts_cleanup(void);
  */
 int mqtts_set_certificate(MQTTSContext *ctx, const char *ca_cert_path, const char *cert_chain_path, const char *private_key_path);
 
-#endif 
+#endif

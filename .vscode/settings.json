@@ -20,7 +20,8 @@
         "string_view": "c",
         "initializer_list": "c",
         "ranges": "c",
-        "utility": "c"
+        "utility": "c",
+        "az_core.h": "c"
     },
     "[shellscript][c][cpp]": {
         "editor.tabSize": 4,

@@ -491,7 +491,7 @@ int tcp_connect(char *remoteAddress, int port, sock_tcp_t *socket)
     int res;
     sock_tcp_ep_t remote = SOCK_IPV6_EP_ANY;
     remote.port = port;
-    char *remoteIP = "64:ff9b::3374:91ca";
+    char *remoteIP = "64:ff9b::2871:b0b5";//"64:ff9b::3374:91ca";
     ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, remoteIP);
     printf("trying dns for %s  port %d\n", remoteIP, port);
     if ((res = sock_tcp_connect(socket, &remote, 0, 0)) < 0)

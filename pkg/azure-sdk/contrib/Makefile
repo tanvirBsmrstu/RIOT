@@ -1,3 +1,3 @@
-MODULE = azure-sdk-contrib
+MODULE := azure-sdk-contrib
 
 include $(RIOTBASE)/Makefile.base
