@@ -56,7 +56,7 @@ int azInit(void){
         printf("create_AzRiotContext\n");
         return -1;
     }
-    int res = init_iot_hub_client(context);
+    int res = init_dps_client(context);
     if(res<0){
         printf("init_iot_hub_client failed with %d\n",res);
         return res;
@@ -125,7 +125,7 @@ static int _cmd_con(int argc, char **argv)
     // char *username = "0ne00B1BDDA/registrations/riot-registration-id01/api-version=2019-03-31";
 
     printf("connecting ....\n");
-    int ret = connect_azure_client(context,HUB);
+    int ret = connect_azure_client(context,DPS);
     if (ret != 0)
     {
         printf("mqtt_example: Unable to connect client %d\n", ret);
@@ -148,8 +148,17 @@ static int _cmd_pub(int argc, char **argv)
     char* topic = "send_telemetry_message_to_iot_hub";
     // // char* payload = "{\"registrationId\":\"riot-registration-id01\"}";
     
+    // int rc;
+    // if ((rc = send_telemetry_message_to_iot_hub(context,telemetry_message_payload)) < 0) {
+    //     printf("top_example: Unable to publish (%d)\n", rc);
+    // }
+    // else {
+    //     printf("mqtt_example: Message (%s) has been published to topic %s"
+    //            "with QOS %d\n",
+    //            telemetry_message_payload, topic, 0);
+    // }
     int rc;
-    if ((rc = send_telemetry_message_to_iot_hub(context,telemetry_message_payload)) < 0) {
+    if ((rc = register_device_with_provisioning_service(context)) < 0) {
         printf("top_example: Unable to publish (%d)\n", rc);
     }
     else {
@@ -160,13 +169,21 @@ static int _cmd_pub(int argc, char **argv)
     return rc;
 }
 
+static int _cmd_device_reg_query(int argc, char **argv){
+
+    if(send_operation_query_message_to_dps(context, argv[1])<0){
+        printf("send_operation_query_message_to_dps failed\n");
+    }
+    return 0;
+}
+
 static int _cmd_sub(int argc, char **argv)
 {
     // enum QoS qos = QOS0;
    
     char* topic = "HUB";
     
-    int ret = subscribe_to_azure_client_topics(context,HUB);
+    int ret = subscribe_to_azure_client_topics(context,DPS);
     if (ret < 0) {
         printf("top_example: Unable to subscribe to %s (%d)\n",
                topic, ret);
@@ -203,6 +220,7 @@ static const shell_command_t shell_commands[] =
         {"pub", "publish something", _cmd_pub},
         {"sub", "subscribe topic", _cmd_sub},
         {"unsub", "unsubscribe from topic", _cmd_unsub},
+        {"query", "device registration query", _cmd_device_reg_query},
         {NULL, NULL, NULL}};
 
 int main(void)
@@ -218,6 +236,7 @@ int main(void)
     if((ret=azInit())<0){
         printf("az init failed\n");
     }else{
+        
         printf("azure sdk initilization successfull\n");
     }
 
@@ -232,5 +251,6 @@ int main(void)
 
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
+    
     return 0;
 }

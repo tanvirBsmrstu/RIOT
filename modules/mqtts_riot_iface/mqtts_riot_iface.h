@@ -69,7 +69,7 @@ int mqtts_connect(MQTTSContext *mqtts_ctx, char *remoteAddress, char *clientID, 
  * @param retained Flag to indicate if the message should be retained.
  * @return 0 on success, negative value on failure.
  */
-int mqtts_publish(MQTTSContext *mqtts_ctx, const char *topic, char *payload, int qos, int retained);
+int mqtts_publish(MQTTSContext *mqtts_ctx, const char *topic,unsigned char *payload, int qos, int retained);
 
 /**
  * @brief Subscribe to an MQTT topic.
@@ -106,5 +106,6 @@ void mqtts_cleanup(void);
  * @return 0 on success, negative value on failure.
  */
 int mqtts_set_certificate(MQTTSContext *ctx, const char *ca_cert_path, const char *cert_chain_path, const char *private_key_path);
+
 
 #endif

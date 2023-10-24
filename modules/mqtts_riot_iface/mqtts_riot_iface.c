@@ -7,6 +7,8 @@
 #include "paho_mqtt.h"
 #include "MQTTClient.h"
 
+#include "msg.h"
+
 #ifndef MAX_LEN_TOPIC
 #define MAX_LEN_TOPIC 64
 #endif
@@ -141,7 +143,7 @@ int mqtts_set_tls_context(MQTTSContext *mqtts_ctx, TLSContext *tls_ctx)
     return 0;
 }
 
-int mqtts_connect(MQTTSContext *mqtts_ctx, char *remoteAddress, char *clientID, char *username, char *password)
+int mqtts_connect(MQTTSContext *mqtts_ctx, char *remoteAddress, char *clientID,  char *username, char *password)
 {
     if (mqtts_ctx == NULL)
     {
@@ -202,20 +204,22 @@ int mqtts_connect(MQTTSContext *mqtts_ctx, char *remoteAddress, char *clientID, 
     return ret;
 }
 
-int mqtts_publish(MQTTSContext *mqtts_ctx, const char *topic, char *payload, int qos, int retained)
+int mqtts_publish(MQTTSContext *mqtts_ctx, const char *topic, unsigned char *payload, int qos, int retained)
 {
+    printf("topic len %d\n",sizeof(topic));
     if (mqtts_ctx == NULL)
     {
         tls_log("Invalid MQTT-S context");
         return -1;
     }
-
+    printf("topic len2 %d\n",sizeof(topic));
     // Perform MQTT publish using Paho MQTT and TLS module
     MQTTMessage message;
     message.qos = qos;
     message.retained = mqtts_ctx->is_retained_msg;
     message.payload = payload;
     message.payloadlen = strlen(message.payload);
+    printf("topic len3 %d\n",sizeof(topic));
     int rc;
     if ((rc = MQTTPublish(mqtts_ctx->mqtt_client, topic, &message)) < 0)
     {

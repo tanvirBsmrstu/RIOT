@@ -42,7 +42,11 @@ EXTERNAL_MODULE_DIRS += $(RIOTBASE)/modules
 USEMODULE += az_riot_pnp_iface
 
 
-####
+# #### dns
+# USEMODULE += sock_dns
+# USEMODULE += auto_init_sock_dns
+# CFLAGS += -DCONFIG_AUTO_INIT_SOCK_DNS_SERVER_ADDR=\"fd12:dead:beef::1\"
+# #### dns
 
 
 CFLAGS += -Wno-error=unused-parameter
