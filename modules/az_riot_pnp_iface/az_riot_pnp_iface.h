@@ -20,7 +20,7 @@ typedef enum {
 AzRiotContext *create_AzRiotContext(unsigned char* mqtts_writebuf,int mqtts_writebuf_len,unsigned char* mqtts_readbuf,int mqtts_readbuf_len);
 
 int init_dps_client(AzRiotContext* azContext);
-int init_iot_hub_client(AzRiotContext* azContext);
+int init_iot_hub_client(AzRiotContext *azContext,  char* hostAddress,  char* deviceId);
 
 // // int init_mqtts_layer(AzRiotContext* azContext);
 

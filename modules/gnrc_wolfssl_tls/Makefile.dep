@@ -5,6 +5,7 @@ USEMODULE += gnrc_ipv6_default
 USEMODULE += gnrc_icmpv6_echo
 USEMODULE += sock_udp
 USEMODULE += sock_tcp
+USEMODULE += sock_ip
 USEMODULE += sock_async_event
 USEMODULE += ztimer
 USEMODULE += ztimer_msec

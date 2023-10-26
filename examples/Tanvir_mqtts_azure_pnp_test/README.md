@@ -41,3 +41,9 @@ TRHN-HUB.azure-devices.net 64:ff9b::2871:b0b5
 
 next try
 sync freertos read
+
+2001:4860:4860::6464
+2001:4860:4860::64
+
+TRHN-HUB.azure-devices.net
+riot-registration-id01

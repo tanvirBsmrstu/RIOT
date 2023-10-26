@@ -43,9 +43,10 @@ USEMODULE += az_riot_pnp_iface
 
 
 # #### dns
-# USEMODULE += sock_dns
-# USEMODULE += auto_init_sock_dns
-# CFLAGS += -DCONFIG_AUTO_INIT_SOCK_DNS_SERVER_ADDR=\"fd12:dead:beef::1\"
+USEMODULE += sock_dns
+USEMODULE += auto_init_sock_dns
+USEMODULE += gnrc_ipv6_nib_dns 
+CFLAGS += -DCONFIG_AUTO_INIT_SOCK_DNS_SERVER_ADDR=\"fd12:dead:beef::1\"
 # #### dns
 
 

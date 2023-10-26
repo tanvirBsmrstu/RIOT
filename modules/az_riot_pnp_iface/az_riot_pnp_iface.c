@@ -112,7 +112,7 @@ AzRiotContext *create_AzRiotContext(unsigned char *mqtts_writebuf, int mqtts_wri
 #define MQTT_PAYLOAD_BUFFER_LENGTH 256
 // ///////////////////
 
-int init_iot_hub_client(AzRiotContext *azContext)
+int init_iot_hub_client(AzRiotContext *azContext,char* hostName, char* deviceId)
 {
     if (azContext->iot_hub_client != NULL)
     {
@@ -121,8 +121,8 @@ int init_iot_hub_client(AzRiotContext *azContext)
     }
     azContext->iot_hub_client = (az_iot_hub_client *)malloc(sizeof(az_iot_hub_client));
     az_iot_hub_client_options azureOpt = az_iot_hub_client_options_default();
-    az_span iotHubHostName = AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_HUB_HOST);
-    az_span iotHubDeviceId = AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_HUB_DEVICEID);
+    az_span iotHubHostName = az_span_create((uint8_t*)hostName,strlen(hostName));//az_span_create_from_str(hostAddress);//AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_HUB_HOST);
+    az_span iotHubDeviceId = az_span_create((uint8_t*)deviceId,strlen(deviceId));//az_span_create_from_str(deviceId);//AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_HUB_DEVICEID);
 
     if (az_result_failed(az_iot_hub_client_init(azContext->iot_hub_client, iotHubHostName, iotHubDeviceId, &azureOpt)))
     {
