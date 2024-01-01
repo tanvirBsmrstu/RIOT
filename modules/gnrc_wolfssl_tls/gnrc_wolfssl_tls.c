@@ -25,9 +25,9 @@ struct TLSContext
 void (*log_callback)(const char *message);
 void default_log_callback(const char *message)
 {
-    puts(" [TLS] : ");
+    // puts(" [TLS] : ");
     puts(message);
-    puts("\n");
+    // puts("\n");
 }
 static int initialized = 0, isTLSConneted = 0;
 static sock_tcp_t internal_socket;
@@ -492,36 +492,15 @@ int tcp_connect(char *remoteAddress, int port, sock_tcp_t *socket)
     int res;
     sock_tcp_ep_t remote = SOCK_IPV6_EP_ANY;
     remote.port = port;
-    int dps=1;
-    char *remoteIP = dps?"64:ff9b::3374:91ca":"64:ff9b::2871:b0b5";//
-    // printf("trying dns for %s  port %d\n", remoteAddress, port);
-    // uint8_t my_ip_buf[256];
-    // int ret = sock_dns_query(remoteAddress, my_ip_buf, AF_INET6);
-    // if (ret < 0) {
-    //     // remote.port = port;
-    //     // remote.family = ret == 4 ? AF_INET : AF_INET6;
-    //     printf("****** dns failed %d\n",ret);
-    //     return ret;
-    // }
+    int dps=0;
 
-    // if (IS_USED(MODULE_IPV4_ADDR) && (remote.port == 0) &&
-    //     ipv4_addr_from_str((ipv4_addr_t *)&remote.addr, addr_ip)) {
-    //         remote.port = port;
-    // }
+    // TODO : remoteIP has to retrieved from remoteAddress
+    // DNS64 is not currently configured 
 
-    // if (IS_USED(MODULE_IPV6_ADDR) && (remote.port == 0) &&
-    //     ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, addr_ip)) {
-    //         remote.port = port;
-    //         remote.family = AF_INET6;
-    // }
+    char *remoteIP = dps?"64:ff9b::3374:91ca":"64:ff9b::2871:b0b5";
 
-    // if (remote.port == 0) {
-    //     LOG_ERROR("Error: unable to parse destination address\n");
-    //     return ret;
-    // }
-
-
-    // printf("dns successfull ...........\n");
+    //////////////////////////////
+   
     ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, remoteIP);
     
     if ((res = sock_tcp_connect(socket, &remote, 0, 0)) < 0)

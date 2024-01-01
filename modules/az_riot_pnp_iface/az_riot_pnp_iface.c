@@ -28,18 +28,16 @@ int handle_iot_message(char *topic, int topic_len, char *payload, int payload_le
 
 static void _on_azure_msg_arival(char *topic, int topic_len, char *payload, int payload_len)
 {
-    printf("azure msg arival\n Topic : %.*s\nPayload : %.*s\n", topic_len, topic, payload_len, payload);
     int ret = -1;
     if (azure_context->dps_client != NULL)
     {
         ret = handle_provisioning_message(topic, topic_len, payload, payload_len);
     }
-    if (ret < 0 && azure_context->iot_hub_client != NULL)
+    if (ret < 0 && azure_context->iot_hub_client != NULL) // if not dps then iot hub
     {
         handle_iot_message(topic, topic_len, payload, payload_len);
     }
 }
-
 
 #ifndef DEFAULT_CERT_DIR_CA
 #define DEFAULT_CERT_DIR_CA NULL
@@ -67,7 +65,6 @@ int init_mqtts_layer(AzRiotContext *azContext, unsigned char *mqtts_writebuf, in
     //  mqtts_set_certificate(context, ca_cert_path, cert_chain_path, private_key_path)
     if ((ret = mqtts_set_certificate(azContext->mqtts_context, ca_cert_path, cert_chain_path, private_key_path)) < 0)
     {
-
         printf("mqtts_set_certificate failed\n");
         return ret;
     }
@@ -112,7 +109,7 @@ AzRiotContext *create_AzRiotContext(unsigned char *mqtts_writebuf, int mqtts_wri
 #define MQTT_PAYLOAD_BUFFER_LENGTH 256
 // ///////////////////
 
-int init_iot_hub_client(AzRiotContext *azContext,char* hostName, char* deviceId)
+int init_iot_hub_client(AzRiotContext *azContext, char *hostName, char *deviceId)
 {
     if (azContext->iot_hub_client != NULL)
     {
@@ -121,8 +118,8 @@ int init_iot_hub_client(AzRiotContext *azContext,char* hostName, char* deviceId)
     }
     azContext->iot_hub_client = (az_iot_hub_client *)malloc(sizeof(az_iot_hub_client));
     az_iot_hub_client_options azureOpt = az_iot_hub_client_options_default();
-    az_span iotHubHostName = az_span_create((uint8_t*)hostName,strlen(hostName));//az_span_create_from_str(hostAddress);//AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_HUB_HOST);
-    az_span iotHubDeviceId = az_span_create((uint8_t*)deviceId,strlen(deviceId));//az_span_create_from_str(deviceId);//AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_HUB_DEVICEID);
+    az_span iotHubHostName = az_span_create((uint8_t *)hostName, strlen(hostName)); // az_span_create_from_str(hostAddress);//AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_HUB_HOST);
+    az_span iotHubDeviceId = az_span_create((uint8_t *)deviceId, strlen(deviceId)); // az_span_create_from_str(deviceId);//AZ_SPAN_LITERAL_FROM_STR(AZ_RIOT_HUB_DEVICEID);
 
     if (az_result_failed(az_iot_hub_client_init(azContext->iot_hub_client, iotHubHostName, iotHubDeviceId, &azureOpt)))
     {
@@ -196,10 +193,6 @@ int connect_dps_client(AzRiotContext *azContext)
         printf("mqtt_example: Unable to connect client %d\n", res);
         return res;
     }
-    else
-    {
-        printf("mqtt_example: Connection successfully %d\n", res);
-    }
     return res;
 }
 
@@ -231,10 +224,6 @@ int connect_iot_hub_client(AzRiotContext *azContext)
     {
         printf("mqtt_example: Unable to connect client %d\n", res);
         return res;
-    }
-    else
-    {
-        printf("mqtt_example: Connection successfully to IOT HUB %d\n", res);
     }
     return res;
 }
@@ -405,7 +394,7 @@ int send_telemetry_message_to_iot_hub(AzRiotContext *azContext, unsigned char *t
 // the status of the registration request.
 int send_operation_query_message_to_dps(AzRiotContext *context, char *operation_id)
 {
-    az_span operation_id_span = az_span_create((uint8_t*)operation_id,strlen(operation_id));
+    az_span operation_id_span = az_span_create((uint8_t *)operation_id, strlen(operation_id));
     // AZ_SPAN_FROM_STR((uint8_t*)operation_id);
     // Get the Query Status topic to publish the query status request.
     char query_topic_buffer[QUERY_TOPIC_BUFFER_LENGTH];
@@ -415,12 +404,9 @@ int send_operation_query_message_to_dps(AzRiotContext *context, char *operation_
         printf("send_operation_query_message_to_dps failed\n");
         return -1;
     }
-    printf("publishing send_operation_query_message_to_dps to topic %s\n", query_topic_buffer);
-    return mqtts_publish(context->mqtts_context, query_topic_buffer, (unsigned char*)"", 0, 0);
-
     //   // IMPORTANT: Wait the recommended retry-after number of seconds before query.
-    //   IOT_SAMPLE_LOG("Querying after %u seconds...", register_response->retry_after_seconds);
-    //   iot_sample_sleep_for_seconds(register_response->retry_after_seconds);
+    printf("publishing send_operation_query_message_to_dps to topic %s\n", query_topic_buffer);
+    return mqtts_publish(context->mqtts_context, query_topic_buffer, (unsigned char *)"", 0, 0);
 }
 int handle_provisioning_message(char *topic, int topic_len, char *payload, int payload_len)
 {
@@ -438,7 +424,7 @@ int handle_provisioning_message(char *topic, int topic_len, char *payload, int p
     // message.
     if (!ref_is_operation_complete)
     {
-        printf("*** Device registration operation is still pending. Please query again after %d seconds with operation ID = %.*s\n",register_response.retry_after_seconds,register_response.operation_id._internal.size, register_response.operation_id._internal.ptr);
+        printf("*** Device registration operation is still pending. Please query again after %d seconds with operation ID = %.*s\n", register_response.retry_after_seconds, register_response.operation_id._internal.size, register_response.operation_id._internal.ptr);
         // send_operation_query_message_to_dps(azure_context, &register_response);
     }
     else // Operation is complete.
@@ -481,6 +467,8 @@ int handle_provisioning_message(char *topic, int topic_len, char *payload, int p
     return 0;
 }
 
+static char *get_device_twin_message_type_as_string(az_iot_hub_client_twin_response const *twin_response);
+
 int handle_iot_message(char *topic, int topic_len, char *payload, int payload_len)
 {
     // Initialize the incoming topic to a span
@@ -493,23 +481,55 @@ int handle_iot_message(char *topic, int topic_len, char *payload, int payload_le
     if (az_result_succeeded(az_iot_hub_client_methods_parse_received_topic(azure_context->iot_hub_client, incoming_topic, &method_request)))
     {
         // Handle the method request
-        printf("[Unknown] topic arrived [Not Implemented] : %.*s\n", topic_len, topic);
+        printf("\n====================== [Direct-Method] (Only receiving is supported)============\n");
+        printf("[Method Name] : %.*s\n", method_request.name._internal.size, method_request.name._internal.ptr);
+        printf("[Payload] : %.*s\n", payload_len, payload);
+        printf("=========================================\n");
     }
     else if (az_result_succeeded(az_iot_hub_client_c2d_parse_received_topic(azure_context->iot_hub_client, incoming_topic, &c2d_request)))
     {
         // Handle the c2d message
         //  az_span const message_span = az_span_create((uint8_t*)payload, payload_len);
-        printf("***** Device : c2d received from Cloud with payload = %.*s\n", payload_len, payload);
+        printf("\n====================== [Cloud-to-Device] ============\n");
+        printf("[Payload] : %.*s\n", payload_len, payload);
+        printf("=========================================\n");
     }
     else if (az_result_succeeded(az_iot_hub_client_twin_parse_received_topic(azure_context->iot_hub_client, incoming_topic, &twin_response)))
     {
-        // Handle the twin message
-        printf("[Unknown] topic arrived [Not Implemented] : %.*s\n", topic_len, topic);
+        char* type = get_device_twin_message_type_as_string(&twin_response);
+        printf("\n====================== [Device-Twin] (Only receiving is supported)============\n");
+        printf("[Twin-type] : %.*s\n", strlen(type),type);
+        printf("[Payload] : %.*s\n", payload_len, payload);
+        printf("=========================================\n");
     }
     else
     {
-        printf("[Unknown] topic arrived : %.*s\n", topic_len, topic);
+        printf("\n====================== [Unknown message Type]============\n");
+        printf("[Topic] : %.*s\n", topic_len, topic);
+        printf("[Payload] : %.*s\n", payload_len, payload);
+        printf("=========================================\n");
         return -1;
     }
     return 0;
 }
+
+static char *get_device_twin_message_type_as_string(az_iot_hub_client_twin_response const *twin_response)
+{
+    // Invoke appropriate action per response type (3 types only).
+    switch (twin_response->response_type)
+    {
+    case AZ_IOT_HUB_CLIENT_TWIN_RESPONSE_TYPE_GET:
+        return "GET";
+
+    case AZ_IOT_HUB_CLIENT_TWIN_RESPONSE_TYPE_REPORTED_PROPERTIES:
+        return "REPORTED_PROPERTIES";
+
+    case AZ_IOT_HUB_CLIENT_TWIN_RESPONSE_TYPE_DESIRED_PROPERTIES:
+        return "DESIRED_PROPERTIES";
+
+    case AZ_IOT_HUB_CLIENT_TWIN_RESPONSE_TYPE_REQUEST_ERROR:
+        return "REQUEST_ERROR";
+    }
+    return "Unknown";
+}
+

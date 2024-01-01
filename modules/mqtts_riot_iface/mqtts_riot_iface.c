@@ -168,16 +168,15 @@ int mqtts_connect(MQTTSContext *mqtts_ctx, char *remoteAddress, char *clientID, 
     data.keepAliveInterval = mqtts_ctx->keep_alive_interval_sec;
     data.cleansession = mqtts_ctx->is_clean_session;
     data.willFlag = 0;
-    //
+    
     data.username.cstring = username;
     data.clientID.cstring = clientID;
     data.password.cstring = password;
-    //
 
-    printf("mqtt_example: Connecting to MQTT Broker from %s %d\n",
-           remoteAddress, port);
-    printf("mqtt_example: Trying to connect userName %s, client id : %s pass : %s\n",
-           data.username.cstring, data.clientID.cstring, data.password.cstring);
+    // printf("mqtt_example: Connecting to MQTT Broker from %s %d\n",
+    //        remoteAddress, port);
+    // printf("mqtt_example: Trying to connect userName %s, client id : %s pass : %s\n",
+    //        data.username.cstring, data.clientID.cstring, data.password.cstring);
     ret = tls_establish_connection(remoteAddress, port, mqtts_ctx->tls_ctx);
     if (ret < 0)
     {
@@ -185,10 +184,7 @@ int mqtts_connect(MQTTSContext *mqtts_ctx, char *remoteAddress, char *clientID, 
         tls_close(mqtts_ctx->tls_ctx);
         return ret;
     }
-    //  startMqttTask();
-    printf("starting mqtt task.......");
     MQTTStartTask(mqtts_ctx->mqtt_client);
-    printf("trying mqtt connect.......");
     ret = MQTTConnect(mqtts_ctx->mqtt_client, &data);
     if (ret < 0)
     {
@@ -196,41 +192,36 @@ int mqtts_connect(MQTTSContext *mqtts_ctx, char *remoteAddress, char *clientID, 
         mqtts_disconnect(mqtts_ctx);
         return ret;
     }
-    else
-    {
-        printf("mqtt_example: Connection successfully (%d) ret :%d\n", mqtts_ctx->mqtt_client->isconnected, ret);
-    }
+    // else
+    // {
+    //     printf("mqtt_example: Connection successfully (%d) ret :%d\n", mqtts_ctx->mqtt_client->isconnected, ret);
+    // }
 
     return ret;
 }
 
 int mqtts_publish(MQTTSContext *mqtts_ctx, const char *topic, unsigned char *payload, int qos, int retained)
 {
-    printf("topic len %d\n",sizeof(topic));
     if (mqtts_ctx == NULL)
     {
         tls_log("Invalid MQTT-S context");
         return -1;
     }
-    printf("topic len2 %d\n",sizeof(topic));
-    // Perform MQTT publish using Paho MQTT and TLS module
     MQTTMessage message;
     message.qos = qos;
     message.retained = mqtts_ctx->is_retained_msg;
     message.payload = payload;
     message.payloadlen = strlen(message.payload);
-    printf("topic len3 %d\n",sizeof(topic));
     int rc;
     if ((rc = MQTTPublish(mqtts_ctx->mqtt_client, topic, &message)) < 0)
     {
         printf("mqtt_example: Unable to publish (%d)\n", rc);
     }
-    else
-    {
-        printf("mqtt_example: Message (%s) has been published to topic %s"
-               "with QOS %d\n",
-               (char *)message.payload, topic, (int)message.qos);
-    }
+    // else
+    // {
+    //     printf("mqtt_example: Message (%s) has been published to topic %s with QOS %d\n",
+    //            (char *)message.payload, topic, (int)message.qos);
+    // }
 
     return rc;
 }
@@ -260,7 +251,7 @@ int mqtts_subscribe(MQTTSContext *mqtts_ctx, const char *topic, int qos)
     }
     strncpy(_topic_to_subscribe[topic_cnt], topic, strlen(topic));
 
-    printf("mqtt_example: Subscribing to %s\n", _topic_to_subscribe[topic_cnt]);
+    // printf("mqtt_example: Subscribing to %s\n", _topic_to_subscribe[topic_cnt]);
     int ret = MQTTSubscribe(mqtts_ctx->mqtt_client,
                             _topic_to_subscribe[topic_cnt], qos, _on_msg_received);
     if (ret < 0)
@@ -271,8 +262,7 @@ int mqtts_subscribe(MQTTSContext *mqtts_ctx, const char *topic, int qos)
     }
     else
     {
-        printf("mqtt_example: Now subscribed to %s, QOS %d\n",
-               topic, (int)qos);
+        // printf("mqtt_example: Now subscribed to %s, QOS %d\n",topic, (int)qos);
         topic_cnt++;
     }
     return ret;

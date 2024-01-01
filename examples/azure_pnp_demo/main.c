@@ -94,7 +94,11 @@ int init(void)
 
 static int _connect_iot_hub(int argc, char **argv)
 {
-    if(argc<3) return 0;
+    if(argc<3){
+
+        printf("usage: %s <hub addr> [deviceID]\n", argv[0]);
+        return 1;
+    }
 
     int res = init_iot_hub_client(context,argv[1],argv[2]);
     if (res < 0)
@@ -106,13 +110,13 @@ static int _connect_iot_hub(int argc, char **argv)
      res = connect_azure_client(context, HUB);
     if (res != 0)
     {
-        printf("mqtt_example: Unable to connect client %d\n", res);
+        printf("mqtt_example: Unable to connect client return code =%d\n", res);
         // _cmd_discon(0, NULL);
         return res;
     }
     else
     {
-        printf("mqtt_example: Connection successfully %d\n", res);
+        printf("IoT Hub : Connection successfull\n");
     }
     return res;
 }
@@ -151,13 +155,13 @@ static int _cmd_con(int argc, char **argv)
     int ret = connect_azure_client(context, DPS);
     if (ret != 0)
     {
-        printf("mqtt_example: Unable to connect client %d\n", ret);
+        printf("Unable to connect client %d\n", ret);
         // _cmd_discon(0, NULL);
         return ret;
     }
     else
     {
-        printf("mqtt_example: Connection successfully %d\n", ret);
+        printf("DPS : Connection successfull\n");
     }
 
     return ret;
@@ -183,40 +187,38 @@ static int _cmd_register_device(int argc, char **argv)
     int rc;
     if ((rc = register_device_with_provisioning_service(context)) < 0)
     {
-        printf("top_example: Unable to publish (%d)\n", rc);
+        printf("azure_example: Unable to publish (%d)\n", rc);
     }
     else
     {
-        printf("mqtt_example: Message (%s) has been published to topic %s"
-               "with QOS %d\n",
-               telemetry_message_payload, topic, 0);
+        printf("azure_example: Message has been published with payload => %s \n",telemetry_message_payload);
     }
     return rc;
 }
 static int _cmd_send_telemetry(int argc, char **argv)
 {
 
-    char *telemetry_message_payload = "{\"hub_test\":\"riot-os-hub-test-07\"}";
+    char *telemetry_message_payload = "{\"riot_message\":\" This message is sent from riot device\"}";
     // // enum QoS qos = QOS0;
     char *topic = "send_telemetry_message_to_iot_hub";
     // char* payload = "{\"registrationId\":\"riot-registration-id01\"}";
 
     int rc;
     if ((rc = send_telemetry_message_to_iot_hub(context,(unsigned char*)telemetry_message_payload)) < 0) {
-        printf("top_example: Unable to publish (%d)\n", rc);
+        printf("azure_example: Unable to publish (%d)\n", rc);
     }
     else {
-        printf("mqtt_example: Message (%s) has been published to topic %s"
-               "with QOS %d\n",
-               telemetry_message_payload, topic, 0);
+        printf("azure_example: Message has been sent with payload => %s\n",telemetry_message_payload);
     }
-   
-    
     return rc;
 }
 
 static int _cmd_device_reg_query(int argc, char **argv)
 {
+    if(argc < 2) {
+        printf("usage: %s [operationID]\n", argv[1]);
+        return 1;
+    }
 
     if (send_operation_query_message_to_dps(context, argv[1]) < 0)
     {
@@ -228,40 +230,32 @@ static int _cmd_device_reg_query(int argc, char **argv)
 static int _cmd_sub_dps(int argc, char **argv)
 {
     // enum QoS qos = QOS0;
-    char *topic = "DPS";
-
+  
 
     int ret = subscribe_to_azure_client_topics(context, DPS);
     if (ret < 0)
     {
-        printf("top_example: Unable to subscribe to %s (%d)\n",
-               topic, ret);
+        printf("azure_example: Unable to subscribe to DPS topic, return code = %d\n", ret);
         // _cmd_discon(0, NULL);
     }
     else
     {
-        printf("top_example: Now subscribed to %s, QOS %d\n",
-               topic, 0);
+        printf("azure_example: Now subscribed to DPS topic\n");
     }
     return ret;
 }
 static int _cmd_sub_hub(int argc, char **argv)
 {
-    // enum QoS qos = QOS0;
     char *topic = "HUB";
-
-
     int ret = subscribe_to_azure_client_topics(context, HUB);
     if (ret < 0)
     {
-        printf("top_example: Unable to subscribe to %s (%d)\n",
-               topic, ret);
+        printf("azure_example: Unable to subscribe to HUB topic, return code = %d\n", ret);
         // _cmd_discon(0, NULL);
     }
     else
     {
-        printf("top_example: Now subscribed to %s, QOS %d\n",
-               topic, 0);
+         printf("azure_example: Now subscribed to HUB topics\n");
     }
     return ret;
 }
@@ -287,9 +281,9 @@ static const shell_command_t shell_commands[] =
     {
         {"con_dps", "connect to DPS", _cmd_con},
         {"discon", "disconnect from the current broker", _cmd_discon},
-        {"reg_device", "publish something", _cmd_register_device},
-        {"sub_hub", "subscribe topic", _cmd_sub_hub},
-        {"sub_dps", "subscribe topic", _cmd_sub_dps},
+        {"reg_device", "device provisioning with DPS", _cmd_register_device},
+        {"sub_hub", "subscribe to hub topics", _cmd_sub_hub},
+        {"sub_dps", "subscribe to dps topic", _cmd_sub_dps},
         {"unsub", "unsubscribe from topic", _cmd_unsub},
         {"query", "device registration query", _cmd_device_reg_query},
         {"con_hub", "connect to iot hub", _connect_iot_hub},
