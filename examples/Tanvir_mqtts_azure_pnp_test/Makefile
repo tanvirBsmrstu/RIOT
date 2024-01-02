@@ -38,7 +38,9 @@ USEMODULE += ps
 USEMODULE += netdev_default
 
 
-EXTERNAL_MODULE_DIRS += $(RIOTBASE)/modules
+# EXTERNAL_MODULE_DIRS += $(RIOTBASE)/modules
+# EXTERNAL_MODULE_DIRS += $(PROJECT_BASE)/modules
+EXTERNAL_MODULE_DIRS += modules
 USEMODULE += az_riot_pnp_iface
 
 

@@ -9,7 +9,6 @@
 struct TLSContext;
 typedef struct TLSContext TLSContext;
 
-
 /**
  * @brief Initialize the TLS module.
  *
@@ -18,7 +17,7 @@ typedef struct TLSContext TLSContext;
  * @param context The TLS context.
  * @return 0 on success, negative value on failure.
  */
-int tls_init(TLSContext* context);
+int tls_init(TLSContext *context);
 
 /**
  * @brief Log a message.
@@ -33,7 +32,7 @@ void tls_log(const char *format, ...);
  *
  * This function creates a new TLS context for a server or a client.
  * @param log_callback A function pointer for logging.
- * 
+ *
  * @return A pointer to the TLS context on success, NULL on failure.
  */
 TLSContext *tls_create_context(void (*_log_callback)(const char *message));
@@ -47,7 +46,8 @@ TLSContext *tls_create_context(void (*_log_callback)(const char *message));
  * @param private_key_path Path to the private key file.
  * @return 0 on success, negative value on failure.
  */
-int tls_set_certificate(TLSContext *ctx, const char *ca_cert_path, const char *cert_chain_path, const char *private_key_path);
+int tls_set_certificate(TLSContext *ctx, const char *ca_cert_path, const char *cert_chain_path,
+                        const char *private_key_path);
 
 /**
  * @brief Establish a TLS connection.

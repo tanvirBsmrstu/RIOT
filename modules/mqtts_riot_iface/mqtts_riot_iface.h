@@ -6,7 +6,8 @@
 struct MQTTSContext; // forward declaration
 typedef struct MQTTSContext MQTTSContext;
 
-typedef void (*MqttsMessageArrivalCallback)(char *topic, int topic_len, char *payload, int payload_len);
+typedef void (*MqttsMessageArrivalCallback)(char *topic, int topic_len, char *payload,
+                                            int payload_len);
 void mqtts_set_message_arrival_callback(MqttsMessageArrivalCallback _callback);
 
 /**
@@ -26,7 +27,8 @@ void mqtts_set_message_arrival_callback(MqttsMessageArrivalCallback _callback);
  * @param readbuf_size Size of the read buffer.
  * @return 0 on success, negative value on failure.
  */
-int mqtts_init(MQTTSContext *mqtts_ctx, unsigned char *writebuf, int writebuf_size, unsigned char *readbuf, int readbuf_size);
+int mqtts_init(MQTTSContext *mqtts_ctx, unsigned char *writebuf, int writebuf_size,
+               unsigned char *readbuf, int readbuf_size);
 
 /**
  * @brief Create a new MQTT-S context.
@@ -57,7 +59,8 @@ int mqtts_set_tls_context(MQTTSContext *mqtts_ctx, TLSContext *tls_ctx);
  * @param password The password for MQTT authentication.
  * @return 0 on success, negative value on failure.
  */
-int mqtts_connect(MQTTSContext *mqtts_ctx, char *remoteAddress, char *clientID, char *username, char *password);
+int mqtts_connect(MQTTSContext *mqtts_ctx, char *remoteAddress, char *clientID, char *username,
+                  char *password);
 
 /**
  * @brief Publish a message to an MQTT topic.
@@ -69,7 +72,8 @@ int mqtts_connect(MQTTSContext *mqtts_ctx, char *remoteAddress, char *clientID, 
  * @param retained Flag to indicate if the message should be retained.
  * @return 0 on success, negative value on failure.
  */
-int mqtts_publish(MQTTSContext *mqtts_ctx, const char *topic,unsigned char *payload, int qos, int retained);
+int mqtts_publish(MQTTSContext *mqtts_ctx, const char *topic, unsigned char *payload, int qos,
+                  int retained);
 
 /**
  * @brief Subscribe to an MQTT topic.
@@ -105,7 +109,8 @@ void mqtts_cleanup(void);
  * @param private_key_path Path to the private key.
  * @return 0 on success, negative value on failure.
  */
-int mqtts_set_certificate(MQTTSContext *ctx, const char *ca_cert_path, const char *cert_chain_path, const char *private_key_path);
+int mqtts_set_certificate(MQTTSContext *ctx, const char *ca_cert_path, const char *cert_chain_path,
+                          const char *private_key_path);
 
 
 #endif

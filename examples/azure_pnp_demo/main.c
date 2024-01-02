@@ -50,14 +50,13 @@ AzRiotContext *context = NULL;
 int azInit(void)
 {
     context = create_AzRiotContext(writebuf, BUF_SIZE, readbuf, BUF_SIZE);
-    if (context == NULL)
-    {
+    if (context == NULL) {
         printf("create_AzRiotContext\n");
         return -1;
     }
     int res = init_dps_client(context);
-    if (res < 0)
-    {
+
+    if (res < 0) {
         printf("init_iot_hub_client failed with %d\n", res);
         return res;
     }
@@ -94,28 +93,26 @@ int init(void)
 
 static int _connect_iot_hub(int argc, char **argv)
 {
-    if(argc<3){
+    if (argc < 3) {
 
         printf("usage: %s <hub addr> [deviceID]\n", argv[0]);
         return 1;
     }
 
-    int res = init_iot_hub_client(context,argv[1],argv[2]);
-    if (res < 0)
-    {
+    int res = init_iot_hub_client(context, argv[1], argv[2]);
+
+    if (res < 0) {
         printf("init_iot_hub_client failed with %d\n", res);
         return res;
     }
     printf("riot hub init successfull");
-     res = connect_azure_client(context, HUB);
-    if (res != 0)
-    {
+    res = connect_azure_client(context, HUB);
+    if (res != 0) {
         printf("mqtt_example: Unable to connect client return code =%d\n", res);
         // _cmd_discon(0, NULL);
         return res;
     }
-    else
-    {
+    else {
         printf("IoT Hub : Connection successfull\n");
     }
     return res;
@@ -153,14 +150,13 @@ static int _cmd_con(int argc, char **argv)
 
     printf("connecting ....\n");
     int ret = connect_azure_client(context, DPS);
-    if (ret != 0)
-    {
+
+    if (ret != 0) {
         printf("Unable to connect client %d\n", ret);
         // _cmd_discon(0, NULL);
         return ret;
     }
-    else
-    {
+    else {
         printf("DPS : Connection successfull\n");
     }
 
@@ -185,43 +181,47 @@ static int _cmd_register_device(int argc, char **argv)
     //            telemetry_message_payload, topic, 0);
     // }
     int rc;
-    if ((rc = register_device_with_provisioning_service(context)) < 0)
-    {
+
+    if ((rc = register_device_with_provisioning_service(context)) < 0) {
         printf("azure_example: Unable to publish (%d)\n", rc);
     }
-    else
-    {
-        printf("azure_example: Message has been published with payload => %s \n",telemetry_message_payload);
+    else {
+        printf("azure_example: Message has been published with payload => %s \n",
+               telemetry_message_payload);
     }
     return rc;
 }
 static int _cmd_send_telemetry(int argc, char **argv)
 {
 
-    char *telemetry_message_payload = "{\"riot_message\":\" This message is sent from riot device\"}";
+    char *telemetry_message_payload =
+        "{\"riot_message\":\" This message is sent from riot device\"}";
     // // enum QoS qos = QOS0;
     char *topic = "send_telemetry_message_to_iot_hub";
     // char* payload = "{\"registrationId\":\"riot-registration-id01\"}";
 
     int rc;
-    if ((rc = send_telemetry_message_to_iot_hub(context,(unsigned char*)telemetry_message_payload)) < 0) {
+
+    if ((rc =
+             send_telemetry_message_to_iot_hub(context,
+                                               (unsigned char *)telemetry_message_payload)) < 0) {
         printf("azure_example: Unable to publish (%d)\n", rc);
     }
     else {
-        printf("azure_example: Message has been sent with payload => %s\n",telemetry_message_payload);
+        printf("azure_example: Message has been sent with payload => %s\n",
+               telemetry_message_payload);
     }
     return rc;
 }
 
 static int _cmd_device_reg_query(int argc, char **argv)
 {
-    if(argc < 2) {
+    if (argc < 2) {
         printf("usage: %s [operationID]\n", argv[1]);
         return 1;
     }
 
-    if (send_operation_query_message_to_dps(context, argv[1]) < 0)
-    {
+    if (send_operation_query_message_to_dps(context, argv[1]) < 0) {
         printf("send_operation_query_message_to_dps failed\n");
     }
     return 0;
@@ -230,16 +230,15 @@ static int _cmd_device_reg_query(int argc, char **argv)
 static int _cmd_sub_dps(int argc, char **argv)
 {
     // enum QoS qos = QOS0;
-  
+
 
     int ret = subscribe_to_azure_client_topics(context, DPS);
-    if (ret < 0)
-    {
+
+    if (ret < 0) {
         printf("azure_example: Unable to subscribe to DPS topic, return code = %d\n", ret);
         // _cmd_discon(0, NULL);
     }
-    else
-    {
+    else {
         printf("azure_example: Now subscribed to DPS topic\n");
     }
     return ret;
@@ -248,14 +247,13 @@ static int _cmd_sub_hub(int argc, char **argv)
 {
     char *topic = "HUB";
     int ret = subscribe_to_azure_client_topics(context, HUB);
-    if (ret < 0)
-    {
+
+    if (ret < 0) {
         printf("azure_example: Unable to subscribe to HUB topic, return code = %d\n", ret);
         // _cmd_discon(0, NULL);
     }
-    else
-    {
-         printf("azure_example: Now subscribed to HUB topics\n");
+    else {
+        printf("azure_example: Now subscribed to HUB topics\n");
     }
     return ret;
 }
@@ -278,23 +276,23 @@ static int _cmd_unsub(int argc, char **argv)
 }
 
 static const shell_command_t shell_commands[] =
-    {
-        {"con_dps", "connect to DPS", _cmd_con},
-        {"discon", "disconnect from the current broker", _cmd_discon},
-        {"reg_device", "device provisioning with DPS", _cmd_register_device},
-        {"sub_hub", "subscribe to hub topics", _cmd_sub_hub},
-        {"sub_dps", "subscribe to dps topic", _cmd_sub_dps},
-        {"unsub", "unsubscribe from topic", _cmd_unsub},
-        {"query", "device registration query", _cmd_device_reg_query},
-        {"con_hub", "connect to iot hub", _connect_iot_hub},
-        {"send_telemetry", "send telemetry to iot hub", _cmd_send_telemetry},
-        {NULL, NULL, NULL}};
+{
+    { "con_dps", "connect to DPS", _cmd_con },
+    { "discon", "disconnect from the current broker", _cmd_discon },
+    { "reg_device", "device provisioning with DPS", _cmd_register_device },
+    { "sub_hub", "subscribe to hub topics", _cmd_sub_hub },
+    { "sub_dps", "subscribe to dps topic", _cmd_sub_dps },
+    { "unsub", "unsubscribe from topic", _cmd_unsub },
+    { "query", "device registration query", _cmd_device_reg_query },
+    { "con_hub", "connect to iot hub", _connect_iot_hub },
+    { "send_telemetry", "send telemetry to iot hub", _cmd_send_telemetry },
+    { NULL, NULL, NULL }
+};
 #define MAIN_QUEUE_SIZE (8)
 static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
 int main(void)
 {
-    if (IS_USED(MODULE_GNRC_ICMPV6_ECHO))
-    {
+    if (IS_USED(MODULE_GNRC_ICMPV6_ECHO)) {
         msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
     }
 #ifdef MODULE_LWIP
@@ -302,12 +300,10 @@ int main(void)
     ztimer_sleep(ZTIMER_MSEC, 1 * MS_PER_SEC);
 #endif
     int ret = 0;
-    if ((ret = azInit()) < 0)
-    {
+    if ((ret = azInit()) < 0) {
         printf("az init failed\n");
     }
-    else
-    {
+    else {
 
         printf("azure sdk initilization successfull\n");
     }

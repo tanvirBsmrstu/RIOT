@@ -67,17 +67,17 @@ Since DNS64 is not configured, put the NAT64 IP of IoT Hub in ``./modules/gnrc_w
     Remember regardless of this addres the connection will use the IP in ``./modules/gnrc_wolfssl_tls/gnrc_wolfssl_tlc.c`` in function ``tcp_connect`` , as DN64 is not working now.
 3. Once connected, use ``sub_hub`` command to subscribe IoT Hub topics.
 4. Open ``Azure IoT explorer`` to test the IoT Hub part and navigate to the device that the application is working with.
-    In the Telemetry section, start receiving the telemetry by pressing the start button.
-    <img src="docs/images/D2C_at_explorer.png" alt="D2C at explorer" width="500"/> 
+    In the Telemetry section, start receiving the telemetry by pressing the start button.<br/>
+    <img src="docs/images/D2C_at_explorer.png" alt="D2C at explorer" width="500"/> <br/>
 5. Send telemetry using ``send_telemetry`` command. Check ``Azure IoT explorer``, it should show the message sent from RIOT see the image above.
 6. From ``Azure IoT explorer`` send Cloud-to-Device (C2D) message. and check the RIOT terminal for the message arrival.<br/>
-    <img src="docs/images/C2D_from_explorer.png" alt="C2D from explorer" width="500"/>
+    <img src="docs/images/C2D_from_explorer.png" alt="C2D from explorer" width="500"/> <br/>
 7. From ``Azure IoT explorer`` Invoke a direct method and check the RIOT terminal for message arrival.<br/>
     <img src="docs/images/direct_method_invoke_from_IoT_explorer.png" alt="direct_method_invoke_from_IoT_explorer" width="700"/>
 8. From ``Azure IoT explorer`` update the device twin and save it. Check the RIOT terminal for message arrival.<br/>
-    <img src="docs/images/DTw_from_explorer.png" alt="DTw_from_explorer" width="500"/>
+    <img src="docs/images/DTw_from_explorer.png" alt="DTw_from_explorer" width="500"/> <br/>
 9. The RIOT terminal should show something similiar to the following:<br/>
-    <img src="docs/images/all_operations_at_riot.png" alt="all_operations_at_riot.png" width="500"/>
+    <img src="docs/images/all_operations_at_riot.png" alt="all_operations_at_riot.png" width="500"/> <br/>
 
 ### state
     ## RIOT device fully supports D2C, and C2D messages. And partially supports "Direct method" and "Device Twin" (Only receiving is supported right now)

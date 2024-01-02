@@ -1,4 +1,4 @@
-APPLICATION = Tanvir_mqtts_azure_pnp_test
+APPLICATION = azure_pnp_demo
 
 # If no BOARD is found in the environment, use this default:
 BOARD ?= native
