@@ -465,11 +465,11 @@ int tcp_connect(char *remoteAddress, int port, sock_tcp_t *socket)
     sock_tcp_ep_t remote = SOCK_IPV6_EP_ANY;
 
     remote.port = port;
-    int dps = 0;
+
 
     // TODO : remoteIP has to retrieved from remoteAddress
     // DNS64 is not currently configured
-
+    int dps = 1;
     char *remoteIP = dps ? "64:ff9b::3374:91ca" : "64:ff9b::2871:b0b5";
 
     //////////////////////////////

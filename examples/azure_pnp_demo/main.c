@@ -165,29 +165,10 @@ static int _cmd_con(int argc, char **argv)
 
 static int _cmd_register_device(int argc, char **argv)
 {
-
-    char *telemetry_message_payload = "{\"hub_test_demo\":\"riot-os-hub-test-show-demo\"}";
-    // // enum QoS qos = QOS0;
-    char *topic = "send_telemetry_message_to_iot_hub";
-    // // char* payload = "{\"registrationId\":\"riot-registration-id01\"}";
-
-    // int rc;
-    // if ((rc = send_telemetry_message_to_iot_hub(context,telemetry_message_payload)) < 0) {
-    //     printf("top_example: Unable to publish (%d)\n", rc);
-    // }
-    // else {
-    //     printf("mqtt_example: Message (%s) has been published to topic %s"
-    //            "with QOS %d\n",
-    //            telemetry_message_payload, topic, 0);
-    // }
     int rc;
 
     if ((rc = register_device_with_provisioning_service(context)) < 0) {
         printf("azure_example: Unable to publish (%d)\n", rc);
-    }
-    else {
-        printf("azure_example: Message has been published with payload => %s \n",
-               telemetry_message_payload);
     }
     return rc;
 }
@@ -196,10 +177,6 @@ static int _cmd_send_telemetry(int argc, char **argv)
 
     char *telemetry_message_payload =
         "{\"riot_message\":\" This message is sent from riot device\"}";
-    // // enum QoS qos = QOS0;
-    char *topic = "send_telemetry_message_to_iot_hub";
-    // char* payload = "{\"registrationId\":\"riot-registration-id01\"}";
-
     int rc;
 
     if ((rc =
@@ -217,7 +194,7 @@ static int _cmd_send_telemetry(int argc, char **argv)
 static int _cmd_device_reg_query(int argc, char **argv)
 {
     if (argc < 2) {
-        printf("usage: %s [operationID]\n", argv[1]);
+        printf("usage: %s [operationID]\n", argv[0]);
         return 1;
     }
 
@@ -313,7 +290,7 @@ int main(void)
     // MQTTClientInit(&client, &network, COMMAND_TIMEOUT_MS, buf, BUF_SIZE,
     //                readbuf,
     //    BUF_SIZE);
-    printf("Running mqtt paho example. Type help for commands info\n");
+    printf("Running azure example. Type help for commands info\n");
 
     // MQTTStartTask(&client);
 
