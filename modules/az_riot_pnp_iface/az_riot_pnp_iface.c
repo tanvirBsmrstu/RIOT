@@ -540,12 +540,13 @@ void destroy_AzRiotContext(AzRiotContext *azContext)
         azContext->dps_client = NULL;
     }
 }
-int disconnect_azure_client(AzRiotContext* azContext)
+int disconnect_azure_client(AzRiotContext *azContext)
 {
     int res = 0;
+
     if (azContext->mqtts_context != NULL) {
         res = mqtts_disconnect(azContext->mqtts_context);
-        if(res==0){
+        if (res == 0) {
             destroy_AzRiotContext(azContext);
         }
     }

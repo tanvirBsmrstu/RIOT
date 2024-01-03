@@ -6,6 +6,9 @@ Opening ``Azure IoT explorer`` then selecting the IoT hub connection will list a
 Select device when you are trying to send or receive messages for example D2C or C2D.
 
 ## Pre-Configuration
+### Azure configuration
+If Azure portal setup is not done yet, please see the [Azure Portal README](./docs/Readme.md).
+
 ### NAT64 and DNS64 configuration
 Here is a nice document by Professor Oliver Hahm [NAT64 Configuration](https://teaching.dahahm.de/riot/2023/09/29/RIOT_GNRC_ipv4.html)
 
@@ -13,8 +16,8 @@ Here is a nice document by Professor Oliver Hahm [NAT64 Configuration](https://t
 DNS64 currently is not configured from RIOT. Therefore, NAT64 IP of corresponding service enpoint have to be retrived manually.
 Following is the example used in the example
 
-global.azure-devices-provisioning.net 64:ff9b::3374:91ca
-TRHN-HUB.azure-devices.net 64:ff9b::2871:b0b5
+global.azure-devices-provisioning.net    64:ff9b::3374:91ca<br/>
+TRHN-HUB.azure-devices.net    64:ff9b::2871:b0b5
 
 #### optional :
     IP can be obtained using ``dig TRHN-HUB.azure-devices.net +short  AAAA @2001:4860:4860::64`` where the IP of the DNS64 has to be specified.
@@ -46,7 +49,7 @@ The device certificate chain and the device private key will be stored in the ce
                 now ``ping 64:ff9b::3374:91ca`` test the reachability of NAT64 IP<br/>
 
 ## Using Device Provisioning Service (DPS)
-1. prerequisite : Since DNS64 is not working now, put the NAT64 IP of DPS in ``($RIOT_BASE)/modules/gnrc_wolfssl_tls/gnrc_wolfssl_tlc.c`` in function ``tcp_connect`` replace remoteIP variable.
+ > *Warning:* Since DNS64 is not working now, put the NAT64 IP of DPS in ``($RIOT_BASE)/modules/gnrc_wolfssl_tls/gnrc_wolfssl_tlc.c`` in function ``tcp_connect`` replace remoteIP variable before you run the application. Currently the IP is hard-coded. DNS has to perform here to dynamic retrival of IP in future.
 2. Once the application is compiled and running. Use ``con_dps`` command to connect to DPS.
 3. Once connected, use ``sub_dps`` command to subscribe DPS topics.
 4. Use ``reg_device`` command to provision this device. It will reply with a operation ID when status is assigning.
@@ -62,7 +65,7 @@ The device certificate chain and the device private key will be stored in the ce
 
 ## Using IoT Hub
 
-Since DNS64 is not configured, put the NAT64 IP of IoT Hub in ``($RIOT_BASE)/modules/gnrc_wolfssl_tls/gnrc_wolfssl_tlc.c`` in function ``tcp_connect`` replace remoteIP variable. Then run the application again and follow the IP setup.
+ > *Warning:* Again, since DNS64 is not configured, put the NAT64 IP of IoT Hub in ``($RIOT_BASE)/modules/gnrc_wolfssl_tls/gnrc_wolfssl_tlc.c`` in function ``tcp_connect`` replace remoteIP variable. Then run the application again and follow the IP setup.
 
 1. Once the application is compiled and running. Do not forget to set IPs as shown earlier.
 2. Use ``con_hub`` command to connect to IoT Hub with the hub address and device ID. For example, ``con_hub TRHN-HUB.azure-devices.net az-riot-pnp-module-test-02``

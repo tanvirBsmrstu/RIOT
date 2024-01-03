@@ -1,5 +1,4 @@
 ifneq (,$(filter az_riot_pnp_iface,$(USEMODULE)))
-  # USEMODULE_INCLUDES += $(RIOTBASE)/modules/mqtts_riot_iface
   INCLUDES += -I$(RIOTBASE)/modules/az_riot_pnp_iface
   DIRS += $(RIOTBASE)/modules/az_riot_pnp_iface
 endif

@@ -23,6 +23,7 @@ int azInit(void)
         return -1;
     }
     int res = init_dps_client(context);
+
     if (res < 0) {
         printf("[demo]: init_dps_client failed with %d\n", res);
         return res;
@@ -36,6 +37,7 @@ static int _cmd_discon(int argc, char **argv)
     (void)argv;
 
     int res = disconnect_azure_client(context);
+
     if (res < 0) {
         printf("[demo]: Unable to disconnect\n");
     }
@@ -52,7 +54,7 @@ static int _cmd_conn_iot_hub(int argc, char **argv)
         printf("usage: %s <hub addr> [deviceID]\n", argv[0]);
         return 1;
     }
-    if(context == NULL){
+    if (context == NULL) {
         printf("[demo]: Azure context is null\n");
         return -1;
     }
@@ -82,6 +84,7 @@ static int _cmd_con_DPS(int argc, char **argv)
 
     printf("[demo]: connecting .... to DPS\n");
     int ret = connect_azure_client(context, DPS);
+
     if (ret != 0) {
         printf("[demo]: Unable to connect DPS client %d\n", ret);
         _cmd_discon(0, NULL);
@@ -97,6 +100,7 @@ static int _cmd_con_DPS(int argc, char **argv)
 static int _cmd_register_device(int argc, char **argv)
 {
     int rc;
+
     if ((rc = register_device_with_provisioning_service(context)) < 0) {
         printf("[demo]: Unable to register device returned with (%d)\n", rc);
     }
@@ -108,6 +112,7 @@ static int _cmd_send_telemetry(int argc, char **argv)
     char *telemetry_message_payload =
         "{\"riot_message\":\" This message is sent from riot device\"}";
     int rc;
+
     if ((rc =
              send_telemetry_message_to_iot_hub(context,
                                                (unsigned char *)telemetry_message_payload)) < 0) {
@@ -180,6 +185,7 @@ int main(void)
     }
 
     int ret = 0;
+
     if ((ret = azInit()) < 0) {
         printf("[demo]: az init failed\n");
     }
@@ -190,6 +196,7 @@ int main(void)
     printf("Running azure example. Type help for commands info\n");
 
     char line_buf[SHELL_DEFAULT_BUFSIZE];
+
     shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
 
     return 0;

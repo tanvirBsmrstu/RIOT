@@ -433,7 +433,7 @@ int tcp_connect(char *remoteAddress, int port, sock_tcp_t *socket)
     // TODO : remoteIP has to retrieved from remoteAddress
     // DNS64 is not currently configured
     int dps = 1;
-    char *remoteIP = dps == 1 ? "64:ff9b::3374:91ca" : "64:ff9b::2871:b0b5";
+    char *remoteIP = dps ? "64:ff9b::3374:91ca" : "64:ff9b::2871:b0b5";
 
     ////////////////////////////////
     // if ((res=sock_dns_query(remoteAddress, (ipv6_addr_t *)&remote.addr, AF_INET6)) < 0) {

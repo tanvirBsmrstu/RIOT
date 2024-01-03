@@ -17,8 +17,6 @@ QUIET ?= 1
 WIFI_SSID ?= "Your_WiFi_name"
 WIFI_PASS ?= "Your_secure_password"
 
-
-
 # USEMODULE += mqtts_riot_iface
 
 CFLAGS += -DDEFAULT_CERT_DIR_CA=\"$(CURDIR)/certificates/digiCert_ca_azure.pem\"
@@ -60,10 +58,7 @@ CFLAGS += -Wno-error=unused-parameter
 CFLAGS += -Wno-error=unused-value
 CFLAGS += -Wno-error=unused-variable
 
-###az
 CFLAGS += -Wno-strict-prototypes
-
-
 
 include $(RIOTBASE)/Makefile.include
 
