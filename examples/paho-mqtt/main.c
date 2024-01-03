@@ -112,7 +112,7 @@ static int _cmd_discon(int argc, char **argv)
     return res;
 }
 
-static int _cmd_con(int argc, char **argv)
+static int _cmd_con_DPS(int argc, char **argv)
 {
     if (argc < 2) {
         printf(
@@ -283,7 +283,7 @@ static int _cmd_unsub(int argc, char **argv)
 
 static const shell_command_t shell_commands[] =
 {
-    { "con",    "connect to MQTT broker",             _cmd_con    },
+    { "con",    "connect to MQTT broker",             _cmd_con_DPS    },
     { "discon", "disconnect from the current broker", _cmd_discon },
     { "pub",    "publish something",                  _cmd_pub    },
     { "sub",    "subscribe topic",                    _cmd_sub    },

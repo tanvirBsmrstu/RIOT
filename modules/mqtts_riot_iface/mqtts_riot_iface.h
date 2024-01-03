@@ -91,7 +91,7 @@ int mqtts_unsubscribe(MQTTSContext *mqtts_ctx, const char *topic);
  *
  * @param mqtts_ctx The MQTT-S context.
  */
-void mqtts_disconnect(MQTTSContext *mqtts_ctx);
+int mqtts_disconnect(MQTTSContext *mqtts_ctx);
 
 /**
  * @brief Cleanup and deinitialize the MQTT-S module.

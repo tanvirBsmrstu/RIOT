@@ -89,7 +89,7 @@ int mqtts_init(MQTTSContext *mqtts_ctx, unsigned char *writebuf, int writebuf_si
                unsigned char *readbuf, int readbuf_size)
 {
     if (mqtts_initialized) {
-        tls_log("MQTT-S module already initialized");
+        tls_log("[MQTTS]: module already initialized");
         return 0;
     }
     networkStack.mqttread = MQTTS_Read;
@@ -103,7 +103,7 @@ int mqtts_init(MQTTSContext *mqtts_ctx, unsigned char *writebuf, int writebuf_si
 
     // Perform initialization steps if needed
 
-    tls_log("MQTT-S module initialized");
+    tls_log("[MQTTS]: module initialized");
 
     MQTTClientInit(mqtts_ctx->mqtt_client, &networkStack, mqtts_ctx->command_timeout_ms, writebuf,
                    writebuf_size,
@@ -266,11 +266,10 @@ int mqtts_unsubscribe(MQTTSContext *mqtts_ctx, const char *topic)
     }
     return ret;
 }
-void mqtts_disconnect(MQTTSContext *mqtts_ctx)
+int mqtts_disconnect(MQTTSContext *mqtts_ctx)
 {
     if (mqtts_ctx == NULL) {
-        tls_log("Invalid MQTT-S context");
-        return;
+        return 0;
     }
     // Perform MQTT disconnection using Paho MQTT and TLS module
     topic_cnt = 0;
@@ -288,13 +287,13 @@ void mqtts_disconnect(MQTTSContext *mqtts_ctx)
     }
 close_tls_layer:
     mqtts_cleanup();
-    return;
+    return res;
 }
 
 void mqtts_cleanup(void)
 {
     if (!mqtts_initialized) {
-        tls_log("MQTT-S module not initialized");
+        tls_log("[MQTTS]: module not initialized");
         return;
     }
 
