@@ -1,17 +1,5 @@
 MODULE = azure-sdk
 
-#NO_AUTO_SRC = 1
-#SUBMODULES += 1
-# RIOT_AZ_SDK_IFACE_H = az_riot.h
-
-# CFLAGS += -DAZURE_PLATFORM_HEADER="$(RIOT_AZ_SDK_IFACE_H)"
-#CFLAGS += -DAZURE_PLATFORM_HEADER=\"azure-sdk/platform/platform.h\"
-
-
-
-CFLAGS += -Wno-error=strict-prototypes
-#CFLAGS += -DPRECONDITIONS=OFF
-#CFLAGS += -DLOGGING=OFF #reduces the size of the sdk
 ifeq (llvm,$(TOOLCHAIN))
   CFLAGS += -Wno-unused-parameter
 endif
