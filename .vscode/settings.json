@@ -7,21 +7,7 @@
     "files.insertFinalNewline": true,
     "files.associations": {
         "Makefile.*": "makefile",
-        "*.mk": "makefile",
-        "ssl.h": "c",
-        "socket": "c",
-        "thread": "cpp",
-        "az_riot.h": "c",
-        "system_error": "c",
-        "mqtts_riot_iface.h": "c",
-        "mutex.h": "c",
-        "gnrc_wolfssl_tls.h": "c",
-        "array": "c",
-        "string_view": "c",
-        "initializer_list": "c",
-        "ranges": "c",
-        "utility": "c",
-        "az_core.h": "c"
+        "*.mk": "makefile"
     },
     "[shellscript][c][cpp]": {
         "editor.tabSize": 4,
@@ -31,5 +17,4 @@
         "editor.tabSize": 2,
         "editor.insertSpaces": true,
     },
-    "cmake.configureOnOpen": true,
 }
