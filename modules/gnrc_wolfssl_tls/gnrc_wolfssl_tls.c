@@ -21,6 +21,9 @@ struct TLSContext {
     const char *private_key_path;
 };
 
+static TLSContext tlsContext;
+static sock_tcp_t internal_socket;
+
 void (*log_callback)(const char *message);
 void default_log_callback(const char *message)
 {
@@ -29,7 +32,7 @@ void default_log_callback(const char *message)
     // puts("\n");
 }
 static int initialized = 0, isTLSConneted = 0;
-static sock_tcp_t internal_socket;
+
 #define MAIN_QUEUE_SIZE (8)
 static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
 
@@ -68,7 +71,7 @@ int tls_init(TLSContext *context)
     /* Set custom I/O callbacks and context */
     wolfSSL_CTX_SetIORecv(context->ctx, tcp_recv);
     wolfSSL_CTX_SetIOSend(context->ctx, tcp_send);
-    tls_log("TLS module initialized successfully");
+    tls_log("[TLS] module initialized successfully");
 
     initialized = 1;
     return 0;
@@ -92,23 +95,6 @@ int load_cert_from_path(TLSContext *context)
             return -1;
         }
     }
-    // if (context->device_cert_path != NULL)
-    // {
-    //     ca_cert_buf = read_file_to_buffer(context->device_cert_path, &ca_cert_buf_len);
-    //     if (ca_cert_buf == NULL)
-    //     {
-    //         tls_log("failed to load device cert from path");
-    //         return -1;
-    //     }
-    //     /* Load client certificates into WOLFSSL_CTX */
-    //     if (wolfSSL_CTX_use_certificate_buffer_format(context->ctx, ca_cert_buf,
-    //                                                   ca_cert_buf_len,
-    //                                                   WOLFSSL_FILETYPE_PEM) != WOLFSSL_SUCCESS)
-    //     {
-    //         tls_log("ERROR: failed to load device cert buffer\n");
-    //         return -1;
-    //     }
-    // }
     if (context->device_cert_chain_path != NULL) {
         ca_cert_buf = read_file_to_buffer(context->device_cert_chain_path, &ca_cert_buf_len);
         if (ca_cert_buf == NULL) {
@@ -143,7 +129,7 @@ int load_cert_from_path(TLSContext *context)
 
 void tls_log(const char *format, ...)
 {
-    char buffer[1024]; // Adjust the buffer size as needed
+    char buffer[100];
     va_list args;
 
     va_start(args, format);
@@ -158,23 +144,17 @@ TLSContext *tls_create_context(void (*_log_callback)(const char *message))
 {
     log_callback = _log_callback == NULL ? default_log_callback : _log_callback;
 
-    TLSContext *context = (TLSContext *)malloc(sizeof(TLSContext));
-
-    if (context == NULL) {
-        tls_log("Failed to allocate memory for TLS context");
-        return NULL;
-    }
     // Initialize the context members
-    context->ctx = NULL;
-    context->ssl = NULL;
-    context->device_cert_chain_path = NULL;
-    context->device_cert_path = NULL;
-    context->private_key_path = NULL;
-    context->ca_cert_path = NULL;
-    context->timeout_ms_init = gnrc_wolfssl_tls_max_timeout_ms; // ssl handshake needs initial timeout
-    context->timeout_ms = 0;
-    context->tcp_socket = &internal_socket;
-    return context;
+    tlsContext.ctx = NULL;
+    tlsContext.ssl = NULL;
+    tlsContext.device_cert_chain_path = NULL;
+    tlsContext.device_cert_path = NULL;
+    tlsContext.private_key_path = NULL;
+    tlsContext.ca_cert_path = NULL;
+    tlsContext.timeout_ms_init = gnrc_wolfssl_tls_max_timeout_ms; // ssl handshake needs initial timeout
+    tlsContext.timeout_ms = 0;
+    tlsContext.tcp_socket = &internal_socket;
+    return &tlsContext;
 }
 
 int tls_set_certificate(TLSContext *ctx, const char *ca_cert_path, const char *cert_chain_path,
@@ -188,9 +168,6 @@ int tls_set_certificate(TLSContext *ctx, const char *ca_cert_path, const char *c
     ctx->ca_cert_path = ca_cert_path;
     ctx->device_cert_chain_path = cert_chain_path;
     ctx->private_key_path = private_key_path;
-
-    // Handle the loading of certificates and private key as needed
-
     return 0;
 }
 int tls_create_session(TLSContext *context)
@@ -309,6 +286,7 @@ int tls_receive(TLSContext *context, unsigned char *buffer, int buffer_len, int 
     if (res > 0) {
         return res;
     }
+    // Handle other SSL errors
     int err = -wolfSSL_get_error(context->ssl, res); // SOCKET_PEER_CLOSED_E
 
     switch (err) {
@@ -340,7 +318,6 @@ void tls_close(TLSContext *context)
     if (context->tcp_socket) {
         sock_tcp_disconnect(context->tcp_socket);
         tls_log("TLS module cleaned up sock");
-        // free(context->tcp_socket);
     }
 
     // Free allocated resources
@@ -353,7 +330,6 @@ void tls_close(TLSContext *context)
     }
     wolfSSL_Cleanup();
     tls_log("TLS module cleaned up context");
-    free(context);
     initialized = 0;
     tls_log("TLS module cleaned up");
 }
@@ -381,18 +357,12 @@ int tcp_send(WOLFSSL *ssl, char *buf, int sz, void *ctx)
         }
     }
     else {
-
         switch (bytesSent) {
         case -ENOTCONN:
             // printf("TCP_SEND conn close...\n");
             return WOLFSSL_CBIO_ERR_CONN_CLOSE;
-        // return WOLFSSL_CBIO_ERR_WANT_READ;
         case -EAGAIN:
-            //  printf("EAGAIN EAGAIN...\n");
-            // ztimer_sleep(ZTIMER_MSEC, 10);
             return 0;
-        // return WOLFSSL_CBIO_ERR_WANT_READ;
-
         default:
             tls_log("TCP Error while sending data: %zd\n", bytesSent);
             break;
@@ -416,8 +386,9 @@ int tcp_recv(WOLFSSL *ssl, char *buf, int sz, void *ctx)
         return WOLFSSL_CBIO_ERR_GENERAL;
     }
     // Use sock_tcp_read to receive data from the socket
-    int timeout = context->timeout_ms == 0 ? context->timeout_ms_init : context->timeout_ms,
-        recvLen = 0;
+    int timeout = context->timeout_ms == 0 ? context->timeout_ms_init : context->timeout_ms;
+
+    int recvLen = 0;
     ztimer_now_t endTimestamp = ztimer_now(ZTIMER_MSEC) + timeout;
     ssize_t bytesRead;
 
@@ -428,7 +399,6 @@ int tcp_recv(WOLFSSL *ssl, char *buf, int sz, void *ctx)
         }
 
     } while ((recvLen < sz) && (ztimer_now(ZTIMER_MSEC) < endTimestamp));
-    // printf("TCP_RECV return = %d\n",bytesRead);
     if (recvLen > 0) {
         // tls_log("Received %zd (total size %d) bytes: %s\n", recvLen, sz, buf);
         return recvLen;
@@ -436,18 +406,12 @@ int tcp_recv(WOLFSSL *ssl, char *buf, int sz, void *ctx)
     else {
         switch (bytesRead) {
         case -ETIMEDOUT:
-            printf("Reading timeout...\n");
-            // return 0;
+            //printf("Reading timeout...\n");
             return WOLFSSL_CBIO_ERR_WANT_READ;
         case -EAGAIN:
-            //  printf("EAGAIN EAGAIN...\n");
-            //  ztimer_sleep(ZTIMER_MSEC,10);
-            // return 0;
             return WOLFSSL_CBIO_ERR_WANT_READ;
         case 0:
-
-            printf("Connection closed by the peer.\n");
-
+            tls_log("Connection closed by the peer.\n");
             return WOLFSSL_CBIO_ERR_CONN_CLOSE;
 
         default:
@@ -466,29 +430,29 @@ int tcp_connect(char *remoteAddress, int port, sock_tcp_t *socket)
 
     remote.port = port;
 
-
     // TODO : remoteIP has to retrieved from remoteAddress
     // DNS64 is not currently configured
     int dps = 1;
-    char *remoteIP = dps ? "64:ff9b::3374:91ca" : "64:ff9b::2871:b0b5";
+    char *remoteIP = dps == 1 ? "64:ff9b::3374:91ca" : "64:ff9b::2871:b0b5";
 
-    //////////////////////////////
+    ////////////////////////////////
+    // if ((res=sock_dns_query(remoteAddress, (ipv6_addr_t *)&remote.addr, AF_INET6)) < 0) {
+    //     printf("Error resolving hostname %d\n",res);
+    //     return -1;
+    // }
+    // //////////////////////////////
 
     ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, remoteIP);
 
     if ((res = sock_tcp_connect(socket, &remote, 0, 0)) < 0) {
-        printf("Error connecting sock %s\n", strerror(res));
+        tls_log("Error connecting sock %s\n", strerror(res));
     }
     return res;
 }
 
 int tcp_init(void)
 {
-    // if (IS_USED(MODULE_GNRC_ICMPV6_ECHO))
-    // {
-    //     msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
-    // }
-
+    // if any initialization needed in future
     return 0;
 }
 
